@@ -162,10 +162,6 @@ function Navbar({ user }: { user: any }) {
                 {/* Logo */}
                 <div className="flex items-center gap-3">
                     <img src="/images/logo.png" alt="Logo JDIH Banjarnegara" className="h-12 w-auto object-contain" />
-                    <div className="leading-none">
-                        <span className="block font-bold text-white text-base">JDIH Banjarnegara</span>
-                        <span className="text-[#0d9488] text-[10px] font-semibold tracking-widest uppercase">Kabupaten Banjarnegara</span>
-                    </div>
                 </div>
 
                 {/* Desktop Menu */}
