@@ -40,32 +40,6 @@ const LATEST_DOCS = [
     { id: 5, type: 'KEPBUP', href: '/keputusan-bupati/5',  year: '2026', number: 'Nomor 100.2/89 Tahun 2026', title: 'Perubahan Atas Keputusan Bupati Tentang Tim Penegasan Batas Daerah', date: '2026-02-28', subject: 'Batas Daerah' },
 ];
 
-const NEWS = [
-    {
-        id: 1, slug: 'infografis-perda-8-2025',
-        title: 'Infografis Peraturan Daerah Nomor 8 Tahun 2025 Tentang Pajak Daerah Dan Retribusi Daerah',
-        date: '2025-12-15', category: 'Infografis',
-        image: '/images/infografis peraturan daerah no 8 tahun 2025.webp',
-    },
-    {
-        id: 2, slug: 'study-referensi-temanggung',
-        title: 'Study Referensi Pelaksanaan Tugas Pada Bagian Hukum Sekretariat Daerah Kabupaten Temanggung',
-        date: '2025-11-20', category: 'Kegiatan',
-        image: '/images/Study Referensi Pelaksanaan Tugas pada Bagian Hukum Sekretariat Daerah Kabupaten Temanggung.webp',
-    },
-    {
-        id: 3, slug: 'penandatanganan-mou-kejaksaan',
-        title: 'Penandatanganan MOU Dengan Kejaksaan Negeri Terkait Pelaksanaan Pidana Kerja Sosial',
-        date: '2025-10-05', category: 'Kerja Sama',
-        image: '/images/Penandatanganan MOU Dengan Kejaksaan Negeri Terkait Pelaksanaan Pidana Kerja Sosial.webp',
-    },
-    {
-        id: 4, slug: 'forum-satu-data-banjarnegara',
-        title: 'Forum Satu Data Indonesia Kabupaten Banjarnegara "Perencanaan Berbasis Data"',
-        date: '2025-09-18', category: 'Forum',
-        image: "/images/Forum Satu Data Indonesia Kabupaten Banjarnegara ''Perencanaan Berbasis Data''.webp",
-    },
-];
 
 const STATS = [
     { label: 'Total Dokumen',    value: '9.645+', icon: FileText },
@@ -312,7 +286,7 @@ function LatestDocuments() {
 /* ------------------------------------------------------------------ */
 /* NEWS                                                                */
 /* ------------------------------------------------------------------ */
-function NewsSection() {
+function NewsSection({ news }: { news: any[] }) {
     return (
         <section className="py-16 bg-slate-50">
             <div className="max-w-7xl mx-auto px-6">
@@ -326,7 +300,7 @@ function NewsSection() {
                     </Link>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-                    {NEWS.map((article) => (
+                    {news.map((article) => (
                         <Link key={article.id} href={`/berita/${article.slug}`}
                             className="group bg-white border border-slate-200 rounded-lg overflow-hidden hover:border-[#0d9488] hover:shadow-md transition-all">
                             <div className="h-44 bg-[#1e293b] overflow-hidden">
@@ -553,7 +527,7 @@ function StatistikSection() {
 /* ------------------------------------------------------------------ */
 /* PAGE                                                                */
 /* ------------------------------------------------------------------ */
-export default function Welcome({ auth }: PageProps) {
+export default function Welcome({ auth, news = [] }: PageProps & { news?: any[] }) {
     return (
         <PublicLayout user={auth?.user}>
             <Head title="JDIH Kabupaten Banjarnegara – Jaringan Dokumentasi & Informasi Hukum" />
@@ -561,7 +535,7 @@ export default function Welcome({ auth }: PageProps) {
             <CategoryGrid />
             <LatestDocuments />
             <StatistikSection />
-            <NewsSection />
+            <NewsSection news={news} />
             <VideoSection />
             <RelatedLinks />
             <CTA />

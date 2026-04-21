@@ -9,11 +9,27 @@ use Inertia\Inertia;
 // HOME
 // ---------------------------------------------------------------
 Route::get('/', function () {
+    $latestNews = \App\Models\News::where('status', 'published')
+        ->orderBy('published_at', 'desc')
+        ->take(4)
+        ->get()
+        ->map(function ($article) {
+            return [
+                'id'       => $article->id,
+                'slug'     => $article->slug,
+                'title'    => $article->title,
+                'date'     => $article->published_at ? $article->published_at->format('Y-m-d') : null,
+                'category' => $article->category ?? 'Berita',
+                'image'    => $article->image ? '/storage/' . $article->image : '/images/hero.webp',
+            ];
+        });
+
     return Inertia::render('Welcome', [
         'canLogin'       => Route::has('login'),
         'canRegister'    => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion'     => PHP_VERSION,
+        'news'           => $latestNews,
     ]);
 });
 

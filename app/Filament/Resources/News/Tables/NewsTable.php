@@ -16,9 +16,17 @@ class NewsTable
                 \Filament\Tables\Columns\TextColumn::make('id')
                     ->label('No')
                     ->sortable(),
+                \Filament\Tables\Columns\ImageColumn::make('image')
+                    ->label('Thumbnail')
+                    ->square(),
                 \Filament\Tables\Columns\TextColumn::make('title')
                     ->label('Judul Berita')
                     ->wrap()
+                    ->searchable(),
+                \Filament\Tables\Columns\TextColumn::make('category')
+                    ->label('Kategori')
+                    ->badge()
+                    ->color('info')
                     ->searchable(),
                 \Filament\Tables\Columns\TextColumn::make('published_at')
                     ->label('Tgl Publish')
