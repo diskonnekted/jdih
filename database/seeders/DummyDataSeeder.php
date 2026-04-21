@@ -10,6 +10,7 @@ use App\Models\KatalogDownload;
 use App\Models\LegalDocument;
 use App\Models\Category;
 use App\Models\User;
+use App\Models\News;
 use Illuminate\Support\Str;
 
 class DummyDataSeeder extends Seeder
@@ -133,6 +134,48 @@ class DummyDataSeeder extends Seeder
                     'title' => "File Download Katalog #$i",
                     'file_path' => "katalog_$i.pdf",
                 ]
+            );
+        }
+
+        // 7. Berita (News)
+        $newsData = [
+            [
+                'title' => 'Infografis Peraturan Daerah Nomor 8 Tahun 2025 Tentang Perubahan Atas Peraturan Daerah Nomor 8 Tahun 2023 Tentang Pajak Daerah Dan Retribusi Daerah',
+                'slug' => 'infografis-peraturan-daerah-nomor-8-tahun-2025',
+                'content' => 'Berikut adalah infografis mengenai Peraturan Daerah Nomor 8 Tahun 2025 yang mengatur tentang perubahan pajak dan retribusi daerah di Kabupaten Banjarnegara.',
+                'image' => 'images/infografis peraturan daerah no 8 tahun 2025.webp',
+                'category' => 'Infografis',
+            ],
+            [
+                'title' => 'Study Referensi Pelaksanaan Tugas pada Bagian Hukum Sekretariat Daerah Kabupaten Temanggung',
+                'slug' => 'study-referensi-pelaksanaan-tugas-temanggung',
+                'content' => 'Bagian Hukum Sekretariat Daerah Kabupaten Banjarnegara melakukan studi referensi ke Kabupaten Temanggung terkait pelaksanaan tugas dan fungsi hukum.',
+                'image' => 'images/Study Referensi Pelaksanaan Tugas pada Bagian Hukum Sekretariat Daerah Kabupaten Temanggung.webp',
+                'category' => 'Berita',
+            ],
+            [
+                'title' => 'Penandatanganan MOU Dengan Kejaksaan Negeri Terkait Pelaksanaan Pidana Kerja Sosial',
+                'slug' => 'mou-kejaksaan-negeri-pidana-kerja-sosial',
+                'content' => 'Pemerintah Kabupaten Banjarnegara melakukan penandatanganan MOU dengan Kejaksaan Negeri terkait implementasi pelaksanaan pidana kerja sosial.',
+                'image' => 'images/Penandatanganan MOU Dengan Kejaksaan Negeri Terkait Pelaksanaan Pidana Kerja Sosial.webp',
+                'category' => 'Kerja Sama',
+            ],
+            [
+                'title' => 'Forum Satu Data Indonesia Kabupaten Banjarnegara "Perencanaan Berbasis Data"',
+                'slug' => 'forum-satu-data-indonesia-banjarnegara',
+                'content' => 'Pelaksanaan Forum Satu Data Indonesia di Kabupaten Banjarnegara dengan tema Perencanaan Berbasis Data untuk meningkatkan kualitas kebijakan publik.',
+                'image' => 'images/Forum Satu Data Indonesia Kabupaten Banjarnegara \'\'Perencanaan Berbasis Data\'\'.webp',
+                'category' => 'Forum',
+            ],
+        ];
+
+        foreach ($newsData as $news) {
+            News::updateOrCreate(
+                ['slug' => $news['slug']],
+                array_merge($news, [
+                    'status' => 'published',
+                    'published_at' => now()->subDays(rand(1, 10)),
+                ])
             );
         }
         

@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 // ---------------------------------------------------------------
@@ -20,7 +21,9 @@ Route::get('/', function () {
                 'title'    => $article->title,
                 'date'     => $article->published_at ? $article->published_at->format('Y-m-d') : null,
                 'category' => $article->category ?? 'Berita',
-                'image'    => $article->image ? '/storage/' . $article->image : '/images/hero.webp',
+                'image'    => $article->image 
+                    ? (Str::startsWith($article->image, 'images/') ? '/' . $article->image : '/storage/' . $article->image)
+                    : '/images/hero.webp',
             ];
         });
 
