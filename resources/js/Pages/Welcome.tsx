@@ -161,7 +161,7 @@ function Navbar({ user }: { user: any }) {
             <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
                 {/* Logo */}
                 <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 bg-[#0d9488] rounded flex items-center justify-center font-bold text-white text-lg">J</div>
+                    <img src="/images/logo.png" alt="Logo JDIH Banjarnegara" className="h-12 w-auto object-contain" />
                     <div className="leading-none">
                         <span className="block font-bold text-white text-base">JDIH Banjarnegara</span>
                         <span className="text-[#0d9488] text-[10px] font-semibold tracking-widest uppercase">Kabupaten Banjarnegara</span>
@@ -236,8 +236,13 @@ function Hero() {
     const [q, setQ] = useState('');
     return (
         <section className="relative pt-[calc(64px+28px)] pb-0">
-            <div className="bg-[#1e293b] py-20 px-6">
-                <div className="max-w-4xl mx-auto text-center">
+        <div
+                className="relative bg-cover bg-center bg-no-repeat py-20 px-6"
+                style={{ backgroundImage: "url('/images/hero.webp')" }}
+            >
+                {/* Dark overlay */}
+                <div className="absolute inset-0 bg-[#1e293b]/80" />
+                <div className="relative z-10 max-w-4xl mx-auto text-center">
                     <div className="inline-block bg-[#0d9488] text-white text-xs font-bold px-4 py-1.5 rounded mb-6 tracking-widest uppercase">
                         Jaringan Dokumentasi & Informasi Hukum
                     </div>
@@ -537,7 +542,7 @@ function Footer() {
                     {/* Brand */}
                     <div className="md:col-span-2">
                         <div className="flex items-center gap-3 mb-4">
-                            <div className="h-10 w-10 bg-[#0d9488] rounded flex items-center justify-center font-bold text-white text-lg">J</div>
+                            <img src="/images/logo.png" alt="Logo JDIH Banjarnegara" className="h-12 w-auto object-contain" />
                             <div>
                                 <span className="block font-bold text-white text-lg">JDIH Banjarnegara</span>
                                 <span className="text-[#0d9488] text-xs font-semibold">Kabupaten Banjarnegara</span>
