@@ -5,10 +5,11 @@ namespace App\Filament\Resources\Categories\Tables;
 use App\Models\Category;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\TextInput;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\Filter;
@@ -19,56 +20,47 @@ class CategoriesTable
 {
     public static function configure(Table $table): Table
     {
-        // Build year options dynamically
-        $years = Category::query()
-            ->selectRaw('YEAR(created_at) as year')
-            ->distinct()
-            ->orderByDesc('year')
-            ->pluck('year')
-            ->filter()
-            ->mapWithKeys(fn ($y) => [$y => $y])
-            ->toArray();
-
         return $table
             ->columns([
                 TextColumn::make('id')
                     ->label('No')
                     ->sortable(),
                 TextColumn::make('name')
-                    ->label('Nama Kategori')
+                    ->label('Nama Jenis Produk Hukum')
                     ->searchable()
                     ->wrap(),
                 TextColumn::make('code')
                     ->label('Kode')
                     ->badge()
                     ->color('info'),
+                TextColumn::make('slug')
+                    ->label('Slug URL')
+                    ->color('gray')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('legal_documents_count')
+                    ->label('Jumlah Dokumen')
+                    ->counts('legalDocuments')
+                    ->badge()
+                    ->color('success')
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->label('Dibuat')
-                    ->date('d/m/Y'),
+                    ->date('d/m/Y')
+                    ->sortable(),
             ])
+            ->defaultSort('name')
             ->filters([
                 Filter::make('nama_filter')
                     ->label('Nama')
                     ->form([
                         TextInput::make('name')
-                            ->placeholder('Cari nama kategori')
+                            ->placeholder('Cari nama jenis produk hukum')
                             ->hiddenLabel(),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query->when(
                             $data['name'] ?? null,
                             fn (Builder $q, $name) => $q->where('name', 'like', "%{$name}%")
-                        );
-                    }),
-
-                \Filament\Tables\Filters\SelectFilter::make('year')
-                    ->label('Tahun Dibuat')
-                    ->placeholder('-- Pilih Tahun --')
-                    ->options($years)
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query->when(
-                            $data['value'] ?? null,
-                            fn (Builder $q, $year) => $q->whereYear('created_at', $year)
                         );
                     }),
             ], layout: FiltersLayout::AboveContent)
@@ -84,10 +76,17 @@ class CategoriesTable
                 DeleteAction::make()
                     ->label('Hapus')
                     ->color('danger')
+                    ->icon('heroicon-m-trash')
                     ->button(),
                 EditAction::make()
                     ->label('Edit')
                     ->color('success')
+                    ->icon('heroicon-m-pencil')
+                    ->button(),
+                ViewAction::make()
+                    ->label('Detail')
+                    ->color('info')
+                    ->icon('heroicon-m-eye')
                     ->button(),
             ])
             ->toolbarActions([

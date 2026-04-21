@@ -30,13 +30,28 @@ class DummyDataSeeder extends Seeder
             ProfileItem::updateOrCreate(['slug' => $profile['slug']], $profile);
         }
 
-        // 2. Kategori Produk Hukum
+        // 2. Kategori/Jenis Produk Hukum (lengkap, sesuai frontend)
         $categories = [
-            'Peraturan Daerah', 'Peraturan Bupati', 'Keputusan Bupati', 'Surat Edaran', 'Instruksi Bupati'
+            ['name' => 'Peraturan Daerah',              'code' => 'PERDA',   'slug' => 'peraturan-daerah',              'description' => 'Peraturan Daerah Kabupaten Banjarnegara'],
+            ['name' => 'Peraturan Bupati',              'code' => 'PERBUP',  'slug' => 'peraturan-bupati',              'description' => 'Peraturan Bupati Banjarnegara'],
+            ['name' => 'Keputusan Bupati',              'code' => 'KEPBUP',  'slug' => 'keputusan-bupati',              'description' => 'Keputusan Bupati Banjarnegara'],
+            ['name' => 'Surat Edaran',                  'code' => 'SE',      'slug' => 'surat-edaran',                  'description' => 'Surat Edaran Bupati/Sekda'],
+            ['name' => 'Instruksi Bupati',              'code' => 'INBUP',   'slug' => 'instruksi-bupati',              'description' => 'Instruksi Bupati Banjarnegara'],
+            ['name' => 'Keputusan Sekretaris Daerah',   'code' => 'KEPSEK',  'slug' => 'keputusan-sekretaris-daerah',   'description' => 'Keputusan Sekretaris Daerah'],
+            ['name' => 'Naskah Akademik',               'code' => 'NA',      'slug' => 'naskah-akademik',               'description' => 'Naskah Akademik Rancangan Perda'],
+            ['name' => 'Monografi Hukum',               'code' => 'MONO',    'slug' => 'monografi-hukum',               'description' => 'Monografi/Kajian Hukum'],
+            ['name' => 'Raperda',                       'code' => 'RPRDA',   'slug' => 'raperda',                       'description' => 'Rancangan Peraturan Daerah'],
+            ['name' => 'Analisis & Evaluasi Hukum',     'code' => 'AEH',     'slug' => 'analisis-evaluasi-hukum',       'description' => 'Analisis dan Evaluasi Hukum'],
+            ['name' => 'RANHAM',                        'code' => 'RANHAM',  'slug' => 'ranham',                        'description' => 'Rencana Aksi Nasional Hak Asasi Manusia'],
+            ['name' => 'Risalah Rapat',                 'code' => 'RISAL',   'slug' => 'risalah-rapat',                 'description' => 'Risalah Rapat Pembahasan Perda'],
+            ['name' => 'Artikel Bidang Hukum',          'code' => 'ARTKEL', 'slug' => 'artikel-bidang-hukum',          'description' => 'Artikel dan Tulisan Bidang Hukum'],
+            ['name' => 'Propemperda',                   'code' => 'PROP',    'slug' => 'propemperda',                   'description' => 'Program Pembentukan Peraturan Daerah'],
+            ['name' => 'Kerja Sama Daerah',             'code' => 'KSD',     'slug' => 'kerja-sama-daerah',             'description' => 'Perjanjian Kerja Sama Antar Daerah'],
         ];
         foreach ($categories as $cat) {
-            Category::firstOrCreate(['name' => $cat], ['slug' => Str::slug($cat)]);
+            Category::firstOrCreate(['slug' => $cat['slug']], $cat);
         }
+
 
         // 3. Produk Hukum (LegalDocument)
         $catId = Category::first()->id;

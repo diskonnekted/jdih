@@ -8,6 +8,8 @@ class VisitorChart extends ChartWidget
 {
     protected ?string $heading = 'Grafik Pengunjung JDIH';
 
+    protected static ?int $sort = 3;
+
     protected function getData(): array
     {
         return [
@@ -18,6 +20,7 @@ class VisitorChart extends ChartWidget
                     'borderColor' => '#1e3a8a',
                     'fill' => 'start',
                     'backgroundColor' => 'rgba(30, 58, 138, 0.1)',
+                    'tension' => 0.4,
                 ],
             ],
             'labels' => ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
