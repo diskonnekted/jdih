@@ -75,11 +75,11 @@ const STATS = [
 ];
 
 const RELATED_LINKS = [
-    { label: 'Pemerintah Kab. Banjarnegara', href: 'http://banjarnegarakab.go.id', image: '/images/banjarnegara.png' },
+    { label: 'Pemerintah Kab. Banjarnegara', href: 'http://banjarnegarakab.go.id', image: '/images/pemerintah kab .png' },
     { label: 'Kemendagri RI',                href: 'http://www.kemendagri.go.id',  image: '/images/kemendagri.png' },
     { label: 'Kementerian Setneg RI',        href: 'https://www.setneg.go.id',     image: '/images/setneg.png' },
     { label: 'JDIHN',                        href: 'https://www.jdihn.go.id',      image: '/images/jdihn.png' },
-    { label: 'JDIH DPRD Provinsi Jawa Tengah', href: 'http://jdih.dprd.jatengprov.go.id', image: '/images/logo-jawa-tengah.svg' },
+    { label: 'JDIH DPRD Provinsi Jawa Tengah', href: 'http://jdih.dprd.jatengprov.go.id', image: '/images/jdih dprd.svg' },
     { label: 'BPHN Kemenkumham RI',          href: 'http://www.bphn.go.id',        image: '/images/bphn.png' },
 ];
 
