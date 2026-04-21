@@ -2,93 +2,148 @@ import React from 'react';
 import { Head } from '@inertiajs/react';
 import PublicLayout from '@/Layouts/PublicLayout';
 import PageHeader from '@/Components/PageHeader';
-import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+import { MapPin, Phone, PrinterIcon, Mail, Building2 } from 'lucide-react';
+
+/* -------------------------------------------------------------------
+   Konten asli dari jdih.banjarnegarakab.go.id/kedudukan-dan-alamat
+------------------------------------------------------------------- */
+const KONTAK = [
+    {
+        icon: Building2,
+        label: 'Instansi',
+        value: 'Bagian Hukum SETDA Kabupaten Banjarnegara',
+    },
+    {
+        icon: MapPin,
+        label: 'Alamat',
+        value: 'Lantai 2, Jalan A. Yani Nomor 16 Banjarnegara 591187, Jawa Tengah, Indonesia',
+    },
+    {
+        icon: Phone,
+        label: 'Telepon',
+        value: '(0286) 591218',
+        href: 'tel:0286591218',
+    },
+    {
+        icon: PrinterIcon,
+        label: 'Fax',
+        value: '(0286) 591187',
+    },
+    {
+        icon: Mail,
+        label: 'Email',
+        value: 'jdih@banjarnegarakab.go.id',
+        href: 'mailto:jdih@banjarnegarakab.go.id',
+    },
+];
+
+/* Google Maps embed – Jl. Ahmad Yani No. 16 Banjarnegara */
+const MAPS_EMBED =
+    'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3955.19!2d109.6939!3d-7.3898!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a67d3a8b85a4d%3A0xfed7d3a5c4e5a6b7!2sJl.%20A.%20Yani%20No.16%2C%20Krandegan%2C%20Banjarnegara!5e0!3m2!1sid!2sid!4v1715000000000!5m2!1sid!2sid';
 
 export default function KedudukanAlamat() {
     return (
         <PublicLayout>
             <Head title="Kedudukan dan Alamat – JDIH Banjarnegara" />
+
             <PageHeader
                 title="Kedudukan dan Alamat"
-                subtitle="Lokasi dan kontak Bagian Hukum Sekretariat Daerah Kabupaten Banjarnegara"
+                subtitle="Informasi lokasi dan kontak JDIH Kabupaten Banjarnegara"
                 breadcrumbs={[{ label: 'Profil Kami' }, { label: 'Kedudukan dan Alamat' }]}
             />
-            <section className="py-12 px-6">
+
+            <section className="py-12 px-6 bg-slate-50">
                 <div className="max-w-5xl mx-auto">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        {/* Info */}
+
+                        {/* ── Info Card ── */}
                         <div className="space-y-5">
-                            <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
-                                <div className="bg-[#0d9488] px-5 py-3">
-                                    <h2 className="text-white font-bold">Informasi Kontak</h2>
-                                </div>
-                                <div className="p-5 space-y-4">
-                                    {[
-                                        { icon: MapPin, label: 'Alamat', value: 'Jl. Ahmad Yani No. 16, Krandegan, Banjarnegara, Jawa Tengah 53414' },
-                                        { icon: Phone, label: 'Telepon', value: '(0286) 591218' },
-                                        { icon: Mail, label: 'Email', value: 'hukum@banjarnegarakab.go.id' },
-                                        { icon: Clock, label: 'Jam Layanan', value: 'Senin – Jumat: 07.30 – 16.00 WIB' },
-                                    ].map((item) => (
-                                        <div key={item.label} className="flex items-start gap-4">
-                                            <div className="h-9 w-9 bg-[#0d9488]/10 rounded flex items-center justify-center shrink-0">
-                                                <item.icon className="h-4.5 w-4.5 text-[#0d9488]" />
-                                            </div>
-                                            <div>
-                                                <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-0.5">{item.label}</div>
-                                                <div className="text-[#1e293b] text-sm">{item.value}</div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
+                            {/* Title block */}
+                            <div className="bg-[#1e293b] rounded-xl px-6 py-5">
+                                <p className="text-[#0d9488] text-xs font-bold uppercase tracking-widest mb-1">Pusat Layanan Hukum</p>
+                                <h2 className="text-white text-xl font-bold">JDIH Kabupaten Banjarnegara</h2>
                             </div>
 
-                            <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
-                                <div className="bg-[#1e293b] px-5 py-3">
-                                    <h2 className="text-white font-bold">Media Sosial</h2>
-                                </div>
-                                <div className="p-5 space-y-3">
-                                    <a href="https://www.tiktok.com/@jdih_banjarnegara" target="_blank" rel="noreferrer"
-                                        className="flex items-center gap-3 p-3 border border-slate-200 rounded hover:border-[#0d9488] hover:bg-slate-50 transition-colors group">
-                                        <div className="h-8 w-8 bg-black rounded flex items-center justify-center shrink-0">
-                                            <span className="text-white text-xs font-bold">TT</span>
+                            {/* Contact items */}
+                            <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm divide-y divide-slate-100">
+                                {KONTAK.map((item) => (
+                                    <div key={item.label} className="flex items-start gap-4 px-6 py-4">
+                                        {/* Icon */}
+                                        <div className="h-9 w-9 bg-[#0d9488]/10 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
+                                            <item.icon className="h-4.5 w-4.5 text-[#0d9488]" style={{ height: '1.125rem', width: '1.125rem' }} />
                                         </div>
-                                        <div>
-                                            <div className="text-sm font-semibold text-[#1e293b] group-hover:text-[#0d9488]">TikTok</div>
-                                            <div className="text-xs text-slate-400">@jdih_banjarnegara</div>
+                                        {/* Content */}
+                                        <div className="min-w-0">
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">
+                                                {item.label}
+                                            </p>
+                                            {item.href ? (
+                                                <a
+                                                    href={item.href}
+                                                    className="text-[#0d9488] font-medium text-sm hover:text-teal-700 transition-colors break-all"
+                                                >
+                                                    {item.value}
+                                                </a>
+                                            ) : (
+                                                <p className="text-[#1e293b] font-medium text-sm leading-snug">
+                                                    {item.value}
+                                                </p>
+                                            )}
                                         </div>
-                                    </a>
-                                    <a href="https://www.instagram.com/jdih_banjarnegara/" target="_blank" rel="noreferrer"
-                                        className="flex items-center gap-3 p-3 border border-slate-200 rounded hover:border-[#0d9488] hover:bg-slate-50 transition-colors group">
-                                        <div className="h-8 w-8 bg-pink-600 rounded flex items-center justify-center shrink-0">
-                                            <span className="text-white text-xs font-bold">IG</span>
-                                        </div>
-                                        <div>
-                                            <div className="text-sm font-semibold text-[#1e293b] group-hover:text-[#0d9488]">Instagram</div>
-                                            <div className="text-xs text-slate-400">@jdih_banjarnegara</div>
-                                        </div>
-                                    </a>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Jam Layanan */}
+                            <div className="bg-[#0d9488]/5 border border-[#0d9488]/20 rounded-xl px-6 py-5">
+                                <p className="text-[#0d9488] font-bold text-sm mb-3">🕐 Jam Layanan</p>
+                                <div className="space-y-1.5 text-sm text-slate-600">
+                                    <div className="flex justify-between">
+                                        <span>Senin – Kamis</span>
+                                        <span className="font-semibold text-[#1e293b]">07.30 – 16.00 WIB</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span>Jumat</span>
+                                        <span className="font-semibold text-[#1e293b]">07.30 – 11.00 WIB</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span>Sabtu – Minggu</span>
+                                        <span className="font-semibold text-slate-400">Libur</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Map */}
-                        <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
-                            <div className="bg-[#1e293b] px-5 py-3">
-                                <h2 className="text-white font-bold">Peta Lokasi</h2>
+                        {/* ── Map ── */}
+                        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm flex flex-col">
+                            <div className="bg-[#1e293b] px-5 py-4">
+                                <p className="text-white font-bold text-sm">Peta Lokasi</p>
+                                <p className="text-slate-400 text-xs">Jl. A. Yani No. 16, Krandegan, Banjarnegara</p>
                             </div>
-                            <div className="h-[400px]">
+                            <div className="flex-1 min-h-[360px]">
                                 <iframe
-                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3955.204937876!2d109.6944!3d-7.3897!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a6c9d1c1c1c1d%3A0x1234567890abcdef!2sJl.%20Ahmad%20Yani%20No.16%2C%20Banjarnegara!5e0!3m2!1sid!2sid!4v1234567890"
+                                    src={MAPS_EMBED}
                                     width="100%"
                                     height="100%"
-                                    style={{ border: 0 }}
+                                    style={{ border: 0, minHeight: '360px' }}
                                     allowFullScreen
                                     loading="lazy"
                                     referrerPolicy="no-referrer-when-downgrade"
                                     title="Peta Lokasi JDIH Banjarnegara"
                                 />
                             </div>
+                            <div className="px-5 py-3 border-t border-slate-100">
+                                <a
+                                    href="https://maps.google.com/?q=Jl.+A.+Yani+No.16+Banjarnegara"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="text-[#0d9488] text-xs font-semibold hover:text-teal-700 transition-colors"
+                                >
+                                    ↗ Buka di Google Maps
+                                </a>
+                            </div>
                         </div>
+
                     </div>
                 </div>
             </section>
