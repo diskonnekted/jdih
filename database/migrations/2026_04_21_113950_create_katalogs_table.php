@@ -1,0 +1,36 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('katalogs', function (Blueprint $table) {
+            $table->id();
+            $table->string('category')->nullable(); // Bentuk Produk Hukum
+            $table->string('document_number')->nullable();
+            $table->date('date_stipulated')->nullable(); // Tanggal Ditetap
+            $table->date('date_promulgated')->nullable(); // Tanggal Diundang
+            $table->string('title');
+            $table->text('description')->nullable(); 
+            $table->string('source')->nullable(); // Sumber
+            $table->string('status')->nullable(); // Status
+            $table->integer('publish_year')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('katalogs');
+    }
+};

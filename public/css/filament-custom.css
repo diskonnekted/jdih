@@ -1,0 +1,55 @@
+/* Membuat Kontainer Filter & Tombol Sejajar */
+.fi-ta-header-toolbar > div {
+    flex-wrap: wrap;
+}
+
+.fi-ta-filters {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-end !important;
+    gap: 1rem !important;
+    padding-bottom: 0.5rem;
+}
+
+/* Memastikan grid filter tidak menumpuk ke bawah */
+.fi-ta-filters > div:first-child {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 1rem !important;
+    flex-grow: 1;
+}
+
+/* Meratakan setiap item filter */
+.fi-ta-filters > div:first-child > div {
+    flex-grow: 1;
+    min-width: 150px;
+}
+
+/* Memposisikan Tombol Apply & Reset */
+.fi-ta-filters .gap-3 {
+    margin-top: 0 !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-end !important;
+}
+
+/* Mengubah Tautan Reset menjadi Tombol (Merah/Abu) */
+button[wire\:click="resetTableFiltersForm"] {
+    background-color: #ef4444 !important; /* warna merah */
+    color: #ffffff !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 0.5rem !important;
+    font-weight: 500 !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+    transition: background-color 0.2s !important;
+}
+button[wire\:click="resetTableFiltersForm"] svg {
+    display: none !important; /* menyembunyikan ikon x-mark bawaan jika ada */
+}
+button[wire\:click="resetTableFiltersForm"] span {
+    text-decoration: none !important;
+    color: white !important;
+}
+button[wire\:click="resetTableFiltersForm"]:hover {
+    background-color: #dc2626 !important;
+}
