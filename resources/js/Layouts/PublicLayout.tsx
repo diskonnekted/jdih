@@ -89,7 +89,7 @@ function Navbar({ user }: { user?: any }) {
             <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
                 {/* Logo only */}
                 <Link href="/" className="flex items-center shrink-0">
-                    <img src="/images/logo.png" alt="Logo JDIH Banjarnegara" className="h-10 w-auto object-contain" />
+                    <img src="/images/logo-jdih.png" alt="Logo JDIH Banjarnegara" className="h-10 w-auto object-contain" />
                 </Link>
 
                 {/* Desktop Menu */}
@@ -194,7 +194,7 @@ function Footer() {
                     {/* Brand */}
                     <div className="md:col-span-2">
                         <Link href="/" className="inline-block mb-4">
-                            <img src="/images/logo.png" alt="Logo JDIH Banjarnegara" className="h-14 w-auto object-contain" />
+                            <img src="/images/logo-jdih.png" alt="Logo JDIH Banjarnegara" className="h-14 w-auto object-contain" />
                         </Link>
                         <p className="text-sm leading-relaxed mb-5 max-w-sm">
                             Jaringan Dokumentasi dan Informasi Hukum Kabupaten Banjarnegara – wadah pendayagunaan bersama atas dokumen hukum secara tertib, terpadu dan berkesinambungan.

@@ -41,10 +41,30 @@ const LATEST_DOCS = [
 ];
 
 const NEWS = [
-    { id: 1, slug: 'infografis-perda-8-2025',      title: 'Infografis Peraturan Daerah Nomor 8 Tahun 2025 Tentang Pajak Daerah Dan Retribusi Daerah', date: '2025-12-15', category: 'Infografis' },
-    { id: 2, slug: 'study-referensi-temanggung',    title: 'Study Referensi Pelaksanaan Tugas Pada Bagian Hukum Sekretariat Daerah Kabupaten Temanggung', date: '2025-11-20', category: 'Kegiatan' },
-    { id: 3, slug: 'penandatanganan-mou-kejaksaan', title: 'Penandatanganan MOU Dengan Kejaksaan Negeri Terkait Pelaksanaan Pidana Kerja Sosial', date: '2025-10-05', category: 'Kerja Sama' },
-    { id: 4, slug: 'forum-satu-data-banjarnegara',  title: 'Forum Satu Data Indonesia Kabupaten Banjarnegara "Perencanaan Berbasis Data"', date: '2025-09-18', category: 'Forum' },
+    {
+        id: 1, slug: 'infografis-perda-8-2025',
+        title: 'Infografis Peraturan Daerah Nomor 8 Tahun 2025 Tentang Pajak Daerah Dan Retribusi Daerah',
+        date: '2025-12-15', category: 'Infografis',
+        image: '/images/infografis peraturan daerah no 8 tahun 2025.webp',
+    },
+    {
+        id: 2, slug: 'study-referensi-temanggung',
+        title: 'Study Referensi Pelaksanaan Tugas Pada Bagian Hukum Sekretariat Daerah Kabupaten Temanggung',
+        date: '2025-11-20', category: 'Kegiatan',
+        image: '/images/Study Referensi Pelaksanaan Tugas pada Bagian Hukum Sekretariat Daerah Kabupaten Temanggung.webp',
+    },
+    {
+        id: 3, slug: 'penandatanganan-mou-kejaksaan',
+        title: 'Penandatanganan MOU Dengan Kejaksaan Negeri Terkait Pelaksanaan Pidana Kerja Sosial',
+        date: '2025-10-05', category: 'Kerja Sama',
+        image: '/images/Penandatanganan MOU Dengan Kejaksaan Negeri Terkait Pelaksanaan Pidana Kerja Sosial.webp',
+    },
+    {
+        id: 4, slug: 'forum-satu-data-banjarnegara',
+        title: 'Forum Satu Data Indonesia Kabupaten Banjarnegara "Perencanaan Berbasis Data"',
+        date: '2025-09-18', category: 'Forum',
+        image: "/images/Forum Satu Data Indonesia Kabupaten Banjarnegara ''Perencanaan Berbasis Data''.webp",
+    },
 ];
 
 const STATS = [
@@ -309,8 +329,13 @@ function NewsSection() {
                     {NEWS.map((article) => (
                         <Link key={article.id} href={`/berita/${article.slug}`}
                             className="group bg-white border border-slate-200 rounded-lg overflow-hidden hover:border-[#0d9488] hover:shadow-md transition-all">
-                            <div className="h-36 bg-[#1e293b] flex items-center justify-center">
-                                <Newspaper className="h-12 w-12 text-[#0d9488]" />
+                            <div className="h-44 bg-[#1e293b] overflow-hidden">
+                                <img
+                                    src={article.image}
+                                    alt={article.title}
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                    loading="lazy"
+                                />
                             </div>
                             <div className="p-4">
                                 <span className="text-[10px] font-bold uppercase tracking-widest text-[#0d9488]">{article.category}</span>
