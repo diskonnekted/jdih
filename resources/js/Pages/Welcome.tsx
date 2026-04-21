@@ -86,60 +86,29 @@ function TypeBadge({ type }: { type: string }) {
 }
 
 /* ------------------------------------------------------------------ */
-/* HERO                                                                */
+/* HERO  –  2-column split layout                                      */
 /* ------------------------------------------------------------------ */
 function Hero() {
-    return (
-        <section className="relative pb-0">
-            <div
-                className="relative bg-cover bg-center bg-no-repeat py-16 px-6"
-                style={{ backgroundImage: "url('/images/hero.webp')" }}
-            >
-                <div className="absolute inset-0 bg-[#1e293b]/80" />
-                <div className="relative z-10 max-w-4xl mx-auto text-center">
-                    <div className="inline-block bg-[#0d9488] text-white text-xs font-bold px-4 py-1.5 rounded mb-5 tracking-widest uppercase">
-                        Jaringan Dokumentasi &amp; Informasi Hukum
-                    </div>
-                    <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
-                        Portal Produk Hukum<br />
-                        <span className="text-[#0d9488]">Kabupaten Banjarnegara</span>
-                    </h1>
-                    <p className="text-slate-300 text-base max-w-2xl mx-auto">
-                        Akses mudah ke database peraturan daerah, keputusan bupati, dan produk hukum lainnya secara transparan dan terkini.
-                    </p>
-                </div>
-            </div>
-
-            {/* Stats strip */}
-            <div className="bg-[#0d9488]">
-                <div className="max-w-7xl mx-auto px-6 py-4 grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {STATS.map((s) => (
-                        <div key={s.label} className="flex items-center gap-3 text-white">
-                            <s.icon className="h-8 w-8 opacity-70 shrink-0" />
-                            <div>
-                                <div className="text-xl font-bold leading-none">{s.value}</div>
-                                <div className="text-xs opacity-80">{s.label}</div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </section>
-    );
-}
-
-/* ------------------------------------------------------------------ */
-/* SEARCH SECTION                                                       */
-/* ------------------------------------------------------------------ */
-function SearchSection() {
     function handleSearch(values: SearchValues) {
-        // Build target URL – default to peraturan-daerah when no jenis selected
-        const base = values.jenisDokumen
-            ? '/' + values.jenisDokumen.toLowerCase()
-                .replace(/ /g, '-')
-                .replace(/[&]/g, '')
-                .replace(/-+/g, '-')
-            : '/peraturan-daerah';
+        const JENIS_SLUG: Record<string, string> = {
+            'Peraturan Daerah':            '/peraturan-daerah',
+            'Peraturan Bupati':            '/peraturan-bupati',
+            'Keputusan Bupati':            '/keputusan-bupati',
+            'Instruksi Bupati':            '/instruksi-bupati',
+            'Keputusan Sekretaris Daerah': '/keputusan-sekretaris-daerah',
+            'Surat Edaran':                '/surat-edaran',
+            'Naskah Akademik':             '/naskah-akademik',
+            'Raperda':                     '/raperda',
+            'Analisis & Evaluasi Hukum':   '/analisis-evaluasi-hukum',
+            'RANHAM':                      '/ranham',
+            'Risalah Rapat':               '/risalah-rapat',
+            'Artikel Bidang Hukum':        '/artikel-bidang-hukum',
+            'Propemperda':                 '/propemperda',
+            'Katalog':                     '/katalog',
+            'Putusan':                     '/putusan',
+            'Kerja Sama Daerah':           '/kerja-sama-daerah',
+        };
+        const base = JENIS_SLUG[values.jenisDokumen] ?? '/peraturan-daerah';
         const params = new URLSearchParams();
         if (values.namaDokumen) params.set('q', values.namaDokumen);
         if (values.nomor)       params.set('nomor', values.nomor);
@@ -149,9 +118,83 @@ function SearchSection() {
     }
 
     return (
-        <section className="bg-white border-b border-slate-100 py-10 px-6">
-            <div className="max-w-4xl mx-auto">
-                <SearchForm onSearch={handleSearch} />
+        <section>
+            {/* ── Main hero area ── */}
+            <div
+                className="relative bg-cover bg-left-center bg-no-repeat"
+                style={{ backgroundImage: "url('/images/hero.webp')" }}
+            >
+                {/* overlay – slightly lighter on the right so form panel pops */}
+                <div className="absolute inset-0 bg-[#1e293b]/85" />
+
+                <div className="relative z-10 max-w-7xl mx-auto px-6 py-14 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+
+                    {/* ── LEFT: Headline ── */}
+                    <div>
+                        <div className="inline-block bg-[#0d9488] text-white text-xs font-bold px-4 py-1.5 rounded mb-6 tracking-widest uppercase">
+                            Jaringan Dokumentasi &amp; Informasi Hukum
+                        </div>
+                        <h1 className="text-4xl md:text-5xl font-bold text-white mb-5 leading-tight">
+                            Portal Produk Hukum<br />
+                            <span className="text-[#0d9488]">Kabupaten Banjarnegara</span>
+                        </h1>
+                        <p className="text-slate-300 text-base leading-relaxed mb-8 max-w-md">
+                            Akses mudah ke database peraturan daerah, keputusan bupati, dan produk hukum lainnya secara transparan dan terkini.
+                        </p>
+
+                        {/* Mini stats */}
+                        <div className="grid grid-cols-2 gap-4">
+                            {STATS.map((s) => (
+                                <div key={s.label} className="flex items-center gap-3">
+                                    <div className="h-10 w-10 bg-[#0d9488]/20 rounded-lg flex items-center justify-center shrink-0">
+                                        <s.icon className="h-5 w-5 text-[#0d9488]" />
+                                    </div>
+                                    <div>
+                                        <div className="text-xl font-bold text-white leading-none">{s.value}</div>
+                                        <div className="text-xs text-slate-400">{s.label}</div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* ── RIGHT: Search Form Panel ── */}
+                    <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+                        {/* Panel header */}
+                        <div className="bg-[#1e293b] px-6 py-4 flex items-center gap-3">
+                            <div className="h-8 w-8 bg-[#0d9488] rounded-lg flex items-center justify-center shrink-0">
+                                <Search className="h-4 w-4 text-white" />
+                            </div>
+                            <div>
+                                <p className="text-white font-bold text-sm">Pencarian Dokumen Hukum</p>
+                                <p className="text-slate-400 text-xs">Temukan produk hukum Kab. Banjarnegara</p>
+                            </div>
+                        </div>
+                        {/* Form body */}
+                        <div className="p-6">
+                            <SearchForm
+                                mode="compact"
+                                onSearch={handleSearch}
+                            />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            {/* ── Stats strip (mobile only – desktop stats inline above) ── */}
+            <div className="bg-[#0d9488] lg:hidden">
+                <div className="max-w-7xl mx-auto px-6 py-4 grid grid-cols-2 gap-4">
+                    {STATS.map((s) => (
+                        <div key={s.label} className="flex items-center gap-3 text-white">
+                            <s.icon className="h-7 w-7 opacity-70 shrink-0" />
+                            <div>
+                                <div className="text-lg font-bold leading-none">{s.value}</div>
+                                <div className="text-xs opacity-80">{s.label}</div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
         </section>
     );
@@ -377,7 +420,6 @@ export default function Welcome({ auth }: PageProps) {
         <PublicLayout user={auth?.user}>
             <Head title="JDIH Kabupaten Banjarnegara – Jaringan Dokumentasi & Informasi Hukum" />
             <Hero />
-            <SearchSection />
             <CategoryGrid />
             <LatestDocuments />
             <NewsSection />
