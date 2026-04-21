@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Head, Link } from '@inertiajs/react';
 import {
     Search, Scale, FileText, Gavel, Megaphone, ClipboardList,
@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { PageProps } from '@/types';
 import PublicLayout from '@/Layouts/PublicLayout';
+import SearchForm, { SearchValues } from '@/Components/SearchForm';
 
 /* ------------------------------------------------------------------ */
 /* COLOUR TOKENS: Teal #0d9488 | Slate Navy #1e293b | No gradients    */
@@ -88,55 +89,24 @@ function TypeBadge({ type }: { type: string }) {
 /* HERO                                                                */
 /* ------------------------------------------------------------------ */
 function Hero() {
-    const [q, setQ] = useState('');
     return (
         <section className="relative pb-0">
             <div
-                className="relative bg-cover bg-center bg-no-repeat py-20 px-6"
+                className="relative bg-cover bg-center bg-no-repeat py-16 px-6"
                 style={{ backgroundImage: "url('/images/hero.webp')" }}
             >
                 <div className="absolute inset-0 bg-[#1e293b]/80" />
                 <div className="relative z-10 max-w-4xl mx-auto text-center">
-                    <div className="inline-block bg-[#0d9488] text-white text-xs font-bold px-4 py-1.5 rounded mb-6 tracking-widest uppercase">
+                    <div className="inline-block bg-[#0d9488] text-white text-xs font-bold px-4 py-1.5 rounded mb-5 tracking-widest uppercase">
                         Jaringan Dokumentasi &amp; Informasi Hukum
                     </div>
                     <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
                         Portal Produk Hukum<br />
                         <span className="text-[#0d9488]">Kabupaten Banjarnegara</span>
                     </h1>
-                    <p className="text-slate-300 text-lg mb-10 max-w-2xl mx-auto">
+                    <p className="text-slate-300 text-base max-w-2xl mx-auto">
                         Akses mudah ke database peraturan daerah, keputusan bupati, dan produk hukum lainnya secara transparan dan terkini.
                     </p>
-
-                    {/* Search */}
-                    <div className="flex flex-col sm:flex-row gap-0 bg-white rounded overflow-hidden shadow-2xl max-w-2xl mx-auto">
-                        <div className="relative flex-1">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 h-5 w-5" />
-                            <input
-                                type="text" value={q} onChange={(e) => setQ(e.target.value)}
-                                placeholder="Cari peraturan, nomor, atau kata kunci..."
-                                className="w-full pl-12 pr-4 py-4 border-none outline-none text-slate-800 placeholder:text-slate-400 text-sm"
-                            />
-                        </div>
-                        <Link href={q ? `/peraturan-daerah?q=${encodeURIComponent(q)}` : '/peraturan-daerah'}
-                            className="px-8 py-4 bg-[#0d9488] text-white font-bold text-sm hover:bg-teal-600 transition-colors whitespace-nowrap text-center">
-                            Cari Sekarang
-                        </Link>
-                    </div>
-
-                    <div className="mt-6 flex flex-wrap justify-center gap-3 text-sm">
-                        <span className="text-slate-400">Populer:</span>
-                        {[
-                            { label: 'Perda No. 1 2024', href: '/peraturan-daerah/1' },
-                            { label: 'Pajak Daerah',     href: '/peraturan-daerah' },
-                            { label: 'Tata Ruang',       href: '/peraturan-daerah' },
-                            { label: 'RPJMD 2025–2029',  href: '/peraturan-daerah' },
-                        ].map((kw) => (
-                            <Link key={kw.label} href={kw.href} className="text-[#0d9488] hover:text-teal-300 transition-colors">
-                                {kw.label}
-                            </Link>
-                        ))}
-                    </div>
                 </div>
             </div>
 
@@ -153,6 +123,35 @@ function Hero() {
                         </div>
                     ))}
                 </div>
+            </div>
+        </section>
+    );
+}
+
+/* ------------------------------------------------------------------ */
+/* SEARCH SECTION                                                       */
+/* ------------------------------------------------------------------ */
+function SearchSection() {
+    function handleSearch(values: SearchValues) {
+        // Build target URL – default to peraturan-daerah when no jenis selected
+        const base = values.jenisDokumen
+            ? '/' + values.jenisDokumen.toLowerCase()
+                .replace(/ /g, '-')
+                .replace(/[&]/g, '')
+                .replace(/-+/g, '-')
+            : '/peraturan-daerah';
+        const params = new URLSearchParams();
+        if (values.namaDokumen) params.set('q', values.namaDokumen);
+        if (values.nomor)       params.set('nomor', values.nomor);
+        if (values.tahun)       params.set('tahun', values.tahun);
+        if (values.status)      params.set('status', values.status);
+        window.location.href = base + (params.toString() ? '?' + params.toString() : '');
+    }
+
+    return (
+        <section className="bg-white border-b border-slate-100 py-10 px-6">
+            <div className="max-w-4xl mx-auto">
+                <SearchForm onSearch={handleSearch} />
             </div>
         </section>
     );
@@ -378,6 +377,7 @@ export default function Welcome({ auth }: PageProps) {
         <PublicLayout user={auth?.user}>
             <Head title="JDIH Kabupaten Banjarnegara – Jaringan Dokumentasi & Informasi Hukum" />
             <Hero />
+            <SearchSection />
             <CategoryGrid />
             <LatestDocuments />
             <NewsSection />

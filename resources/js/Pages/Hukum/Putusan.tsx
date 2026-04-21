@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Head } from '@inertiajs/react';
 import PublicLayout from '@/Layouts/PublicLayout';
 import PageHeader from '@/Components/PageHeader';
-import { Search, Eye, Download, ChevronLeft, ChevronRight } from 'lucide-react';
+import SearchForm, { SearchValues } from '@/Components/SearchForm';
+import { Eye, Download, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const PUTUSAN_DATA = Array.from({ length: 25 }, (_, i) => ({
     id: i + 1,
@@ -19,12 +20,27 @@ function fmtDate(d: string) {
 }
 
 export default function Putusan() {
-    const [search, setSearch] = useState('');
+    const [filters, setFilters] = useState<SearchValues>({
+        namaDokumen: '',
+        jenisDokumen: 'Putusan',
+        nomor: '',
+        tahun: '',
+        status: '',
+    });
     const [page, setPage] = useState(1);
 
-    const filtered = PUTUSAN_DATA.filter(p =>
-        !search || p.nomor.toLowerCase().includes(search.toLowerCase())
-    );
+    function handleSearch(values: SearchValues) {
+        setFilters(values);
+        setPage(1);
+    }
+
+    const filtered = PUTUSAN_DATA.filter((p) => {
+        const q = filters.namaDokumen.toLowerCase();
+        const matchName  = !q            || p.nomor.toLowerCase().includes(q);
+        const matchNomor = !filters.nomor || p.nomor.toLowerCase().includes(filters.nomor.toLowerCase());
+        const matchYear  = !filters.tahun || p.tanggal.startsWith(filters.tahun);
+        return matchName && matchNomor && matchYear;
+    });
     const totalPages = Math.ceil(filtered.length / PER_PAGE);
     const paged = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
@@ -39,12 +55,13 @@ export default function Putusan() {
             <section className="py-10 px-6">
                 <div className="max-w-6xl mx-auto">
                     <div className="bg-white border border-slate-200 rounded-lg p-4 mb-6 flex flex-col sm:flex-row gap-3">
-                        <div className="flex-1 relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                            <input type="text" placeholder="Cari nomor putusan..." value={search}
-                                onChange={e => { setSearch(e.target.value); setPage(1); }}
-                                className="w-full pl-9 pr-4 py-2 border border-slate-200 rounded text-sm focus:outline-none focus:border-[#0d9488]" />
-                        </div>
+                    <SearchForm
+                    mode="compact"
+                    initialValues={filters}
+                    onSearch={handleSearch}
+                    hideJenis={true}
+                    jenisDokumenDefault="Putusan"
+                />
                     </div>
 
                     <div className="space-y-3">
