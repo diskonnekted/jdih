@@ -87,7 +87,7 @@ function TypeBadge({ type }: { type: string }) {
 /* HERO  –  2-column split layout                                      */
 /* ------------------------------------------------------------------ */
 function Hero({ banner }: { banner?: any }) {
-    const bgImage = banner?.image || '/images/hero.webp';
+    const bgImage = banner?.image || '/images/hero.jpg';
     function handleSearch(values: SearchValues) {
         const JENIS_SLUG: Record<string, string> = {
             'Peraturan Daerah':            '/peraturan-daerah',
