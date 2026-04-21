@@ -50,8 +50,8 @@ class KatalogsTable
                 \Filament\Tables\Filters\Filter::make('judul_filter')
                     ->form([
                         \Filament\Forms\Components\TextInput::make('title')
-                            ->placeholder('tentang produk hukum')
-                            ->hiddenLabel(),
+                            ->label('Tentang / Judul')
+                            ->placeholder('Cari judul produk hukum...'),
                     ])
                     ->query(function (\Illuminate\Database\Eloquent\Builder $query, array $data): \Illuminate\Database\Eloquent\Builder {
                         return $query->when(
@@ -62,8 +62,8 @@ class KatalogsTable
                 \Filament\Tables\Filters\Filter::make('nomor_filter')
                     ->form([
                         \Filament\Forms\Components\TextInput::make('document_number')
-                            ->placeholder('masukan nomor')
-                            ->hiddenLabel(),
+                            ->label('Nomor Peraturan')
+                            ->placeholder('Cari nomor...'),
                     ])
                     ->query(function (\Illuminate\Database\Eloquent\Builder $query, array $data): \Illuminate\Database\Eloquent\Builder {
                         return $query->when(
@@ -72,11 +72,11 @@ class KatalogsTable
                         );
                     }),
                 \Filament\Tables\Filters\SelectFilter::make('publish_year')
-                    ->label('')
+                    ->label('Tahun')
                     ->placeholder('-- Pilih Tahun --')
                     ->options(fn () => \App\Models\Katalog::distinct()->pluck('publish_year', 'publish_year')->toArray()),
                 \Filament\Tables\Filters\SelectFilter::make('category')
-                    ->label('')
+                    ->label('Kategori')
                     ->placeholder('-- Pilih Kategori --')
                     ->options(fn () => \App\Models\Katalog::distinct()->pluck('category', 'category')->toArray()),
             ], layout: \Filament\Tables\Enums\FiltersLayout::AboveContent)
