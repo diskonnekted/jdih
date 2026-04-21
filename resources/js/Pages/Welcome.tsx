@@ -9,6 +9,10 @@ import {
 import { PageProps } from '@/types';
 import PublicLayout from '@/Layouts/PublicLayout';
 import SearchForm, { SearchValues } from '@/Components/SearchForm';
+import {
+    BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
+    LineChart, Line, CartesianGrid, Cell,
+} from 'recharts';
 
 /* ------------------------------------------------------------------ */
 /* COLOUR TOKENS: Teal #0d9488 | Slate Navy #1e293b | No gradients    */
@@ -413,6 +417,115 @@ function CTA() {
 }
 
 /* ------------------------------------------------------------------ */
+/* STATISTIK MINI (landing)                                             */
+/* ------------------------------------------------------------------ */
+const STAT_JENIS_MINI = [
+    { name: 'Perda',   jumlah: 124 },
+    { name: 'Perbup',  jumlah: 285 },
+    { name: 'Kepbup',  jumlah: 412 },
+    { name: 'SE',      jumlah: 84  },
+    { name: 'NA',      jumlah: 9   },
+    { name: 'Raperda', jumlah: 27  },
+    { name: 'KSD',     jumlah: 62  },
+    { name: 'Lainnya', jumlah: 98  },
+];
+const STAT_TAHUN_MINI = [
+    { tahun: '2020', jumlah: 275 },
+    { tahun: '2021', jumlah: 389 },
+    { tahun: '2022', jumlah: 445 },
+    { tahun: '2023', jumlah: 503 },
+    { tahun: '2024', jumlah: 468 },
+    { tahun: '2025', jumlah: 312 },
+    { tahun: '2026', jumlah: 90  },
+];
+
+function CustomTip({ active, payload, label }: any) {
+    if (!active || !payload?.length) return null;
+    return (
+        <div className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs shadow">
+            <p className="font-bold text-[#1e293b]">{label}</p>
+            <p className="text-[#0d9488] font-semibold">{payload[0].value.toLocaleString('id-ID')} dok</p>
+        </div>
+    );
+}
+
+function StatistikSection() {
+    return (
+        <section className="py-16 bg-white">
+            <div className="max-w-7xl mx-auto px-6">
+                <div className="flex items-end justify-between mb-10">
+                    <div>
+                        <p className="text-[#0d9488] text-sm font-bold uppercase tracking-widest mb-1">Data</p>
+                        <h2 className="text-3xl font-bold text-[#1e293b]">Statistik Dokumen Hukum</h2>
+                    </div>
+                    <Link href="/statistik" className="hidden md:flex items-center gap-2 text-sm font-semibold text-[#0d9488] hover:text-teal-700 transition-colors">
+                        Lihat Lengkap <ArrowRight className="h-4 w-4" />
+                    </Link>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Bar chart per jenis */}
+                    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                        <div className="bg-[#1e293b] px-5 py-4">
+                            <p className="text-white font-bold text-sm">Dokumen per Jenis Produk Hukum</p>
+                            <p className="text-slate-400 text-xs">Jumlah dokumen dalam database JDIH</p>
+                        </div>
+                        <div className="p-5">
+                            <ResponsiveContainer width="100%" height={220}>
+                                <BarChart data={STAT_JENIS_MINI} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                                    <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#64748b' }} />
+                                    <YAxis tick={{ fontSize: 10, fill: '#64748b' }} />
+                                    <Tooltip content={<CustomTip />} />
+                                    <Bar dataKey="jumlah" radius={[3, 3, 0, 0]}>
+                                        {STAT_JENIS_MINI.map((_, i) => (
+                                            <Cell key={i} fill={i % 2 === 0 ? '#0d9488' : '#1e293b'} />
+                                        ))}
+                                    </Bar>
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+
+                    {/* Line chart tren tahun */}
+                    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                        <div className="bg-[#0d9488] px-5 py-4">
+                            <p className="text-white font-bold text-sm">Tren Produk Hukum per Tahun</p>
+                            <p className="text-teal-100 text-xs">Perkembangan 2020–2026</p>
+                        </div>
+                        <div className="p-5">
+                            <ResponsiveContainer width="100%" height={220}>
+                                <LineChart data={STAT_TAHUN_MINI} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                                    <XAxis dataKey="tahun" tick={{ fontSize: 10, fill: '#64748b' }} />
+                                    <YAxis tick={{ fontSize: 10, fill: '#64748b' }} />
+                                    <Tooltip content={<CustomTip />} />
+                                    <Line
+                                        type="monotone"
+                                        dataKey="jumlah"
+                                        stroke="#0d9488"
+                                        strokeWidth={2.5}
+                                        dot={{ fill: '#0d9488', r: 4 }}
+                                        activeDot={{ r: 6 }}
+                                    />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mt-6 text-center">
+                    <Link href="/statistik"
+                        className="inline-flex items-center gap-2 px-6 py-3 border-2 border-[#0d9488] text-[#0d9488] font-bold text-sm rounded-lg hover:bg-[#0d9488] hover:text-white transition-all">
+                        Lihat Statistik Lengkap <ArrowRight className="h-4 w-4" />
+                    </Link>
+                </div>
+            </div>
+        </section>
+    );
+}
+
+/* ------------------------------------------------------------------ */
 /* PAGE                                                                */
 /* ------------------------------------------------------------------ */
 export default function Welcome({ auth }: PageProps) {
@@ -422,6 +535,7 @@ export default function Welcome({ auth }: PageProps) {
             <Hero />
             <CategoryGrid />
             <LatestDocuments />
+            <StatistikSection />
             <NewsSection />
             <VideoSection />
             <RelatedLinks />
