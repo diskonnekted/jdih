@@ -86,7 +86,8 @@ function TypeBadge({ type }: { type: string }) {
 /* ------------------------------------------------------------------ */
 /* HERO  –  2-column split layout                                      */
 /* ------------------------------------------------------------------ */
-function Hero() {
+function Hero({ banner }: { banner?: any }) {
+    const bgImage = banner?.image || '/images/hero.webp';
     function handleSearch(values: SearchValues) {
         const JENIS_SLUG: Record<string, string> = {
             'Peraturan Daerah':            '/peraturan-daerah',
@@ -120,7 +121,7 @@ function Hero() {
             {/* ── Main hero area ── */}
             <div
                 className="relative bg-cover bg-left-center bg-no-repeat"
-                style={{ backgroundImage: "url('/images/hero.webp')" }}
+                style={{ backgroundImage: `url('${bgImage}')` }}
             >
                 {/* overlay – slightly lighter on the right so form panel pops */}
                 <div className="absolute inset-0 bg-[#1e293b]/85" />
@@ -527,11 +528,11 @@ function StatistikSection() {
 /* ------------------------------------------------------------------ */
 /* PAGE                                                                */
 /* ------------------------------------------------------------------ */
-export default function Welcome({ auth, news = [] }: PageProps & { news?: any[] }) {
+export default function Welcome({ auth, news = [], banner = null }: PageProps & { news?: any[], banner?: any }) {
     return (
         <PublicLayout user={auth?.user}>
             <Head title="JDIH Kabupaten Banjarnegara – Jaringan Dokumentasi & Informasi Hukum" />
-            <Hero />
+            <Hero banner={banner} />
             <CategoryGrid />
             <LatestDocuments />
             <StatistikSection />

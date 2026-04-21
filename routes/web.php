@@ -24,12 +24,20 @@ Route::get('/', function () {
             ];
         });
 
+    $activeBanner = \App\Models\Banner::where('is_active', true)->latest()->first();
+
     return Inertia::render('Welcome', [
         'canLogin'       => Route::has('login'),
         'canRegister'    => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion'     => PHP_VERSION,
         'news'           => $latestNews,
+        'banner'         => $activeBanner ? [
+            'id' => $activeBanner->id,
+            'title' => $activeBanner->title,
+            'image' => '/storage/' . $activeBanner->image_path,
+            'url' => $activeBanner->url,
+        ] : null,
     ]);
 });
 
