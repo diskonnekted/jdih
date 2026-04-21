@@ -61,12 +61,12 @@ const NAV_ITEMS = [
 ];
 
 const FOOTER_LINKS = [
-    { label: 'Pemerintah Kab. Banjarnegara', href: 'http://banjarnegarakab.go.id', icon: Building2 },
-    { label: 'Kemendagri RI', href: 'http://www.kemendagri.go.id', icon: Landmark },
-    { label: 'Kementerian Setneg RI', href: 'https://www.setneg.go.id', icon: Shield },
-    { label: 'JDIHN', href: 'https://www.jdihn.go.id', icon: Globe },
-    { label: 'JDIH DPRD Banjarnegara', href: 'http://jdih.dprd.jatengprov.go.id', icon: Users },
-    { label: 'BPHN Kemenkumham RI', href: 'http://www.bphn.go.id', icon: BookOpen },
+    { label: 'Pemerintah Kab. Banjarnegara', href: 'http://banjarnegarakab.go.id', image: '/images/banjarnegara.png' },
+    { label: 'Kemendagri RI', href: 'http://www.kemendagri.go.id', image: '/images/kemendagri.png' },
+    { label: 'Kementerian Setneg RI', href: 'https://www.setneg.go.id', image: '/images/setneg.png' },
+    { label: 'JDIHN', href: 'https://www.jdihn.go.id', image: '/images/jdihn.png' },
+    { label: 'JDIH DPRD Provinsi Jawa Tengah', href: 'http://jdih.dprd.jatengprov.go.id', image: '/images/logo-jawa-tengah.svg' },
+    { label: 'BPHN Kemenkumham RI', href: 'http://www.bphn.go.id', image: '/images/bphn.png' },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -260,7 +260,7 @@ function Footer() {
                         {FOOTER_LINKS.map((link) => (
                             <a key={link.label} href={link.href} target="_blank" rel="noreferrer"
                                 className="flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-slate-700 rounded text-xs hover:border-[#0d9488] hover:text-[#0d9488] transition-colors">
-                                <link.icon className="h-3.5 w-3.5" />
+                                <img src={link.image} alt={link.label} className="h-4 w-4 object-contain" />
                                 {link.label}
                             </a>
                         ))}
