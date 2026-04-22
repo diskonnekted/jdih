@@ -1,7 +1,7 @@
 import React from 'react';
 import PublicLayout from '@/Layouts/PublicLayout';
 import PageHeader from '@/Components/PageHeader';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { 
     Scale, Shield, FileText, CheckCircle2, 
     Info, ExternalLink, HelpCircle, Users,
