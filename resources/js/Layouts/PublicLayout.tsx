@@ -132,14 +132,16 @@ function Navbar({ user, variant = 'classic' }: { user?: any; variant?: 'classic'
                                 </Link>
                             )}
                             {item.children && (
-                                <div className="absolute top-full left-0 mt-2 w-64 bg-white border border-slate-100 shadow-2xl rounded-xl overflow-hidden opacity-0 group-hover/nav:opacity-100 pointer-events-none group-hover/nav:pointer-events-auto transition-all translate-y-2 group-hover/nav:translate-y-0 z-50">
-                                    <div className="p-2 grid grid-cols-1">
-                                        {item.children.map((child) => (
-                                            <Link key={child.label} href={child.href}
-                                                className="flex items-center px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-[#003399] rounded-lg transition-colors font-medium">
-                                                {child.label}
-                                            </Link>
-                                        ))}
+                                <div className="absolute top-full left-0 pt-2 w-64 opacity-0 group-hover/nav:opacity-100 pointer-events-none group-hover/nav:pointer-events-auto transition-all translate-y-2 group-hover/nav:translate-y-0 z-50">
+                                    <div className="bg-white border border-slate-100 shadow-2xl rounded-xl overflow-hidden">
+                                        <div className="p-2 grid grid-cols-1">
+                                            {item.children.map((child) => (
+                                                <Link key={child.label} href={child.href}
+                                                    className="flex items-center px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-[#003399] rounded-lg transition-colors font-medium">
+                                                    {child.label}
+                                                </Link>
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
                             )}
