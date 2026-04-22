@@ -10,7 +10,9 @@ class LegalDocumentChartWidget extends ChartWidget
 {
     protected ?string $heading = 'Statistik Produk Hukum per Tahun';
 
-    protected static ?int $sort = 3;
+    protected static ?int $sort = 2;
+
+    protected int | string | array $columnSpan = 1;
 
     protected function getData(): array
     {
