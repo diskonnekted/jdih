@@ -54,7 +54,7 @@ const NAV_ITEMS = [
         children: [
             { 
                 label: 'Propem', 
-                href: '/propem',
+                href: '#',
                 children: [
                     { label: 'Propemperda', href: '/propemperda' },
                     { label: 'Propemperbup', href: '/propemperbup' },
@@ -62,11 +62,11 @@ const NAV_ITEMS = [
             },
             { label: 'Naskah Akademik', href: '/naskah-akademik' },
             { label: 'Raperda', href: '/raperda' },
-            { label: 'Rapergub', href: '/rapergub' },
+            { label: 'Raperbup', href: '/raperbup' },
             { label: 'Hasil Harmonisasi', href: '/hasil-harmonisasi' },
             { 
                 label: 'Hasil Fasilitasi', 
-                href: '/hasil-fasilitasi',
+                href: '#',
                 children: [
                     { label: 'Fasilitasi Provinsi', href: '/fasilitasi-provinsi' },
                     { label: 'Fasilitasi Pusat', href: '/fasilitasi-pusat' },

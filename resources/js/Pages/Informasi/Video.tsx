@@ -5,12 +5,12 @@ import PageHeader from '@/Components/PageHeader';
 import { Play, ExternalLink } from 'lucide-react';
 
 const VIDEOS = [
-    { id: 1, judul: 'Perbup Nomor 54 Tahun 2025 Tentang Perubahan Kedudukan dan Susunan OPD', platform: 'TikTok', durasi: '1:30', url: 'https://vt.tiktok.com/ZSas6yLNF/', tahun: 2025 },
-    { id: 2, judul: 'Tutorial Pengumpulan Produk Hukum Daerah ke JDIH Nasional', platform: 'TikTok', durasi: '2:45', url: 'https://www.tiktok.com/@jdih_banjarnegara', tahun: 2025 },
-    { id: 3, judul: 'Penyelenggaraan Koperasi Merah Putih di Kabupaten Banjarnegara', platform: 'TikTok', durasi: '3:10', url: 'https://www.tiktok.com/@jdih_banjarnegara', tahun: 2025 },
-    { id: 4, judul: 'Sosialisasi Peraturan Daerah Nomor 8 Tahun 2025', platform: 'TikTok', durasi: '4:20', url: 'https://www.tiktok.com/@jdih_banjarnegara', tahun: 2025 },
-    { id: 5, judul: 'Penandatanganan MOU Dengan Kejaksaan Negeri Banjarnegara', platform: 'Instagram', durasi: '1:15', url: 'https://www.instagram.com/jdih_banjarnegara/', tahun: 2025 },
-    { id: 6, judul: 'Bimtek Legal Drafting KPU Banjarnegara 2025', platform: 'TikTok', durasi: '5:30', url: 'https://www.tiktok.com/@jdih_banjarnegara', tahun: 2024 },
+    { id: 1, judul: 'Perbup Nomor 54 Tahun 2025 Tentang Perubahan Kedudukan dan Susunan OPD', platform: 'TikTok', durasi: '1:30', url: 'https://vt.tiktok.com/ZSas6yLNF/', tahun: 2025, image: '/images/covers/cover_perbup_54_2025.png' },
+    { id: 2, judul: 'Tutorial Pengumpulan Produk Hukum Daerah ke JDIH Nasional', platform: 'TikTok', durasi: '2:45', url: 'https://www.tiktok.com/@jdih_banjarnegara', tahun: 2025, image: '/images/covers/cover_tutorial.png' },
+    { id: 3, judul: 'Penyelenggaraan Koperasi Merah Putih di Kabupaten Banjarnegara', platform: 'TikTok', durasi: '3:10', url: 'https://www.tiktok.com/@jdih_banjarnegara', tahun: 2025, image: '/images/covers/cover_koperasi.png' },
+    { id: 4, judul: 'Sosialisasi Peraturan Daerah Nomor 8 Tahun 2025', platform: 'TikTok', durasi: '4:20', url: 'https://www.tiktok.com/@jdih_banjarnegara', tahun: 2025, image: '/images/covers/cover_perbup_54_2025.png' },
+    { id: 5, judul: 'Penandatanganan MOU Dengan Kejaksaan Negeri Banjarnegara', platform: 'Instagram', durasi: '1:15', url: 'https://www.instagram.com/jdih_banjarnegara/', tahun: 2025, image: '/images/covers/cover_tutorial.png' },
+    { id: 6, judul: 'Bimtek Legal Drafting KPU Banjarnegara 2025', platform: 'TikTok', durasi: '5:30', url: 'https://www.tiktok.com/@jdih_banjarnegara', tahun: 2024, image: '/images/covers/cover_koperasi.png' },
 ];
 
 export default function Video() {
@@ -41,10 +41,15 @@ export default function Video() {
                             <a key={v.id} href={v.url} target="_blank" rel="noreferrer"
                                 className="group bg-white border border-slate-200 rounded-lg overflow-hidden hover:border-[#0d9488] hover:shadow-md transition-all">
                                 {/* Thumbnail */}
-                                <div className="h-44 bg-[#1e293b] flex items-center justify-center relative">
-                                    <div className="absolute inset-0 bg-[#0d2d29]/60" />
+                                <div className="h-44 bg-[#1e293b] flex items-center justify-center relative overflow-hidden">
+                                    <img 
+                                        src={v.image} 
+                                        alt={v.judul} 
+                                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-60" 
+                                    />
+                                    <div className="absolute inset-0 bg-[#0d2d29]/40" />
                                     <div className="relative z-10 h-14 w-14 bg-[#0d9488] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
-                                        <Play className="h-6 w-6 text-white ml-1" />
+                                        <Play className="h-6 w-6 text-white ml-1 fill-white" />
                                     </div>
                                     <div className="absolute top-3 right-3 z-10">
                                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded text-white ${v.platform === 'TikTok' ? 'bg-black' : 'bg-pink-600'}`}>
@@ -64,6 +69,7 @@ export default function Video() {
                             </a>
                         ))}
                     </div>
+
 
                     <div className="mt-8 text-center">
                         <p className="text-slate-500 text-sm mb-3">Lihat semua video di:</p>
