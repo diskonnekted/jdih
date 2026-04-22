@@ -59,9 +59,9 @@ const RELATED_LINKS = [
 ];
 
 const VIDEOS = [
-    { id: 1, title: 'Perbup Nomor 54 Tahun 2025', href: 'https://vt.tiktok.com/ZSas6yLNF/', duration: '1:30' },
-    { id: 2, title: 'Tutorial Pengumpulan Produk Hukum Daerah', href: 'https://www.tiktok.com/@jdih_banjarnegara', duration: '2:45' },
-    { id: 3, title: 'Penyelenggaraan Koperasi Merah Putih', href: 'https://www.tiktok.com/@jdih_banjarnegara', duration: '3:10' },
+    { id: 1, title: 'Perbup Nomor 54 Tahun 2025', href: 'https://vt.tiktok.com/ZSas6yLNF/', duration: '1:30', image: '/images/covers/cover_perbup_54_2025.png' },
+    { id: 2, title: 'Tutorial Pengumpulan Produk Hukum Daerah', href: 'https://www.tiktok.com/@jdih_banjarnegara', duration: '2:45', image: '/images/covers/cover_tutorial.png' },
+    { id: 3, title: 'Penyelenggaraan Koperasi Merah Putih', href: 'https://www.tiktok.com/@jdih_banjarnegara', duration: '3:10', image: '/images/covers/cover_koperasi.png' },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -386,14 +386,16 @@ function VideoSection({ variant = 'classic' }: { variant?: 'classic' | 'modern' 
                     {VIDEOS.map((v) => (
                         <a key={v.id} href={v.href} target="_blank" rel="noreferrer"
                             className={`group border rounded-lg overflow-hidden transition-all ${isModern ? 'bg-[#002673] border-[#003399] hover:border-blue-400' : 'bg-slate-800 border-slate-700 hover:border-[#0d9488]'}`}>
-                            <div className={`h-40 flex items-center justify-center ${isModern ? 'bg-[#001433]' : 'bg-[#0d2d29]'}`}>
-                                <div className={`h-14 w-14 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform`} style={{ backgroundColor: themeColor }}>
+                            <div className={`h-48 relative flex items-center justify-center overflow-hidden`}>
+                                <img src={v.image} alt={v.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-60" />
+                                <div className="absolute inset-0 bg-black/20" />
+                                <div className={`relative z-10 h-14 w-14 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-xl`} style={{ backgroundColor: themeColor }}>
                                     <Play className="h-6 w-6 text-white ml-1" />
                                 </div>
                             </div>
-                            <div className="p-4">
-                                <p className={`text-white text-sm font-semibold leading-snug transition-colors ${isModern ? 'group-hover:text-blue-300' : 'group-hover:text-[#0d9488]'}`}>{v.title}</p>
-                                <span className="text-slate-400 text-xs mt-1 block">Durasi {v.duration}</span>
+                            <div className="p-4 relative bg-inherit">
+                                <p className={`text-white text-sm font-bold leading-snug transition-colors ${isModern ? 'group-hover:text-blue-300' : 'group-hover:text-[#0d9488]'}`}>{v.title}</p>
+                                <span className="text-slate-400 text-[10px] uppercase font-black tracking-widest mt-2 block">Durasi {v.duration}</span>
                             </div>
                         </a>
                     ))}
