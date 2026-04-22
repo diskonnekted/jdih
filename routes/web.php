@@ -232,6 +232,16 @@ Route::get('/unduh',         fn() => Inertia::render('Informasi/Download'));
 // ---------------------------------------------------------------
 // DASHBOARD & PROFILE (AUTH)
 // ---------------------------------------------------------------
+/* ------------------------------------------------------------------ */
+/* LAYANAN HUKUM                                                       */
+/* ------------------------------------------------------------------ */
+Route::get('/bantuan-hukum', fn() => Inertia::render('Layanan/BantuanHukum'))->name('layanan.bankum');
+Route::get('/konsultasi-hukum', fn() => Inertia::render('Layanan/KonsultasiHukum'))->name('layanan.konsultasi');
+Route::get('/bankum', fn() => redirect('/bantuan-hukum')); // Alias to prevent 404
+
+// Re-verify existing route
+// Route::get('/kerja-sama-daerah', fn() => Inertia::render('Hukum/KerjaSama'));
+
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
