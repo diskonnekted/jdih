@@ -35,6 +35,7 @@ const NAV_ITEMS = [
             { label: 'Propemperda', href: '/propemperda' },
             { label: 'Katalog', href: '/katalog' },
             { label: 'Peraturan Pusat ↗', href: 'https://jdihn.go.id/' },
+            { label: 'Produk Hukum Desa', href: '/produk-hukum-desa' },
         ]
     },
     {

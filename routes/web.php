@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProdukHukumDesaController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -97,6 +98,12 @@ foreach ($kategoriRoutes as $slug => [$title, $code]) {
 
 Route::get('/putusan',           fn() => Inertia::render('Hukum/Putusan'));
 Route::get('/kerja-sama-daerah', fn() => Inertia::render('Hukum/KerjaSama'));
+
+// ---------------------------------------------------------------
+// PRODUK HUKUM DESA (EXPERIMENT)
+// ---------------------------------------------------------------
+Route::get('/produk-hukum-desa',       [ProdukHukumDesaController::class, 'index']);
+Route::get('/api/produk-hukum-desa',   [ProdukHukumDesaController::class, 'proxy']);
 
 // ---------------------------------------------------------------
 // INFORMASI
