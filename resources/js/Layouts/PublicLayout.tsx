@@ -10,7 +10,7 @@ import {
 /* NAVIGATION DATA                                                      */
 /* ------------------------------------------------------------------ */
 const NAV_ITEMS = [
-    {
+/*    {
         label: 'Profil Kami',
         children: [
             { label: 'Visi Misi', href: '/visi-misi' },
@@ -21,7 +21,7 @@ const NAV_ITEMS = [
             { label: 'Kedudukan dan Alamat', href: '/kedudukan-dan-alamat' },
             { label: 'SOP', href: '/sop' },
         ]
-    },
+    }, */
     {
         label: 'Peraturan Per-UU',
         children: [
@@ -105,10 +105,6 @@ function Navbar({ user, variant = 'classic' }: { user?: any; variant?: 'classic'
                 {/* Logo & Brand */}
                 <Link href="/" className="flex items-center gap-3 shrink-0 group">
                     <img src="/images/logo-jdih.png" alt="Logo JDIH Banjarnegara" className="h-12 w-auto object-contain group-hover:scale-105 transition-transform" />
-                    <div className="hidden sm:block">
-                        <h2 className={`font-bold text-base leading-tight ${isModern ? 'text-[#003399]' : 'text-white'}`}>JDIH Banjarnegara</h2>
-                        <p className={`text-[9px] uppercase tracking-widest font-semibold opacity-60 ${isModern ? 'text-[#003399]' : 'text-slate-400'}`}>Jaringan Dokumentasi Hukum</p>
-                    </div>
                 </Link>
 
                 {/* Desktop Menu */}
