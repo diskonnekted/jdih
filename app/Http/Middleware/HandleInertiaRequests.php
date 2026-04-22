@@ -29,11 +29,15 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $userAgent = $request->header('User-Agent', '');
+        $isMobile = preg_match('/Mobile|Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i', $userAgent);
+
         return [
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
             ],
+            'isMobile' => (bool) $isMobile,
         ];
     }
 }

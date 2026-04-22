@@ -574,10 +574,12 @@ function StatistikSection({ variant = 'classic' }: { variant?: 'classic' | 'mode
     );
 }
 
+import MobileHome from './Mobile/Home';
+
 /* ------------------------------------------------------------------ */
 /* PAGE                                                                */
 /* ------------------------------------------------------------------ */
-export default function Welcome({ auth, news = [], banner = null }: PageProps & { news?: any[], banner?: any }) {
+export default function Welcome({ auth, news = [], banner = null, isMobile = false }: PageProps & { news?: any[], banner?: any, isMobile?: boolean }) {
     const [activeModel, setActiveModel] = useState<'classic' | 'modern'>('classic');
 
     const handleSearch = (values: any) => {
@@ -610,6 +612,25 @@ export default function Welcome({ auth, news = [], banner = null }: PageProps & 
         if (values.status)      params.set('status', values.status);
         window.location.href = base + (params.toString() ? '?' + params.toString() : '');
     };
+
+    // If mobile, render the dedicated mobile experience
+    if (isMobile) {
+        return (
+            <MobileHome 
+                latestNews={news.map(n => ({
+                    id: n.slug,
+                    title: n.title,
+                    thumbnail: n.image,
+                    date: fmtDate(n.date)
+                }))}
+                stats={{
+                    total: 9645,
+                    perda: 1240,
+                    perbup: 2850
+                }}
+            />
+        );
+    }
 
     return (
         <PublicLayout user={auth?.user} variant={activeModel}>
