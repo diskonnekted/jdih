@@ -9,6 +9,7 @@ import { motion } from 'framer-motion';
 
 interface Props {
     latestNews: any[];
+    infographics: any[];
     stats: {
         total: number;
         perda: number;
@@ -16,7 +17,7 @@ interface Props {
     };
 }
 
-export default function MobileHome({ latestNews = [], stats }: Props) {
+export default function MobileHome({ latestNews = [], infographics = [], stats }: Props) {
     const menus = [
         { 
             label: 'Cari Dokumen', 
@@ -75,6 +76,25 @@ export default function MobileHome({ latestNews = [], stats }: Props) {
                     </div>
                 </div>
             </div>
+
+            {/* Infografis Section */}
+            {infographics.length > 0 && (
+                <div className="pt-10">
+                    <div className="px-6 flex items-center justify-between mb-6">
+                        <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Infografis Hukum</h3>
+                    </div>
+                    <div className="flex gap-4 overflow-x-auto px-6 pb-4 no-scrollbar">
+                        {infographics.map((item, i) => (
+                            <div key={i} className="min-w-[200px] aspect-square bg-white border border-slate-100 rounded-[2rem] overflow-hidden shadow-sm flex-shrink-0">
+                                <img src={item.image} alt={item.title} className="h-full w-full object-cover" />
+                                <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/60 to-transparent">
+                                    <p className="text-white text-[10px] font-black uppercase tracking-tight leading-tight">{item.title}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             {/* Quick Menu Grid */}
             <div className="px-6 pt-10">

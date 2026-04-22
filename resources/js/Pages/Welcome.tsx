@@ -577,9 +577,49 @@ function StatistikSection({ variant = 'classic' }: { variant?: 'classic' | 'mode
 import MobileHome from './Mobile/Home';
 
 /* ------------------------------------------------------------------ */
+/* INFOGRAFIS                                                          */
+/* ------------------------------------------------------------------ */
+function InfografisSection({ items, variant = 'classic' }: { items: any[], variant?: 'classic' | 'modern' }) {
+    const themeColor = getThemeColor(variant);
+    
+    if (!items.length) return null;
+
+    return (
+        <section className="py-16 bg-white">
+            <div className="max-w-7xl mx-auto px-6">
+                <div className="flex items-end justify-between mb-10">
+                    <div>
+                        <p className="text-sm font-bold uppercase tracking-widest mb-1" style={{ color: themeColor }}>Visual</p>
+                        <h2 className="text-3xl font-bold text-[#1e293b]">Infografis Hukum</h2>
+                    </div>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {items.map((item) => (
+                        <div key={item.id} 
+                            className={`group relative aspect-square bg-slate-100 rounded-2xl overflow-hidden border border-slate-200 transition-all ${variant === 'modern' ? 'hover:border-[#003399] hover:shadow-xl' : 'hover:border-[#0d9488] hover:shadow-md'}`}>
+                            <img
+                                src={item.image}
+                                alt={item.title}
+                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                loading="lazy"
+                            />
+                            <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent translate-y-2 group-hover:translate-y-0 transition-transform">
+                                <p className="text-white text-[10px] font-black uppercase tracking-widest leading-tight">
+                                    {item.title}
+                                </p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+}
+
+/* ------------------------------------------------------------------ */
 /* PAGE                                                                */
 /* ------------------------------------------------------------------ */
-export default function Welcome({ auth, news = [], banner = null, isMobile = false }: PageProps & { news?: any[], banner?: any, isMobile?: boolean }) {
+export default function Welcome({ auth, news = [], banner = null, isMobile = false, infographics = [] }: PageProps & { news?: any[], banner?: any, isMobile?: boolean, infographics?: any[] }) {
     const [activeModel, setActiveModel] = useState<'classic' | 'modern'>('classic');
 
     const handleSearch = (values: any) => {
@@ -623,6 +663,7 @@ export default function Welcome({ auth, news = [], banner = null, isMobile = fal
                     thumbnail: n.image,
                     date: fmtDate(n.date)
                 }))}
+                infographics={infographics}
                 stats={{
                     total: 9645,
                     perda: 1240,
@@ -646,6 +687,7 @@ export default function Welcome({ auth, news = [], banner = null, isMobile = fal
             <LatestDocuments variant={activeModel} />
             <StatistikSection variant={activeModel} />
             <NewsSection news={news} variant={activeModel} />
+            <InfografisSection items={infographics} variant={activeModel} />
             <VideoSection variant={activeModel} />
             <RelatedLinks variant={activeModel} />
             <CTA variant={activeModel} />

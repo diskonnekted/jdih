@@ -30,12 +30,22 @@ Route::get('/', function () {
 
     $activeBanner = \App\Models\Banner::where('is_active', true)->latest()->first();
 
+    $infographics = \App\Models\Infographic::where('is_active', true)
+        ->orderBy('sort_order', 'asc')
+        ->get()
+        ->map(fn($item) => [
+            'id' => $item->id,
+            'title' => $item->title,
+            'image' => '/storage/' . $item->image_path,
+        ]);
+
     return Inertia::render('Welcome', [
         'canLogin'       => Route::has('login'),
         'canRegister'    => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion'     => PHP_VERSION,
         'news'           => $latestNews,
+        'infographics'   => $infographics,
         'banner'         => $activeBanner ? [
             'id' => $activeBanner->id,
             'title' => $activeBanner->title,
