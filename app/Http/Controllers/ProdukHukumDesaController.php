@@ -61,7 +61,53 @@ class ProdukHukumDesaController extends Controller
             $response = Http::withOptions(['verify' => false]) // Some village certs might be invalid
                 ->get($villageUrl . $endpoint, $query);
 
-            return response()->json($response->json(), $response->status());
+            $data = $response->json();
+
+            // Normalize endpoint for comparison (remove leading/trailing slashes)
+            $normalizedEndpoint = trim($endpoint, '/');
+            
+            // Apply filtering and prioritization for document list endpoint
+            if ($normalizedEndpoint === 'internal_api/produk-hukum' && isset($data['data'])) {
+                $filteredData = collect($data['data'])->filter(function ($item) {
+                    $title = strtoupper($item['attributes']['nama'] ?? '');
+                    $category = strtoupper($item['attributes']['kategori'] ?? '');
+
+                    // 1. Privacy Filter: Hide documents with "SK" in title or category
+                    // We check for "SK " or "SK-" or " SK" or exactly "SK"
+                    $isSK = (strpos($title, 'SK ') !== false) || 
+                            (strpos($title, 'SK-') !== false) || 
+                            (strpos($title, ' SK') !== false) || 
+                            ($title === 'SK') ||
+                            (strpos($category, 'SK') !== false);
+                    
+                    return !$isSK;
+                })->values();
+
+                // 2. Prioritization: Move "Perkades" to the top
+                $sortedData = $filteredData->sort(function ($a, $b) {
+                    $titleA = strtolower($a['attributes']['nama'] ?? '');
+                    $titleB = strtolower($b['attributes']['nama'] ?? '');
+                    
+                    $keywords = ['perkades', 'peraturan kepala desa', 'peraturan kades'];
+                    $hasKeywordA = false;
+                    $hasKeywordB = false;
+
+                    foreach ($keywords as $kw) {
+                        if (strpos($titleA, $kw) !== false) $hasKeywordA = true;
+                        if (strpos($titleB, $kw) !== false) $hasKeywordB = true;
+                    }
+
+                    if ($hasKeywordA && !$hasKeywordB) return -1;
+                    if (!$hasKeywordA && $hasKeywordB) return 1;
+                    
+                    // Maintain original order for others
+                    return 0;
+                })->values()->all();
+
+                $data['data'] = $sortedData;
+            }
+
+            return response()->json($data, $response->status());
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
