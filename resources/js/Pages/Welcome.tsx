@@ -386,11 +386,15 @@ function VideoSection({ variant = 'classic' }: { variant?: 'classic' | 'modern' 
                     {VIDEOS.map((v) => (
                         <a key={v.id} href={v.href} target="_blank" rel="noreferrer"
                             className={`group border rounded-lg overflow-hidden transition-all ${isModern ? 'bg-[#002673] border-[#003399] hover:border-blue-400' : 'bg-slate-800 border-slate-700 hover:border-[#0d9488]'}`}>
-                            <div className={`h-48 relative flex items-center justify-center overflow-hidden`}>
-                                <img src={v.image} alt={v.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-60" />
-                                <div className="absolute inset-0 bg-black/20" />
-                                <div className={`relative z-10 h-14 w-14 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-xl`} style={{ backgroundColor: themeColor }}>
-                                    <Play className="h-6 w-6 text-white ml-1" />
+                            <div className={`h-48 relative flex items-center justify-center overflow-hidden bg-slate-900`}>
+                                <img 
+                                    src={v.image} 
+                                    alt={v.title} 
+                                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                                <div className={`relative z-10 h-14 w-14 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-2xl backdrop-blur-sm bg-white/20 border border-white/30`} style={{ color: themeColor }}>
+                                    <Play className="h-6 w-6 text-white ml-1 fill-white" />
                                 </div>
                             </div>
                             <div className="p-4 relative bg-inherit">
