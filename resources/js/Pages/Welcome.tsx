@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Head, Link } from '@inertiajs/react';
 import {
     Search, Scale, FileText, Gavel, Megaphone, ClipboardList,
@@ -9,6 +9,7 @@ import {
 import { PageProps } from '@/types';
 import PublicLayout from '@/Layouts/PublicLayout';
 import SearchForm, { SearchValues } from '@/Components/SearchForm';
+import HeroModern from '@/Components/HeroModern';
 import {
     BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
     LineChart, Line, CartesianGrid, Cell,
@@ -529,10 +530,49 @@ function StatistikSection() {
 /* PAGE                                                                */
 /* ------------------------------------------------------------------ */
 export default function Welcome({ auth, news = [], banner = null }: PageProps & { news?: any[], banner?: any }) {
+    const [activeModel, setActiveModel] = useState<'classic' | 'modern'>('classic');
+
+    const handleSearch = (values: any) => {
+        // Shared search logic
+        const JENIS_SLUG: Record<string, string> = {
+            'Peraturan Daerah':            '/peraturan-daerah',
+            'Peraturan Bupati':            '/peraturan-bupati',
+            'Keputusan Bupati':            '/keputusan-bupati',
+            'Instruksi Bupati':            '/instruksi-bupati',
+            'Keputusan Sekretaris Daerah': '/keputusan-sekretaris-daerah',
+            'Surat Edaran':                '/surat-edaran',
+            'Naskah Akademik':             '/naskah-akademik',
+            'Raperda':                     '/raperda',
+            'Analisis & Evaluasi Hukum':   '/analisis-evaluasi-hukum',
+            'RANHAM':                      '/ranham',
+            'Risalah Rapat':               '/risalah-rapat',
+            'Artikel Bidang Hukum':        '/artikel-bidang-hukum',
+            'Propemperda':                 '/propemperda',
+            'Katalog':                     '/katalog',
+            'Putusan':                     '/putusan',
+            'Kerja Sama Daerah':           '/kerja-sama-daerah',
+        };
+        const query = values.query || values.namaDokumen || '';
+        const type = values.type || values.jenisDokumen || '';
+        const base = JENIS_SLUG[type] ?? '/peraturan-daerah';
+        const params = new URLSearchParams();
+        if (query) params.set('q', query);
+        if (values.nomor)       params.set('nomor', values.nomor);
+        if (values.tahun || values.year) params.set('tahun', values.tahun || values.year);
+        if (values.status)      params.set('status', values.status);
+        window.location.href = base + (params.toString() ? '?' + params.toString() : '');
+    };
+
     return (
-        <PublicLayout user={auth?.user}>
+        <PublicLayout user={auth?.user} variant={activeModel}>
             <Head title="JDIH Kabupaten Banjarnegara – Jaringan Dokumentasi & Informasi Hukum" />
-            <Hero banner={banner} />
+            
+            {activeModel === 'classic' ? (
+                <Hero banner={banner} />
+            ) : (
+                <HeroModern onSearch={handleSearch} />
+            )}
+
             <CategoryGrid />
             <LatestDocuments />
             <StatistikSection />
@@ -540,6 +580,32 @@ export default function Welcome({ auth, news = [], banner = null }: PageProps & 
             <VideoSection />
             <RelatedLinks />
             <CTA />
+
+            {/* Layout Switcher Toggle (Floating) */}
+            <div className="fixed bottom-8 right-8 z-[100]">
+                <div className="bg-white/80 backdrop-blur-xl p-1.5 rounded-2xl shadow-2xl border border-slate-200 flex gap-1">
+                    <button 
+                        onClick={() => setActiveModel('classic')}
+                        className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                            activeModel === 'classic' 
+                            ? 'bg-[#1e293b] text-white shadow-xl' 
+                            : 'text-slate-500 hover:bg-slate-100'
+                        }`}
+                    >
+                        Classic
+                    </button>
+                    <button 
+                        onClick={() => setActiveModel('modern')}
+                        className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                            activeModel === 'modern' 
+                            ? 'bg-[#003399] text-white shadow-xl' 
+                            : 'text-slate-500 hover:bg-slate-100'
+                        }`}
+                    >
+                        Modern
+                    </button>
+                </div>
+            </div>
         </PublicLayout>
     );
 }
