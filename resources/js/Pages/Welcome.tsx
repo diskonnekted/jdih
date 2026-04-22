@@ -215,7 +215,7 @@ function Hero({ banner }: { banner?: any }) {
 /* ------------------------------------------------------------------ */
 /* CATEGORY GRID                                                       */
 /* ------------------------------------------------------------------ */
-function CategoryGrid({ variant = 'classic' }: { variant?: 'classic' | 'modern' }) {
+function CategoryGrid({ variant = 'classic', counts = {} }: { variant?: 'classic' | 'modern', counts?: Record<string, number> }) {
     const themeColor = getThemeColor(variant);
     
     return (
@@ -236,6 +236,7 @@ function CategoryGrid({ variant = 'classic' }: { variant?: 'classic' | 'modern' 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                     {CATEGORIES.map((cat) => {
                         const iconBg = (variant === 'modern' && cat.color === '#0d9488') ? '#003399' : cat.color;
+                        const count = counts[cat.title] || 0;
                         return (
                             <Link key={cat.code} href={cat.href}
                                 className={`group flex items-center gap-4 p-5 bg-white border border-slate-200 rounded-lg transition-all ${variant === 'modern' ? 'hover:border-[#003399] hover:shadow-xl hover:shadow-blue-900/5' : 'hover:border-[#0d9488] hover:shadow-md'}`}>
@@ -244,7 +245,7 @@ function CategoryGrid({ variant = 'classic' }: { variant?: 'classic' | 'modern' 
                                 </div>
                                 <div className="min-w-0">
                                     <div className={`font-bold text-[#1e293b] text-sm transition-colors truncate ${variant === 'modern' ? 'group-hover:text-[#003399]' : 'group-hover:text-[#0d9488]'}`}>{cat.title}</div>
-                                    <div className="text-slate-500 text-xs">{cat.count} Dokumen</div>
+                                    <div className="text-slate-500 text-xs">{count.toLocaleString('id-ID')} Dokumen</div>
                                 </div>
                             </Link>
                         );
@@ -258,8 +259,9 @@ function CategoryGrid({ variant = 'classic' }: { variant?: 'classic' | 'modern' 
 /* ------------------------------------------------------------------ */
 /* LATEST DOCUMENTS                                                    */
 /* ------------------------------------------------------------------ */
-function LatestDocuments({ variant = 'classic' }: { variant?: 'classic' | 'modern' }) {
+function LatestDocuments({ variant = 'classic', documents = [] }: { variant?: 'classic' | 'modern', documents?: any[] }) {
     const themeColor = getThemeColor(variant);
+    const displayDocs = documents.length > 0 ? documents : LATEST_DOCS;
 
     return (
         <section className="py-16 bg-white">
@@ -277,7 +279,7 @@ function LatestDocuments({ variant = 'classic' }: { variant?: 'classic' | 'moder
                     </Link>
                 </div>
                 <div className="space-y-4">
-                    {LATEST_DOCS.map((doc, idx) => (
+                    {displayDocs.map((doc, idx) => (
                         <div key={doc.id}
                             className={`flex flex-col sm:flex-row sm:items-center gap-4 p-5 border border-slate-200 rounded-lg transition-all group ${variant === 'modern' ? 'hover:border-[#003399] hover:bg-blue-50/30' : 'hover:border-[#0d9488] hover:bg-slate-50'}`}>
                             <div className="hidden sm:flex h-10 w-10 rounded bg-slate-100 items-center justify-center text-slate-400 font-bold shrink-0">
@@ -285,16 +287,16 @@ function LatestDocuments({ variant = 'classic' }: { variant?: 'classic' | 'moder
                             </div>
                             <div className="flex-1 min-w-0">
                                 <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                                    <TypeBadge type={doc.type} variant={variant} />
-                                    <span className="text-xs text-slate-400">{fmtDate(doc.date)}</span>
+                                    <TypeBadge type={doc.code || doc.type} variant={variant} />
+                                    <span className="text-xs text-slate-400">{doc.date ? fmtDate(doc.date) : doc.year}</span>
                                     <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">{doc.subject}</span>
                                 </div>
                                 <p className={`font-semibold text-[#1e293b] text-sm transition-colors leading-snug ${variant === 'modern' ? 'group-hover:text-[#003399]' : 'group-hover:text-[#0d9488]'}`}>
-                                    {doc.number} — {doc.title}
+                                    {doc.number ? `${doc.type} Nomor ${doc.number} Tahun ${doc.year}` : doc.title} — {doc.number ? doc.title : ''}
                                 </p>
                             </div>
                             <div className="flex items-center gap-2 shrink-0">
-                                <Link href={doc.href}
+                                <Link href={doc.href || `/${doc.slug}/${doc.id}`}
                                     className={`flex items-center gap-1.5 px-4 py-2 text-white text-xs font-bold rounded transition-colors ${variant === 'modern' ? 'bg-[#003399] hover:bg-blue-800' : 'bg-[#1e293b] hover:bg-slate-700'}`}>
                                     <Eye className="h-3.5 w-3.5" /> Detail
                                 </Link>
@@ -619,8 +621,9 @@ function InfografisSection({ items, variant = 'classic' }: { items: any[], varia
 /* ------------------------------------------------------------------ */
 /* PAGE                                                                */
 /* ------------------------------------------------------------------ */
-export default function Welcome({ auth, news = [], banner = null, isMobile = false, infographics = [] }: PageProps & { news?: any[], banner?: any, isMobile?: boolean, infographics?: any[] }) {
+export default function Welcome({ auth, news = [], banner = null, isMobile = false, infographics = [], latestDocs = [], counts = {} }: PageProps & { news?: any[], banner?: any, isMobile?: boolean, infographics?: any[], latestDocs?: any[], counts?: any }) {
     const [activeModel, setActiveModel] = useState<'classic' | 'modern'>('classic');
+    const totalCount = Object.values(counts).reduce((a, b) => (a as number) + (b as number), 0) as number;
 
     const handleSearch = (values: any) => {
         // Shared search logic
@@ -646,7 +649,7 @@ export default function Welcome({ auth, news = [], banner = null, isMobile = fal
         const type = values.type || values.jenisDokumen || '';
         const base = JENIS_SLUG[type] ?? '/peraturan-daerah';
         const params = new URLSearchParams();
-        if (query) params.set('q', query);
+        if (query) params.set('namaDokumen', query);
         if (values.nomor)       params.set('nomor', values.nomor);
         if (values.tahun || values.year) params.set('tahun', values.tahun || values.year);
         if (values.status)      params.set('status', values.status);
@@ -665,9 +668,9 @@ export default function Welcome({ auth, news = [], banner = null, isMobile = fal
                 }))}
                 infographics={infographics}
                 stats={{
-                    total: 9645,
-                    perda: 1240,
-                    perbup: 2850
+                    total: totalCount,
+                    perda: counts['Peraturan Daerah'] || 0,
+                    perbup: counts['Peraturan Bupati'] || 0
                 }}
             />
         );
@@ -683,8 +686,8 @@ export default function Welcome({ auth, news = [], banner = null, isMobile = fal
                 <HeroModern onSearch={handleSearch} />
             )}
 
-            <CategoryGrid variant={activeModel} />
-            <LatestDocuments variant={activeModel} />
+            <CategoryGrid variant={activeModel} counts={counts} />
+            <LatestDocuments variant={activeModel} documents={latestDocs} />
             <StatistikSection variant={activeModel} />
             <NewsSection news={news} variant={activeModel} />
             <InfografisSection items={infographics} variant={activeModel} />

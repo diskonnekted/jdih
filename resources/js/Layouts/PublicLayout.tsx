@@ -79,7 +79,10 @@ function Navbar({ user, variant = 'classic' }: { user?: any; variant?: 'classic'
     const isModern = variant === 'modern';
 
     return (
-        <nav className={`fixed top-0 w-full z-50 shadow-lg transition-colors duration-300 ${isModern ? 'bg-white border-b border-slate-200' : 'bg-[#1e293b]'}`}>
+        <nav 
+            className={`fixed top-0 w-full z-50 transition-colors duration-300 ${isModern ? 'bg-white border-b border-slate-200 shadow-lg' : 'bg-[#0f172a]'}`}
+            style={!isModern ? { borderBottom: '1px solid #0f172a' } : {}}
+        >
             {/* Top bar */}
             <div className={`${isModern ? 'bg-[#003399]' : 'bg-[#0d9488]'} text-white text-[10px] font-medium py-1.5 px-6 leading-none`}>
                 <div className="max-w-7xl mx-auto flex justify-between items-center">
@@ -346,10 +349,14 @@ export default function PublicLayout({ children, user, variant = 'classic' }: Pu
     const isModern = variant === 'modern';
     
     return (
-        <div className={`min-h-screen flex flex-col transition-colors duration-300 ${isModern ? 'bg-white' : 'bg-white'}`}>
+        <div className={`min-h-screen flex flex-col transition-colors duration-300 bg-white`}>
             <Navbar user={user} variant={variant} />
-            {/* Offset for fixed navbar (top bar approx 28px + main nav approx 64px = 92px) */}
-            <div className="pt-[92px] lg:pt-[100px] flex-1">
+            
+            {/* Gap Filler: Ensures no white line shows through the fixed navbar */}
+            {!isModern && <div className="fixed top-0 w-full h-[95px] bg-[#0f172a] z-40" />}
+
+            {/* Offset for fixed navbar */}
+            <div className="pt-[92px] flex-1 relative z-10">
                 {children}
             </div>
             <Footer />

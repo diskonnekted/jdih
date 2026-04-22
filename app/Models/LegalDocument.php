@@ -12,6 +12,7 @@ class LegalDocument extends Model
         'year',
         'category_id',
         'document_type',
+        'entity',
         'teu',
         'abbreviation',
         'status',
@@ -26,11 +27,27 @@ class LegalDocument extends Model
         'source',
         'subject',
         'govt_field',
+        'legal_field',
+        'legal_form',
+        'page_count',
         'language',
         'location',
         'signer',
+        'author',
+        'publisher_place',
         'judicial_review',
+        'result_judicial_review',
         'initiator',
+        'view_count',
+        'download_count',
+    ];
+
+    protected $casts = [
+        'published_at' => 'datetime',
+        'promulgated_at' => 'datetime',
+        'view_count' => 'integer',
+        'download_count' => 'integer',
+        'page_count' => 'integer',
     ];
 
     /**

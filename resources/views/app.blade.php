@@ -22,15 +22,15 @@
         <!-- Scripts -->
         @routes
         @viteReactRefresh
-        @vite(['resources/js/app.tsx', "resources/js/Pages/{$page['component']}.tsx"])
+        @vite(['resources/js/app.tsx'])
         @inertiaHead
-        <script>
+        {{-- <script>
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
                     navigator.serviceWorker.register('/sw.js');
                 });
             }
-        </script>
+        </script> --}}
     </head>
     <body class="font-sans antialiased">
         @inertia

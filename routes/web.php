@@ -39,6 +39,28 @@ Route::get('/', function () {
             'image' => '/storage/' . $item->image_path,
         ]);
 
+    $latestLegalDocs = \App\Models\LegalDocument::with('category')
+        ->orderBy('published_at', 'desc')
+        ->take(5)
+        ->get()
+        ->map(fn($doc) => [
+            'id' => $doc->id,
+            'type' => $doc->category->name ?? 'PERATURAN',
+            'code' => $doc->category->code ?? 'DOC',
+            'number' => $doc->document_number,
+            'year' => $doc->year,
+            'title' => $doc->title,
+            'date' => $doc->published_at ? $doc->published_at->format('Y-m-d') : null,
+            'subject' => $doc->subject ? (is_array($doc->subject) ? $doc->subject[0] : (json_decode($doc->subject)[0] ?? 'Umum')) : 'Umum',
+            'slug' => Str::slug($doc->category->name ?? 'peraturan'),
+        ]);
+
+    $counts = \App\Models\LegalDocument::select('category_id', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
+        ->groupBy('category_id')
+        ->with('category')
+        ->get()
+        ->mapWithKeys(fn($item) => [$item->category->name ?? 'unknown' => $item->total]);
+
     return Inertia::render('Welcome', [
         'canLogin'       => Route::has('login'),
         'canRegister'    => Route::has('register'),
@@ -46,6 +68,8 @@ Route::get('/', function () {
         'phpVersion'     => PHP_VERSION,
         'news'           => $latestNews,
         'infographics'   => $infographics,
+        'latestDocs'     => $latestLegalDocs,
+        'counts'         => $counts,
         'banner'         => $activeBanner ? [
             'id' => $activeBanner->id,
             'title' => $activeBanner->title,
@@ -67,67 +91,99 @@ Route::get('/kedudukan-dan-alamat', fn() => Inertia::render('Profil/KedudukanAla
 Route::get('/sop',                  fn() => Inertia::render('Profil/Sop'));
 
 // ---------------------------------------------------------------
-// INVENTARISASI HUKUM – LIST PER KATEGORI (dynamic)
+// INVENTARISASI HUKUM – LIST & DETAIL (dynamic)
 // ---------------------------------------------------------------
-$kategoriRoutes = [
-    'peraturan-daerah'            => ['Peraturan Daerah', 'PERDA'],
-    'peraturan-bupati'            => ['Peraturan Bupati', 'PERBUP'],
-    'keputusan-bupati'            => ['Keputusan Bupati', 'KEPBUP'],
-    'instruksi-bupati'            => ['Instruksi Bupati', 'INBUP'],
-    'keputusan-sekretaris-daerah' => ['Keputusan Sekretaris Daerah', 'KEPSDA'],
-    'dokumen-hukum-terjemahan'    => ['Dokumen Hukum Terjemahan', 'DHT'],
-    'dokumen-hukum-langka'        => ['Dokumen Hukum Langka', 'DHL'],
-    'naskah-akademik'             => ['Naskah Akademik', 'NA'],
-    'raperda'                     => ['Raperda', 'RPD'],
-    'analisis-evaluasi-hukum'     => ['Analisis & Evaluasi Hukum', 'AEH'],
-    'ranham'                      => ['RANHAM', 'RNH'],
-    'risalah-rapat'               => ['Risalah Rapat', 'RR'],
-    'artikel-bidang-hukum'        => ['Artikel Bidang Hukum', 'ABH'],
-    'propemperda'                 => ['Propemperda', 'PPD'],
-    'katalog'                     => ['Katalog', 'KTL'],
-    'surat-edaran'                => ['Surat Edaran', 'SE'],
-];
+$categories = \App\Models\Category::all();
 
-foreach ($kategoriRoutes as $slug => [$title, $code]) {
-    Route::get("/{$slug}", function() use ($slug, $title, $code) {
-        return Inertia::render('Hukum/DaftarDokumen', [
-            'kategori' => $slug,
-            'title'    => $title,
-            'code'     => $code,
-        ]);
-    });
-    Route::get("/{$slug}/{id}", function(string $id) use ($slug, $title, $code) {
-        $document = \App\Models\LegalDocument::with(['category', 'relatedDocuments', 'referencedByDocuments'])->find($id);
-        
-        if (!$document) {
-            abort(404);
+foreach ($categories as $cat) {
+    // List per kategori
+    Route::get("/{$cat->slug}", function(\Illuminate\Http\Request $request) use ($cat) {
+        $query = \App\Models\LegalDocument::where('category_id', $cat->id);
+
+        // Apply filters
+        if ($request->has('namaDokumen')) {
+            $query->where('title', 'like', '%' . $request->namaDokumen . '%');
+        }
+        if ($request->has('nomor')) {
+            $query->where('document_number', 'like', '%' . $request->nomor . '%');
+        }
+        if ($request->has('tahun')) {
+            $query->where('year', $request->tahun);
+        }
+        if ($request->has('status')) {
+            $query->where('status', $request->status);
         }
 
+        $documents = $query->latest('published_at')
+            ->paginate(10)
+            ->withQueryString()
+            ->through(fn($doc) => [
+                'id' => $doc->id,
+                'number' => $doc->document_number,
+                'nomor' => $doc->document_number,
+                'title' => $doc->title,
+                'year' => $doc->year,
+                'date' => $doc->published_at ? $doc->published_at->format('Y-m-d') : $doc->created_at->format('Y-m-d'),
+                'status' => $doc->status,
+            ]);
+
+        return Inertia::render('Hukum/DaftarDokumen', [
+            'kategori' => $cat->slug,
+            'title'    => $cat->name,
+            'code'     => $cat->code,
+            'documents' => $documents,
+            'filters'   => $request->only(['namaDokumen', 'nomor', 'tahun', 'status']),
+        ]);
+    });
+    // Detail Dokumen
+    Route::get("/{$cat->slug}/{id}", function($id) use ($cat) {
+        $document = \App\Models\LegalDocument::with(['category', 'relatedDocuments', 'referencedByDocuments'])->findOrFail($id);
+        
         return Inertia::render('Hukum/DetailDokumen', [
-            'kategori' => $slug,
-            'title'    => $title,
-            'code'     => $code,
+            'kategori' => $cat->slug,
+            'title'    => $cat->name,
+            'code'     => $cat->code,
             'document' => [
                 'id' => $document->id,
                 'title' => $document->title,
                 'number' => $document->document_number,
+                'document_number' => $document->document_number,
                 'year' => $document->year,
                 'type' => $document->category->name,
                 'document_type' => $document->document_type,
                 'teu' => $document->teu,
                 'abbreviation' => $document->abbreviation,
-                'code' => $code,
+                'code' => $cat->code,
                 'status' => $document->status,
                 'status_note' => $document->status_note,
                 'related_text' => $document->related_regulations_text,
                 'implementing_regulations' => $document->implementing_regulations,
                 'abstract' => $document->abstract,
+                'file_path' => $document->file_path,
+                'published_at' => $document->published_at,
+                'promulgated_at' => $document->promulgated_at,
+                'place_of_enactment' => $document->place_of_enactment,
+                'publisher_place' => $document->publisher_place,
+                'source' => $document->source,
+                'subject_text' => $document->subject,
+                'govt_field' => $document->govt_field,
+                'legal_field' => $document->legal_field,
+                'language' => $document->language,
+                'location' => $document->location,
+                'signer' => $document->signer,
+                'author' => $document->author,
+                'initiator' => $document->initiator,
+                'view_count' => $document->view_count,
+                'download_count' => $document->download_count,
+                'page_count' => $document->page_count,
+                'entity' => $document->entity,
+                'category' => $document->category,
                 'file' => $document->file_path ? asset('storage/' . $document->file_path) : null,
-                'date_published' => $document->published_at,
-                'date_promulgated' => $document->promulgated_at,
+                'date_published' => $document->published_at?->format('Y-m-d'),
+                'date_promulgated' => $document->promulgated_at?->format('Y-m-d'),
                 'place' => $document->place_of_enactment,
                 'source' => $document->source,
-                'subject' => $document->subject, // This is JSON from TagsInput
+                'subject' => is_string($document->subject) ? json_decode($document->subject) : $document->subject,
                 'govt_field' => $document->govt_field,
                 'language' => $document->language,
                 'location' => $document->location,
@@ -136,21 +192,21 @@ foreach ($kategoriRoutes as $slug => [$title, $code]) {
                 'initiator' => $document->initiator,
                 'related' => $document->relatedDocuments->map(fn($r) => [
                     'id' => $r->id,
-                    'title' => $r->title,
                     'number' => $r->document_number,
                     'year' => $r->year,
-                    'type' => $r->pivot->relation_type,
-                    'slug' => Str::slug($r->category->name ?? 'peraturan'),
+                    'title' => $r->title,
+                    'type' => $r->category?->name ?? 'Dokumen',
+                    'slug' => $r->category?->slug ?? 'katalog',
                 ]),
                 'referenced_by' => $document->referencedByDocuments->map(fn($r) => [
                     'id' => $r->id,
-                    'title' => $r->title,
                     'number' => $r->document_number,
                     'year' => $r->year,
-                    'type' => $r->pivot->relation_type,
-                    'slug' => Str::slug($r->category->name ?? 'peraturan'),
+                    'title' => $r->title,
+                    'type' => $r->category?->name ?? 'Dokumen',
+                    'slug' => $r->category?->slug ?? 'katalog',
                 ]),
-            ]
+            ],
         ]);
     });
 }
@@ -183,7 +239,47 @@ Route::get('/dashboard', function () {
 // ---------------------------------------------------------------
 // STATISTIK
 // ---------------------------------------------------------------
-Route::get('/statistik', fn() => Inertia::render('Statistik'));
+Route::get('/statistik', function () {
+    $categories = \App\Models\Category::withCount('legalDocuments')->get();
+    
+    $dataJenis = $categories->map(fn($cat) => [
+        'name' => $cat->name,
+        'short' => $cat->code,
+        'jumlah' => $cat->legal_documents_count,
+        'href' => "/{$cat->slug}",
+        'color' => '#0d9488'
+    ]);
+
+    $dataTahun = \App\Models\LegalDocument::selectRaw('year, count(*) as jumlah')
+        ->groupBy('year')
+        ->orderBy('year', 'desc')
+        ->limit(11)
+        ->get()
+        ->reverse()
+        ->values();
+
+    $dataPie = $dataJenis->sortByDesc('jumlah')->take(4)->values();
+    $othersCount = $dataJenis->sortByDesc('jumlah')->slice(4)->sum('jumlah');
+    
+    if ($othersCount > 0) {
+        $dataPie->push([
+            'name' => 'Lainnya',
+            'value' => $othersCount,
+            'color' => '#94a3b8'
+        ]);
+    }
+
+    return Inertia::render('Statistik', [
+        'dataJenis' => $dataJenis,
+        'dataTahun' => $dataTahun,
+        'dataPie' => $dataPie->map(fn($item) => [
+            'name' => $item['name'],
+            'value' => $item['jumlah'] ?? $item['value'],
+            'color' => $item['color']
+        ]),
+        'total' => $dataJenis->sum('jumlah'),
+    ]);
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
