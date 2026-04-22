@@ -71,14 +71,26 @@ function fmtDate(d: string) {
     return new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
+const getThemeColor = (variant: 'classic' | 'modern') => variant === 'modern' ? '#003399' : '#0d9488';
+const getThemeHover = (variant: 'classic' | 'modern') => variant === 'modern' ? 'hover:text-blue-800' : 'hover:text-teal-700';
+const getThemeBorderHover = (variant: 'classic' | 'modern') => variant === 'modern' ? 'hover:border-[#003399]' : 'hover:border-[#0d9488]';
+
 const TYPE_COLORS: Record<string, string> = {
     PERDA: '#0d9488', PERBUP: '#1e293b', KEPBUP: '#f59e0b', SE: '#6366f1', INBUP: '#ec4899',
 };
 
-function TypeBadge({ type }: { type: string }) {
+function TypeBadge({ type, variant = 'classic' }: { type: string, variant?: 'classic' | 'modern' }) {
+    const isModern = variant === 'modern';
+    let bgColor = TYPE_COLORS[type] ?? '#0d9488';
+    
+    // Override main types in modern mode
+    if (isModern && (type === 'PERDA' || type === 'KEPBUP' || bgColor === '#0d9488')) {
+        bgColor = '#003399';
+    }
+
     return (
         <span className="text-xs font-bold px-2 py-0.5 rounded text-white tracking-wider"
-            style={{ backgroundColor: TYPE_COLORS[type] ?? '#0d9488' }}>
+            style={{ backgroundColor: bgColor }}>
             {type}
         </span>
     );
@@ -203,32 +215,40 @@ function Hero({ banner }: { banner?: any }) {
 /* ------------------------------------------------------------------ */
 /* CATEGORY GRID                                                       */
 /* ------------------------------------------------------------------ */
-function CategoryGrid() {
+function CategoryGrid({ variant = 'classic' }: { variant?: 'classic' | 'modern' }) {
+    const themeColor = getThemeColor(variant);
+    
     return (
         <section className="py-16 bg-slate-50">
             <div className="max-w-7xl mx-auto px-6">
                 <div className="flex items-end justify-between mb-10">
                     <div>
-                        <p className="text-[#0d9488] text-sm font-bold uppercase tracking-widest mb-1">Database</p>
+                        <p className="text-sm font-bold uppercase tracking-widest mb-1" style={{ color: themeColor }}>Database</p>
                         <h2 className="text-3xl font-bold text-[#1e293b]">Kategori Produk Hukum</h2>
                     </div>
-                    <Link href="/peraturan-daerah" className="hidden md:flex items-center gap-2 text-sm font-semibold text-[#0d9488] hover:text-teal-700 transition-colors">
+                    <Link href="/peraturan-daerah" 
+                        className={`hidden md:flex items-center gap-2 text-sm font-semibold transition-colors`}
+                        style={{ color: themeColor }}
+                    >
                         Lihat Semua <ArrowRight className="h-4 w-4" />
                     </Link>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                    {CATEGORIES.map((cat) => (
-                        <Link key={cat.code} href={cat.href}
-                            className="group flex items-center gap-4 p-5 bg-white border border-slate-200 rounded-lg hover:border-[#0d9488] hover:shadow-md transition-all">
-                            <div className="h-12 w-12 rounded flex items-center justify-center shrink-0" style={{ backgroundColor: cat.color }}>
-                                <cat.icon className="h-6 w-6 text-white" />
-                            </div>
-                            <div className="min-w-0">
-                                <div className="font-bold text-[#1e293b] text-sm group-hover:text-[#0d9488] transition-colors truncate">{cat.title}</div>
-                                <div className="text-slate-500 text-xs">{cat.count} Dokumen</div>
-                            </div>
-                        </Link>
-                    ))}
+                    {CATEGORIES.map((cat) => {
+                        const iconBg = (variant === 'modern' && cat.color === '#0d9488') ? '#003399' : cat.color;
+                        return (
+                            <Link key={cat.code} href={cat.href}
+                                className={`group flex items-center gap-4 p-5 bg-white border border-slate-200 rounded-lg transition-all ${variant === 'modern' ? 'hover:border-[#003399] hover:shadow-xl hover:shadow-blue-900/5' : 'hover:border-[#0d9488] hover:shadow-md'}`}>
+                                <div className="h-12 w-12 rounded flex items-center justify-center shrink-0" style={{ backgroundColor: iconBg }}>
+                                    <cat.icon className="h-6 w-6 text-white" />
+                                </div>
+                                <div className="min-w-0">
+                                    <div className={`font-bold text-[#1e293b] text-sm transition-colors truncate ${variant === 'modern' ? 'group-hover:text-[#003399]' : 'group-hover:text-[#0d9488]'}`}>{cat.title}</div>
+                                    <div className="text-slate-500 text-xs">{cat.count} Dokumen</div>
+                                </div>
+                            </Link>
+                        );
+                    })}
                 </div>
             </div>
         </section>
@@ -238,42 +258,47 @@ function CategoryGrid() {
 /* ------------------------------------------------------------------ */
 /* LATEST DOCUMENTS                                                    */
 /* ------------------------------------------------------------------ */
-function LatestDocuments() {
+function LatestDocuments({ variant = 'classic' }: { variant?: 'classic' | 'modern' }) {
+    const themeColor = getThemeColor(variant);
+
     return (
         <section className="py-16 bg-white">
             <div className="max-w-7xl mx-auto px-6">
                 <div className="flex items-end justify-between mb-10">
                     <div>
-                        <p className="text-[#0d9488] text-sm font-bold uppercase tracking-widest mb-1">Terkini</p>
+                        <p className="text-sm font-bold uppercase tracking-widest mb-1" style={{ color: themeColor }}>Terkini</p>
                         <h2 className="text-3xl font-bold text-[#1e293b]">Produk Hukum Terbaru</h2>
                     </div>
-                    <Link href="/peraturan-daerah" className="hidden md:flex items-center gap-2 text-sm font-semibold text-[#0d9488] hover:text-teal-700 transition-colors">
+                    <Link href="/peraturan-daerah" 
+                        className={`hidden md:flex items-center gap-2 text-sm font-semibold transition-colors`}
+                        style={{ color: themeColor }}
+                    >
                         Lihat Semua <ArrowRight className="h-4 w-4" />
                     </Link>
                 </div>
                 <div className="space-y-4">
                     {LATEST_DOCS.map((doc, idx) => (
                         <div key={doc.id}
-                            className="flex flex-col sm:flex-row sm:items-center gap-4 p-5 border border-slate-200 rounded-lg hover:border-[#0d9488] hover:bg-slate-50 transition-all group">
+                            className={`flex flex-col sm:flex-row sm:items-center gap-4 p-5 border border-slate-200 rounded-lg transition-all group ${variant === 'modern' ? 'hover:border-[#003399] hover:bg-blue-50/30' : 'hover:border-[#0d9488] hover:bg-slate-50'}`}>
                             <div className="hidden sm:flex h-10 w-10 rounded bg-slate-100 items-center justify-center text-slate-400 font-bold shrink-0">
                                 {String(idx + 1).padStart(2, '0')}
                             </div>
                             <div className="flex-1 min-w-0">
                                 <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                                    <TypeBadge type={doc.type} />
+                                    <TypeBadge type={doc.type} variant={variant} />
                                     <span className="text-xs text-slate-400">{fmtDate(doc.date)}</span>
                                     <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">{doc.subject}</span>
                                 </div>
-                                <p className="font-semibold text-[#1e293b] text-sm group-hover:text-[#0d9488] transition-colors leading-snug">
+                                <p className={`font-semibold text-[#1e293b] text-sm transition-colors leading-snug ${variant === 'modern' ? 'group-hover:text-[#003399]' : 'group-hover:text-[#0d9488]'}`}>
                                     {doc.number} — {doc.title}
                                 </p>
                             </div>
                             <div className="flex items-center gap-2 shrink-0">
                                 <Link href={doc.href}
-                                    className="flex items-center gap-1.5 px-4 py-2 bg-[#1e293b] text-white text-xs font-bold rounded hover:bg-slate-700 transition-colors">
+                                    className={`flex items-center gap-1.5 px-4 py-2 text-white text-xs font-bold rounded transition-colors ${variant === 'modern' ? 'bg-[#003399] hover:bg-blue-800' : 'bg-[#1e293b] hover:bg-slate-700'}`}>
                                     <Eye className="h-3.5 w-3.5" /> Detail
                                 </Link>
-                                <button className="flex items-center gap-1.5 px-4 py-2 border border-slate-200 text-slate-600 text-xs font-bold rounded hover:border-[#0d9488] hover:text-[#0d9488] transition-colors">
+                                <button className={`flex items-center gap-1.5 px-4 py-2 border border-slate-200 text-slate-600 text-xs font-bold rounded transition-colors ${variant === 'modern' ? 'hover:border-[#003399] hover:text-[#003399]' : 'hover:border-[#0d9488] hover:text-[#0d9488]'}`}>
                                     <Download className="h-3.5 w-3.5" /> PDF
                                 </button>
                             </div>
@@ -288,23 +313,28 @@ function LatestDocuments() {
 /* ------------------------------------------------------------------ */
 /* NEWS                                                                */
 /* ------------------------------------------------------------------ */
-function NewsSection({ news }: { news: any[] }) {
+function NewsSection({ news, variant = 'classic' }: { news: any[], variant?: 'classic' | 'modern' }) {
+    const themeColor = getThemeColor(variant);
+    
     return (
         <section className="py-16 bg-slate-50">
             <div className="max-w-7xl mx-auto px-6">
                 <div className="flex items-end justify-between mb-10">
                     <div>
-                        <p className="text-[#0d9488] text-sm font-bold uppercase tracking-widest mb-1">Informasi</p>
+                        <p className="text-sm font-bold uppercase tracking-widest mb-1" style={{ color: themeColor }}>Informasi</p>
                         <h2 className="text-3xl font-bold text-[#1e293b]">Berita &amp; Artikel</h2>
                     </div>
-                    <Link href="/berita" className="hidden md:flex items-center gap-2 text-sm font-semibold text-[#0d9488] hover:text-teal-700 transition-colors">
+                    <Link href="/berita" 
+                        className={`hidden md:flex items-center gap-2 text-sm font-semibold transition-colors`}
+                        style={{ color: themeColor }}
+                    >
                         Semua Berita <ArrowRight className="h-4 w-4" />
                     </Link>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
                     {news.map((article) => (
                         <Link key={article.id} href={`/berita/${article.slug}`}
-                            className="group bg-white border border-slate-200 rounded-lg overflow-hidden hover:border-[#0d9488] hover:shadow-md transition-all">
+                            className={`group bg-white border border-slate-200 rounded-lg overflow-hidden transition-all ${variant === 'modern' ? 'hover:border-[#003399] hover:shadow-xl' : 'hover:border-[#0d9488] hover:shadow-md'}`}>
                             <div className="h-44 bg-[#1e293b] overflow-hidden">
                                 <img
                                     src={article.image}
@@ -314,8 +344,8 @@ function NewsSection({ news }: { news: any[] }) {
                                 />
                             </div>
                             <div className="p-4">
-                                <span className="text-[10px] font-bold uppercase tracking-widest text-[#0d9488]">{article.category}</span>
-                                <p className="font-semibold text-[#1e293b] text-sm mt-1 leading-snug group-hover:text-[#0d9488] transition-colors line-clamp-3">
+                                <span className={`text-[10px] font-bold uppercase tracking-widest transition-colors ${variant === 'modern' ? 'text-[#003399]' : 'text-[#0d9488]'}`}>{article.category}</span>
+                                <p className={`font-semibold text-[#1e293b] text-sm mt-1 leading-snug transition-colors line-clamp-3 ${variant === 'modern' ? 'group-hover:text-[#003399]' : 'group-hover:text-[#0d9488]'}`}>
                                     {article.title}
                                 </p>
                                 <p className="text-xs text-slate-400 mt-3">{fmtDate(article.date)}</p>
@@ -331,30 +361,36 @@ function NewsSection({ news }: { news: any[] }) {
 /* ------------------------------------------------------------------ */
 /* VIDEO                                                               */
 /* ------------------------------------------------------------------ */
-function VideoSection() {
+function VideoSection({ variant = 'classic' }: { variant?: 'classic' | 'modern' }) {
+    const themeColor = getThemeColor(variant);
+    const isModern = variant === 'modern';
+
     return (
-        <section className="py-16 bg-[#1e293b]">
+        <section className={`py-16 transition-colors ${isModern ? 'bg-[#001a4d]' : 'bg-[#1e293b]'}`}>
             <div className="max-w-7xl mx-auto px-6">
                 <div className="flex items-end justify-between mb-10">
                     <div>
-                        <p className="text-[#0d9488] text-sm font-bold uppercase tracking-widest mb-1">Media</p>
+                        <p className="text-sm font-bold uppercase tracking-widest mb-1" style={{ color: themeColor }}>Media</p>
                         <h2 className="text-3xl font-bold text-white">Video Terbaru</h2>
                     </div>
-                    <Link href="/video" className="flex items-center gap-2 text-sm font-semibold text-[#0d9488] hover:text-teal-300 transition-colors">
+                    <Link href="/video" 
+                        className={`flex items-center gap-2 text-sm font-semibold transition-colors`}
+                        style={{ color: themeColor }}
+                    >
                         Selengkapnya <ArrowRight className="h-4 w-4" />
                     </Link>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                     {VIDEOS.map((v) => (
                         <a key={v.id} href={v.href} target="_blank" rel="noreferrer"
-                            className="group bg-slate-800 border border-slate-700 rounded-lg overflow-hidden hover:border-[#0d9488] transition-all">
-                            <div className="h-40 bg-[#0d2d29] flex items-center justify-center">
-                                <div className="h-14 w-14 rounded-full bg-[#0d9488] flex items-center justify-center group-hover:scale-110 transition-transform">
+                            className={`group border rounded-lg overflow-hidden transition-all ${isModern ? 'bg-[#002673] border-[#003399] hover:border-blue-400' : 'bg-slate-800 border-slate-700 hover:border-[#0d9488]'}`}>
+                            <div className={`h-40 flex items-center justify-center ${isModern ? 'bg-[#001433]' : 'bg-[#0d2d29]'}`}>
+                                <div className={`h-14 w-14 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform`} style={{ backgroundColor: themeColor }}>
                                     <Play className="h-6 w-6 text-white ml-1" />
                                 </div>
                             </div>
                             <div className="p-4">
-                                <p className="text-white text-sm font-semibold leading-snug group-hover:text-[#0d9488] transition-colors">{v.title}</p>
+                                <p className={`text-white text-sm font-semibold leading-snug transition-colors ${isModern ? 'group-hover:text-blue-300' : 'group-hover:text-[#0d9488]'}`}>{v.title}</p>
                                 <span className="text-slate-400 text-xs mt-1 block">Durasi {v.duration}</span>
                             </div>
                         </a>
@@ -368,23 +404,25 @@ function VideoSection() {
 /* ------------------------------------------------------------------ */
 /* RELATED LINKS                                                       */
 /* ------------------------------------------------------------------ */
-function RelatedLinks() {
+function RelatedLinks({ variant = 'classic' }: { variant?: 'classic' | 'modern' }) {
+    const themeColor = getThemeColor(variant);
+
     return (
         <section className="py-16 bg-white">
             <div className="max-w-7xl mx-auto px-6">
                 <div className="mb-10">
-                    <p className="text-[#0d9488] text-sm font-bold uppercase tracking-widest mb-1">Tautan</p>
+                    <p className="text-sm font-bold uppercase tracking-widest mb-1" style={{ color: themeColor }}>Tautan</p>
                     <h2 className="text-3xl font-bold text-[#1e293b]">Tautan Terkait</h2>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {RELATED_LINKS.map((link) => (
                         <a key={link.label} href={link.href} target="_blank" rel="noreferrer"
-                            className="group flex items-center gap-4 p-4 border border-slate-200 rounded-lg hover:border-[#0d9488] hover:bg-slate-50 transition-all">
+                            className={`group flex items-center gap-4 p-4 border border-slate-200 rounded-lg transition-all ${variant === 'modern' ? 'hover:border-[#003399] hover:bg-blue-50/20' : 'hover:border-[#0d9488] hover:bg-slate-50'}`}>
                             <div className="h-10 w-10 bg-white rounded flex items-center justify-center shrink-0 border border-slate-100 p-1">
                                 <img src={link.image} alt={link.label} className="h-full w-full object-contain" />
                             </div>
-                            <span className="font-semibold text-[#1e293b] text-sm group-hover:text-[#0d9488] transition-colors flex-1">{link.label}</span>
-                            <ExternalLink className="h-4 w-4 text-slate-400 group-hover:text-[#0d9488] shrink-0 transition-colors" />
+                            <span className={`font-semibold text-[#1e293b] text-sm transition-colors flex-1 ${variant === 'modern' ? 'group-hover:text-[#003399]' : 'group-hover:text-[#0d9488]'}`}>{link.label}</span>
+                            <ExternalLink className={`h-4 w-4 text-slate-400 shrink-0 transition-colors ${variant === 'modern' ? 'group-hover:text-[#003399]' : 'group-hover:text-[#0d9488]'}`} />
                         </a>
                     ))}
                 </div>
@@ -396,19 +434,22 @@ function RelatedLinks() {
 /* ------------------------------------------------------------------ */
 /* CTA                                                                 */
 /* ------------------------------------------------------------------ */
-function CTA() {
+function CTA({ variant = 'classic' }: { variant?: 'classic' | 'modern' }) {
+    const isModern = variant === 'modern';
+    const themeColor = getThemeColor(variant);
+    
     return (
-        <section className="py-16 bg-[#0d9488]">
+        <section className={`py-16 transition-colors ${isModern ? 'bg-[#002673]' : 'bg-[#0d9488]'}`}>
             <div className="max-w-4xl mx-auto px-6 text-center">
                 <h2 className="text-3xl font-bold text-white mb-4">Butuh Bantuan Terkait Informasi Hukum?</h2>
-                <p className="text-teal-100 text-lg mb-8 max-w-xl mx-auto">
+                <p className={`text-lg mb-8 max-w-xl mx-auto ${isModern ? 'text-blue-100' : 'text-teal-100'}`}>
                     Tim kami siap membantu memberikan informasi terkini mengenai regulasi di Kabupaten Banjarnegara.
                 </p>
                 <div className="flex flex-col sm:flex-row justify-center gap-4">
-                    <a href="tel:02865912218" className="px-8 py-3.5 bg-white text-[#0d9488] font-bold rounded hover:bg-slate-100 transition-colors flex items-center justify-center gap-2">
+                    <a href="tel:02865912218" className={`px-8 py-3.5 bg-white font-bold rounded hover:bg-slate-100 transition-colors flex items-center justify-center gap-2`} style={{ color: themeColor }}>
                         <Phone className="h-5 w-5" /> Hubungi Kami
                     </a>
-                    <a href="mailto:hukum@banjarnegarakab.go.id" className="px-8 py-3.5 bg-[#1e293b] text-white font-bold rounded hover:bg-slate-900 transition-colors flex items-center justify-center gap-2">
+                    <a href="mailto:hukum@banjarnegarakab.go.id" className={`px-8 py-3.5 bg-[#1e293b] text-white font-bold rounded hover:bg-slate-900 transition-colors flex items-center justify-center gap-2`}>
                         <Mail className="h-5 w-5" /> Kirim Email
                     </a>
                 </div>
@@ -440,33 +481,40 @@ const STAT_TAHUN_MINI = [
     { tahun: '2026', jumlah: 90  },
 ];
 
-function CustomTip({ active, payload, label }: any) {
+function CustomTip({ active, payload, label, variant = 'classic' }: any) {
     if (!active || !payload?.length) return null;
+    const themeColor = getThemeColor(variant);
     return (
         <div className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs shadow">
             <p className="font-bold text-[#1e293b]">{label}</p>
-            <p className="text-[#0d9488] font-semibold">{payload[0].value.toLocaleString('id-ID')} dok</p>
+            <p className="font-semibold" style={{ color: themeColor }}>{payload[0].value.toLocaleString('id-ID')} dok</p>
         </div>
     );
 }
 
-function StatistikSection() {
+function StatistikSection({ variant = 'classic' }: { variant?: 'classic' | 'modern' }) {
+    const themeColor = getThemeColor(variant);
+    const isModern = variant === 'modern';
+
     return (
         <section className="py-16 bg-white">
             <div className="max-w-7xl mx-auto px-6">
                 <div className="flex items-end justify-between mb-10">
                     <div>
-                        <p className="text-[#0d9488] text-sm font-bold uppercase tracking-widest mb-1">Data</p>
+                        <p className="text-sm font-bold uppercase tracking-widest mb-1" style={{ color: themeColor }}>Data</p>
                         <h2 className="text-3xl font-bold text-[#1e293b]">Statistik Dokumen Hukum</h2>
                     </div>
-                    <Link href="/statistik" className="hidden md:flex items-center gap-2 text-sm font-semibold text-[#0d9488] hover:text-teal-700 transition-colors">
+                    <Link href="/statistik" 
+                        className={`hidden md:flex items-center gap-2 text-sm font-semibold transition-colors`}
+                        style={{ color: themeColor }}
+                    >
                         Lihat Lengkap <ArrowRight className="h-4 w-4" />
                     </Link>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Bar chart per jenis */}
-                    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                    <div className={`bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm transition-all ${isModern ? 'hover:shadow-xl hover:shadow-blue-900/5 hover:border-blue-200' : ''}`}>
                         <div className="bg-[#1e293b] px-5 py-4">
                             <p className="text-white font-bold text-sm">Dokumen per Jenis Produk Hukum</p>
                             <p className="text-slate-400 text-xs">Jumlah dokumen dalam database JDIH</p>
@@ -477,10 +525,10 @@ function StatistikSection() {
                                     <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                                     <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#64748b' }} />
                                     <YAxis tick={{ fontSize: 10, fill: '#64748b' }} />
-                                    <Tooltip content={<CustomTip />} />
+                                    <Tooltip content={<CustomTip variant={variant} />} />
                                     <Bar dataKey="jumlah" radius={[3, 3, 0, 0]}>
                                         {STAT_JENIS_MINI.map((_, i) => (
-                                            <Cell key={i} fill={i % 2 === 0 ? '#0d9488' : '#1e293b'} />
+                                            <Cell key={i} fill={i % 2 === 0 ? themeColor : '#1e293b'} />
                                         ))}
                                     </Bar>
                                 </BarChart>
@@ -489,10 +537,10 @@ function StatistikSection() {
                     </div>
 
                     {/* Line chart tren tahun */}
-                    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-                        <div className="bg-[#0d9488] px-5 py-4">
+                    <div className={`bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm transition-all ${isModern ? 'hover:shadow-xl hover:shadow-blue-900/5 hover:border-blue-200' : ''}`}>
+                        <div className={`px-5 py-4 transition-colors ${isModern ? 'bg-[#003399]' : 'bg-[#0d9488]'}`}>
                             <p className="text-white font-bold text-sm">Tren Produk Hukum per Tahun</p>
-                            <p className="text-teal-100 text-xs">Perkembangan 2020–2026</p>
+                            <p className={`text-xs ${isModern ? 'text-blue-100' : 'text-teal-100'}`}>Perkembangan 2020–2026</p>
                         </div>
                         <div className="p-5">
                             <ResponsiveContainer width="100%" height={220}>
@@ -500,13 +548,13 @@ function StatistikSection() {
                                     <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                                     <XAxis dataKey="tahun" tick={{ fontSize: 10, fill: '#64748b' }} />
                                     <YAxis tick={{ fontSize: 10, fill: '#64748b' }} />
-                                    <Tooltip content={<CustomTip />} />
+                                    <Tooltip content={<CustomTip variant={variant} />} />
                                     <Line
                                         type="monotone"
                                         dataKey="jumlah"
-                                        stroke="#0d9488"
+                                        stroke={themeColor}
                                         strokeWidth={2.5}
-                                        dot={{ fill: '#0d9488', r: 4 }}
+                                        dot={{ fill: themeColor, r: 4 }}
                                         activeDot={{ r: 6 }}
                                     />
                                 </LineChart>
@@ -517,7 +565,7 @@ function StatistikSection() {
 
                 <div className="mt-6 text-center">
                     <Link href="/statistik"
-                        className="inline-flex items-center gap-2 px-6 py-3 border-2 border-[#0d9488] text-[#0d9488] font-bold text-sm rounded-lg hover:bg-[#0d9488] hover:text-white transition-all">
+                        className={`inline-flex items-center gap-2 px-6 py-3 border-2 font-bold text-sm rounded-lg transition-all ${isModern ? 'border-[#003399] text-[#003399] hover:bg-[#003399] hover:text-white' : 'border-[#0d9488] text-[#0d9488] hover:bg-[#0d9488] hover:text-white'}`}>
                         Lihat Statistik Lengkap <ArrowRight className="h-4 w-4" />
                     </Link>
                 </div>
@@ -573,13 +621,13 @@ export default function Welcome({ auth, news = [], banner = null }: PageProps & 
                 <HeroModern onSearch={handleSearch} />
             )}
 
-            <CategoryGrid />
-            <LatestDocuments />
-            <StatistikSection />
-            <NewsSection news={news} />
-            <VideoSection />
-            <RelatedLinks />
-            <CTA />
+            <CategoryGrid variant={activeModel} />
+            <LatestDocuments variant={activeModel} />
+            <StatistikSection variant={activeModel} />
+            <NewsSection news={news} variant={activeModel} />
+            <VideoSection variant={activeModel} />
+            <RelatedLinks variant={activeModel} />
+            <CTA variant={activeModel} />
 
             {/* Layout Switcher Toggle (Floating) */}
             <div className="fixed bottom-8 right-8 z-[100]">
