@@ -39,6 +39,17 @@ const NAV_ITEMS = [
         ]
     },
     {
+        label: 'Monografi Hukum',
+        children: [
+            { label: 'Naskah Akademik', href: '/naskah-akademik' },
+            { label: 'Raperda', href: '/raperda' },
+            { label: 'Analisis & Evaluasi Hukum', href: '/analisis-evaluasi-hukum' },
+            { label: 'RANHAM', href: '/ranham' },
+            { label: 'Risalah Rapat', href: '/risalah-rapat' },
+            { label: 'Artikel Bidang Hukum', href: '/artikel-bidang-hukum' },
+        ]
+    },
+    {
         label: 'Dokumen Pembetukan Peraturan',
         children: [
             { 
