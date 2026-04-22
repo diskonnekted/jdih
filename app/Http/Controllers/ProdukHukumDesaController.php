@@ -13,7 +13,25 @@ class ProdukHukumDesaController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Hukum/ProdukHukumDesa');
+        $villages = \App\Models\Village::where('is_active', true)
+            ->orderBy('kecamatan')
+            ->orderBy('name')
+            ->get()
+            ->groupBy('kecamatan')
+            ->map(function ($items, $kec) {
+                return [
+                    'kecamatan' => $kec,
+                    'desa' => $items->map(fn($v) => [
+                        'name' => $v->name,
+                        'url' => $v->url
+                    ])
+                ];
+            })
+            ->values();
+
+        return Inertia::render('Hukum/ProdukHukumDesa', [
+            'villagesMapping' => $villages
+        ]);
     }
 
     /**
@@ -28,15 +46,13 @@ class ProdukHukumDesaController extends Controller
             return response()->json(['error' => 'Village URL is required'], 400);
         }
 
-        // Validate village URL to prevent SSRF
-        $allowedVillages = [
-            'https://sijenggung-banjarnegara.desa.id'
-        ];
+        // Validate village URL against database to prevent SSRF
+        $isValidVillage = \App\Models\Village::where('url', $villageUrl)->where('is_active', true)->exists();
 
-        if (!in_array($villageUrl, $allowedVillages)) {
-            // For experiment, we might allow any .desa.id or .gov.id but let's be strict for now
+        if (!$isValidVillage) {
+            // For extra flexibility during experiment, we check if it is a valid .desa.id
             if (!str_ends_with($villageUrl, '.desa.id')) {
-                return response()->json(['error' => 'Invalid village URL'], 403);
+                return response()->json(['error' => 'URL desa tidak terdaftar atau tidak valid.'], 403);
             }
         }
 
