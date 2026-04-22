@@ -50,7 +50,7 @@ const NAV_ITEMS = [
         ]
     },
     {
-        label: 'Dokumen Pembetukan Peraturan',
+        label: 'Pembentukan Peraturan',
         children: [
             { 
                 label: 'Propem', 
