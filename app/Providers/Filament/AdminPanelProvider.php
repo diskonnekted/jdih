@@ -35,6 +35,7 @@ class AdminPanelProvider extends PanelProvider
                 'warning' => Color::Orange,
                 'danger' => Color::Rose,
             ])
+            ->darkMode(true)
             ->font('Inter')
             ->brandName('JDIH Banjarnegara')
             ->maxContentWidth('full')
