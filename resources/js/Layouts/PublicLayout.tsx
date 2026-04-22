@@ -3,7 +3,7 @@ import { Link } from '@inertiajs/react';
 import {
     ChevronDown, Menu, X, Phone, Mail, MapPin,
     ExternalLink, Building2, Globe, Shield, Landmark, BookOpen, Users,
-    Scale, Search
+    Scale, Search, ChevronRight
 } from 'lucide-react';
 
 /* ------------------------------------------------------------------ */
@@ -39,16 +39,34 @@ const NAV_ITEMS = [
         ]
     },
     {
-        label: 'Monografi Hukum',
+        label: 'Dokumen Pembetukan Peraturan',
         children: [
+            { 
+                label: 'Propem', 
+                href: '/propem',
+                children: [
+                    { label: 'Propemperda', href: '/propemperda' },
+                    { label: 'Propemperbup', href: '/propemperbup' },
+                ]
+            },
             { label: 'Naskah Akademik', href: '/naskah-akademik' },
             { label: 'Raperda', href: '/raperda' },
-            { label: 'Analisis & Evaluasi Hukum', href: '/analisis-evaluasi-hukum' },
-            { label: 'RANHAM', href: '/ranham' },
+            { label: 'Rapergub', href: '/rapergub' },
+            { label: 'Hasil Harmonisasi', href: '/hasil-harmonisasi' },
+            { 
+                label: 'Hasil Fasilitasi', 
+                href: '/hasil-fasilitasi',
+                children: [
+                    { label: 'Fasilitasi Provinsi', href: '/fasilitasi-provinsi' },
+                    { label: 'Fasilitasi Pusat', href: '/fasilitasi-pusat' },
+                ]
+            },
+            { label: 'Analisis Dan Evaluasi Hukum', href: '/analisis-evaluasi-hukum' },
+            { label: 'Hasil Kajian Hukum', href: '/hasil-kajian-hukum' },
             { label: 'Risalah Rapat', href: '/risalah-rapat' },
-            { label: 'Artikel Bidang Hukum', href: '/artikel-bidang-hukum' },
         ]
     },
+    { label: 'Putusan', href: '/putusan' },
     {
         label: 'Informasi',
         children: [
@@ -58,8 +76,14 @@ const NAV_ITEMS = [
             { label: 'Video', href: '/video' },
         ]
     },
-    { label: 'Putusan', href: '/putusan' },
-    { label: 'Kerja Sama Daerah', href: '/kerja-sama-daerah' },
+    {
+        label: 'Layanan Hukum',
+        children: [
+            { label: 'Bantuan Hukum', href: '/bantuan-hukum' },
+            { label: 'Konsultasi Hukum', href: '/konsultasi-hukum' },
+            { label: 'Jaringan Kerja Sama', href: '/kerja-sama-daerah' },
+        ]
+    },
 ];
 
 const FOOTER_LINKS = [
@@ -109,7 +133,7 @@ function Navbar({ user, variant = 'classic' }: { user?: any; variant?: 'classic'
 
                 {/* Desktop Menu */}
                 <div className="hidden lg:flex items-center gap-1 text-sm font-medium">
-                    {NAV_ITEMS.slice(0, 6).map((item) => (
+                    {NAV_ITEMS.map((item) => (
                         <div key={item.label} className="relative group/nav">
                             {item.children ? (
                                 <button className={`flex items-center gap-1.5 px-4 py-2 rounded-full transition-all whitespace-nowrap ${
@@ -133,10 +157,30 @@ function Navbar({ user, variant = 'classic' }: { user?: any; variant?: 'classic'
                                     <div className="bg-white border border-slate-100 shadow-2xl rounded-xl overflow-hidden">
                                         <div className="p-2 grid grid-cols-1">
                                             {item.children.map((child) => (
-                                                <Link key={child.label} href={child.href}
-                                                    className="flex items-center px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-[#003399] rounded-lg transition-colors font-medium">
-                                                    {child.label}
-                                                </Link>
+                                                <div key={child.label} className="relative group/sub">
+                                                    <Link 
+                                                        href={child.href}
+                                                        className="flex items-center justify-between px-4 py-2.5 text-slate-600 hover:text-[#003399] hover:bg-slate-50 rounded-lg transition-colors font-semibold"
+                                                    >
+                                                        {child.label}
+                                                        {(child as any).children && <ChevronRight className="h-3 w-3" />}
+                                                    </Link>
+                                                    {(child as any).children && (
+                                                        <div className="absolute left-full top-0 pl-1 w-56 opacity-0 group-hover/sub:opacity-100 pointer-events-none group-hover/sub:pointer-events-auto transition-all translate-x-1 group-hover/sub:translate-x-0">
+                                                            <div className="bg-white border border-slate-100 shadow-xl rounded-xl p-2">
+                                                                {(child as any).children.map((sub: any) => (
+                                                                    <Link 
+                                                                        key={sub.label}
+                                                                        href={sub.href}
+                                                                        className="block px-4 py-2 text-xs text-slate-500 hover:text-[#003399] hover:bg-slate-50 rounded-lg transition-colors font-bold"
+                                                                    >
+                                                                        {sub.label}
+                                                                    </Link>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
                                             ))}
                                         </div>
                                     </div>
@@ -144,65 +188,52 @@ function Navbar({ user, variant = 'classic' }: { user?: any; variant?: 'classic'
                             )}
                         </div>
                     ))}
-                    
-                    {/* Modern Action Button */}
-                    <Link 
-                        href="/katalog" 
-                        className={`ml-4 flex items-center gap-2 px-5 py-2.5 rounded-lg font-bold text-sm transition-all shadow-lg active:scale-95 ${
-                            isModern 
-                            ? 'bg-[#003399] text-white hover:bg-blue-800 shadow-blue-900/20' 
-                            : 'bg-[#0d9488] text-white hover:bg-teal-600 shadow-teal-900/20'
-                        }`}
-                    >
-                        <Search className="h-4 w-4" />
-                        Cari Dokumen
-                    </Link>
-
-                    {/* Admin button removed from navbar in classic theme per user request */}
                 </div>
 
-                {/* Mobile toggle */}
-                <button className={`lg:hidden p-2 rounded-lg ${isModern ? 'text-slate-600 hover:bg-slate-100' : 'text-white hover:bg-white/10'}`} onClick={() => setMobileOpen(!mobileOpen)}>
+                {/* Mobile Toggle */}
+                <button 
+                    onClick={() => setMobileOpen(!mobileOpen)}
+                    className={`lg:hidden p-2 rounded-lg ${isModern ? 'text-slate-600 hover:bg-slate-50' : 'text-slate-200 hover:bg-white/10'}`}
+                >
                     {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
                 </button>
             </div>
 
-            {/* Mobile menu */}
+            {/* Mobile Menu */}
             {mobileOpen && (
-                <div className={`lg:hidden border-t px-4 py-4 max-h-[75vh] overflow-y-auto ${isModern ? 'bg-white border-slate-100' : 'bg-[#1a2332] border-white/10'}`}>
+                <div className="lg:hidden bg-white border-t border-slate-100 p-6 space-y-4 max-h-[80vh] overflow-y-auto">
                     {NAV_ITEMS.map((item) => (
-                        <div key={item.label} className="mb-2">
+                        <div key={item.label} className="space-y-2">
+                            <div className="text-xs font-bold text-slate-400 uppercase tracking-widest px-2">{item.label}</div>
                             {item.children ? (
-                                <div className="space-y-1">
-                                    <div className={`px-4 py-2 font-bold text-sm tracking-wide ${isModern ? 'text-slate-900' : 'text-slate-200'}`}>{item.label}</div>
-                                    <div className="grid grid-cols-1 gap-1">
-                                        {item.children.map((child) => (
-                                            <Link key={child.label} href={child.href}
-                                                className={`block pl-8 pr-4 py-2 rounded-lg text-sm transition-colors ${
-                                                    isModern ? 'text-slate-600 hover:bg-slate-50' : 'text-slate-400 hover:bg-white/5'
-                                                }`}
-                                                onClick={() => setMobileOpen(false)}>
+                                <div className="grid grid-cols-1 gap-1 pl-2">
+                                    {item.children.map((child) => (
+                                        <div key={child.label}>
+                                            <Link 
+                                                href={child.href}
+                                                className="block px-4 py-2 text-slate-600 font-bold hover:text-[#0d9488]"
+                                            >
                                                 {child.label}
                                             </Link>
-                                        ))}
-                                    </div>
+                                            {(child as any).children && (
+                                                <div className="pl-4 border-l border-slate-100 ml-4 space-y-1 mt-1">
+                                                    {(child as any).children.map((sub: any) => (
+                                                        <Link key={sub.label} href={sub.href} className="block px-4 py-1.5 text-xs text-slate-400 font-bold">
+                                                            {sub.label}
+                                                        </Link>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
                                 </div>
                             ) : (
-                                <Link href={(item as any).href}
-                                    className={`block px-4 py-2 rounded-lg font-bold text-sm transition-colors ${
-                                        isModern ? 'text-slate-900 hover:bg-slate-50' : 'text-slate-200 hover:bg-white/5'
-                                    }`}
-                                    onClick={() => setMobileOpen(false)}>
+                                <Link href={(item as any).href} className="block px-4 py-2 text-slate-600 font-bold hover:text-[#0d9488]">
                                     {item.label}
                                 </Link>
                             )}
                         </div>
                     ))}
-                    <div className="mt-6 pt-6 border-t border-slate-100">
-                        <Link href="/katalog" className="block w-full py-3 bg-[#003399] text-white text-center rounded-xl font-bold shadow-xl">
-                            Cari Dokumen
-                        </Link>
-                    </div>
                 </div>
             )}
         </nav>
@@ -300,20 +331,6 @@ function Footer() {
                                 </li>
                             ))}
                         </ul>
-                    </div>
-                </div>
-
-                {/* Tautan Terkait */}
-                <div className="mb-8">
-                    <h4 className="text-white font-bold text-xs uppercase tracking-widest mb-4">Tautan Terkait</h4>
-                    <div className="flex flex-wrap gap-3">
-                        {FOOTER_LINKS.map((link) => (
-                            <a key={link.label} href={link.href} target="_blank" rel="noreferrer"
-                                className="flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-slate-700 rounded text-xs hover:border-[#0d9488] hover:text-[#0d9488] transition-colors">
-                                <img src={link.image} alt={link.label} className="h-4 w-4 object-contain" />
-                                {link.label}
-                            </a>
-                        ))}
                     </div>
                 </div>
 

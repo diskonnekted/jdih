@@ -212,9 +212,10 @@ export default function ProdukHukumDesa({ villagesMapping }: Props) {
                                         className="bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-[#0d9488] focus:border-[#0d9488] font-bold text-slate-600 px-4"
                                     >
                                         <option value="">Semua Kategori</option>
-                                        {categories.map(cat => (
-                                            <option key={cat.id} value={cat.nama}>{cat.nama}</option>
-                                        ))}
+                                        <option value="SK">SK</option>
+                                        <option value="Peraturan Desa">Perdes</option>
+                                        <option value="RPJMDes">RPJMdes</option>
+                                        <option value="Keuangan">Keuangan</option>
                                     </select>
                                     <button 
                                         onClick={fetchProducts}
