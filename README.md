@@ -1,86 +1,98 @@
-# JDIH Banjarnegara Admin Dashboard
+# JDIH Kabupaten Banjarnegara
 
-## Overview
-This repository contains the **Laravel 12** application for the **JDIH Banjarnegara** administrative dashboard. The dashboard is built with **Filament v3** and follows a modern, government‑styled UI (deep royal blue theme, solid colors, no gradients). It provides management interfaces for legal documents, decisions, catalogs, news, banners, gallery items, and various static profile pages (Visi Misi, Dasar Hukum, Tupoksi, Kedudukan & Alamat, Struktur Organisasi, SOP).
+[![Laravel Version](https://img.shields.io/badge/Laravel-11.x-red.svg)](https://laravel.com)
+[![Filament Version](https://img.shields.io/badge/Filament-v3-yellow.svg)](https://filamentphp.com)
+[![Inertia.js](https://img.shields.io/badge/Inertia.js-React-purple.svg)](https://inertiajs.com)
+[![PWA Ready](https://img.shields.io/badge/PWA-Ready-blue.svg)](#-mobile-pwa-experience)
 
-## Features Implemented
-- Custom theme with primary color `#1e3a8a` and Inter font.
-- Full‑width tables with **horizontal filter bar** (`FiltersLayout::AboveContent`).
-- Modern action buttons (colored, button style) for Edit, Delete, Detail, Print, etc.
-- Database migrations and seeders for `katalogs`, `news`, `banners`, `gallery_items` and profile items.
-- Standardized resources for:
-  - **LegalDocuments**, **LegalDecisions** (already functional)
-  - **Katalogs**, **News**, **Banners**, **GalleryItems** (now standardized)
-  - Profile pages (**VisiMisi**, **DasarHukum**, **Tupoksi**, **KedudukanAlamat**, **StrukturOrganisasi**, **Sop**) – converted to a single‑record edit UI with RichEditor content.
-
-## Pending Work (to be continued by the next model)
-| Resource | Status | Remaining Tasks |
-|----------|--------|-----------------|
-| **Categories** | Skeleton only | Implement columns, filters, actions similar to other tables. |
-| **Katalogs** | Completed | Verify UI, add any missing actions (e.g., export). |
-| **News** | Completed | Verify data, adjust badge colors if needed. |
-| **Banners** | Completed | Ensure image upload works, test status toggle. |
-| **GalleryItems** | Completed | Verify image preview, date handling. |
-| **VisiMisi** | Completed | Test single‑record flow, ensure content saved. |
-| **DasarHukum** | Completed | Same as above. |
-| **Tupoksi** | Completed | Same as above. |
-| **KedudukanAlamat** | Completed | Same as above. |
-| **StrukturOrganisasi** | Completed | Same as above. |
-| **Sop** | Completed | Same as above. |
-| **AdminPanelProvider** | Configured | Add any additional resources to the panel list if new ones are created. |
-| **Documentation** | In progress | Expand README, add deployment guide, screenshots, and contribution instructions. |
-
-## How to Continue (Guide for the next model)
-1. **Add missing resources** – e.g., `CategoriesTable.php` – following the pattern used in other tables (columns, filters, actions, toolbar). Use the same theme utilities (`filtersFormColumns`, `headerActions`, etc.).
-2. **Run migrations & seeders** to ensure the database is up‑to‑date:
-   ```bash
-   php artisan migrate:fresh --seed
-   ```
-3. **Test each admin page** (`/admin/*`) in the browser. Verify that:
-   - Tables display all columns correctly.
-   - Horizontal filter bar works and the *Apply*/*Reset* buttons are aligned.
-   - Action buttons have the correct colors and perform the expected actions.
-   - RichEditor fields save and render HTML content.
-4. **Add any additional widgets** (e.g., statistics charts) to `AdminPanelProvider` under the `widgets([...])` section.
-5. **Update README** with screenshots (store them in `public/screenshots/` and reference them in the markdown). Include a **Deployment** section:
-   - Prerequisites (PHP 8.2, Composer, Node, etc.)
-   - Environment variables (`APP_URL`, `DB_CONNECTION`, etc.)
-   - Commands to install, build assets, and serve.
-6. **Commit & push** the changes:
-   ```bash
-   git add .
-   git commit -m "Initial commit – modern admin dashboard with standardized resources"
-   git branch -M main
-   git remote add origin https://github.com/diskonnekted/jdih.git
-   git push -u origin main
-   ```
-   *If the remote already exists, just `git push`.*
-7. **Create a GitHub Actions workflow** (optional) for CI: run `composer install`, `npm ci && npm run build`, and `php artisan test`.
-
-## Local Development Setup (Quick Start)
-```bash
-# Clone the repo (once it exists)
-git clone https://github.com/diskonnekted/jdih.git
-cd jdih
-
-# Install PHP dependencies
-composer install
-
-# Install Node dependencies and build assets
-npm ci && npm run build
-
-# Copy env file and generate app key
-cp .env.example .env
-php artisan key:generate
-
-# Set up database (SQLite example)
-touch database/database.sqlite
-php artisan migrate:fresh --seed
-
-# Serve the application
-php artisan serve
-```
-Visit `http://localhost:8000/admin` and log in with the default admin credentials (created by the seeder).
+Portal Jaringan Dokumentasi dan Informasi Hukum (JDIH) Kabupaten Banjarnegara yang modern, responsif, dan inovatif. Aplikasi ini dirancang untuk memberikan akses transparan kepada masyarakat terhadap produk hukum daerah dengan pengalaman pengguna (UX) yang premium.
 
 ---
-*Generated by Antigravity – your AI coding assistant.*
+
+## ✨ Fitur Unggulan
+
+### 🖥️ Desktop Portal (Dual Experience)
+- **Classic Mode**: Tampilan korporat yang bersih dan formal dengan navigasi dropdown yang presisi.
+- **Modern Mode**: Tampilan futuristik dengan searching yang lebih dinamis.
+- **Pencarian Lanjut**: Filter berdasarkan jenis dokumen, nomor, tahun, dan subjek.
+
+### 📱 Mobile PWA Experience
+- **Native-Look**: Antarmuka khusus mobile dengan *Bottom Navigation* ala aplikasi Android/iOS.
+- **PWA Integration**: Mendukung fitur "Add to Home Screen" untuk akses instan langsung dari ponsel.
+- **Performance**: Optimalisasi aset Vite untuk pemuatan halaman kilat di jaringan seluler.
+
+### 🛠️ Powerful Admin Dashboard (Filament v3)
+- **Statistik Interaktif**: Dashboard dengan bagan pengunjung dan tren produk hukum tahunan.
+- **Management Khusus**:
+  - **Produk Hukum**: Manajemen dokumen hukum dengan filter canggih.
+  - **Infografis Hukum**: Galeri visual (1:1 ratio) untuk edukasi hukum masyarakat.
+  - **Inovasi Desa**: Integrasi produk hukum desa via OpenSID API secara otomatis.
+- **Theme Switcher**: Dukungan Mode Terang (Light) dan Gelap (Dark) dengan mode terang sebagai default.
+
+---
+
+## 🚀 Tech Stack
+
+- **Backend**: Laravel 11
+- **Admin Panel**: Filament v3
+- **Frontend**: React.js with Inertia.js
+- **Styling**: Tailwind CSS
+- **PWA**: Custom Service Worker & Manifest integration
+- **Database**: MySQL / MariaDB
+
+---
+
+## 🛠️ Instalasi Lokal
+
+1. **Clone repository**:
+   ```bash
+   git clone https://github.com/diskonnekted/jdih.git
+   cd jdih
+   ```
+
+2. **Pasang dependensi**:
+   ```bash
+   composer install
+   npm install
+   ```
+
+3. **Konfigurasi Environment**:
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+4. **Migrasi & Seed Database**:
+   ```bash
+   php artisan migrate --seed
+   ```
+
+5. **Build Aset & Jalankan**:
+   ```bash
+   npm run build
+   php artisan serve
+   ```
+
+---
+
+## 🚢 Prosedur Deployment (Rapidnet Server)
+
+Aplikasi ini menggunakan sistem **Local Build** untuk memudahkan deployment di server yang tidak memiliki `npm`:
+
+1. Pastikan folder `public/build` sudah ter-upload (via `git push` dari lokal).
+2. Di terminal SSH server:
+   ```bash
+   git pull origin main
+   php artisan migrate --force
+   php artisan livewire:publish --assets
+   php artisan optimize:clear
+   ```
+3. Pastikan `APP_URL` di `.env` server menggunakan `https://`.
+
+---
+
+## 📄 Lisensi
+Hak Cipta © 2024 JDIH Kabupaten Banjarnegara. Seluruh hak cipta dilindungi undang-undang.
+
+---
+*Created with ❤️ by Antigravity AI Assistant.*
