@@ -132,7 +132,7 @@ export default function ProdukHukumDesa({ villagesMapping }: Props) {
                     <div className="max-w-2xl">
                         <div className="flex items-center gap-3 text-blue-400 mb-6 font-black tracking-widest text-xs uppercase animate-pulse">
                             <span className="h-2 w-2 rounded-full bg-blue-500" />
-                            <span>JDIH Lab & Eksperimen Desa</span>
+                            <span>JDIH Lab & Inovasi Desa</span>
                         </div>
                         <h1 className="text-5xl md:text-6xl font-black mb-6 leading-[1.1] tracking-tight">
                             Produk Hukum <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-teal-300">Desa</span>
@@ -335,7 +335,7 @@ export default function ProdukHukumDesa({ villagesMapping }: Props) {
                 )}
             </div>
 
-            {/* Experimental Footer Card */}
+            {/* Inovasi Footer Card */}
             <div className="max-w-7xl mx-auto px-6 pb-24">
                 <div className="bg-[#003399] rounded-[3rem] p-12 relative overflow-hidden shadow-2xl shadow-blue-900/40">
                     <div className="absolute right-[-10%] top-[-20%] h-[150%] w-[50%] bg-blue-400 rounded-full blur-[120px] opacity-20 pointer-events-none" />
