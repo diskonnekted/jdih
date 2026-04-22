@@ -350,7 +350,7 @@ export default function PublicLayout({ children, user, variant = 'classic' }: Pu
             {!isModern && <div className="fixed top-0 w-full h-[95px] bg-[#0f172a] z-40" />}
 
             {/* Offset for fixed navbar */}
-            <div className="pt-[92px] flex-1 relative z-10">
+            <div className="pt-[92px] pb-24 flex-1 relative z-10">
                 {children}
             </div>
             <Footer />
