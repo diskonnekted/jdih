@@ -11,8 +11,13 @@ class LegalDocument extends Model
         'document_number',
         'year',
         'category_id',
+        'document_type',
+        'teu',
+        'abbreviation',
         'status',
         'status_note',
+        'related_regulations_text',
+        'implementing_regulations',
         'abstract',
         'file_path',
         'published_at',
@@ -22,6 +27,9 @@ class LegalDocument extends Model
         'subject',
         'govt_field',
         'language',
+        'location',
+        'signer',
+        'judicial_review',
         'initiator',
     ];
 

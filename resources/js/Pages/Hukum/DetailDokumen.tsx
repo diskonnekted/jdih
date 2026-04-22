@@ -15,9 +15,14 @@ interface DocumentData {
     number: string;
     year: string;
     type: string;
+    document_type: string;
+    teu: string;
+    abbreviation?: string;
     code: string;
     status: string;
     status_note?: string;
+    related_text?: string;
+    implementing_regulations?: string;
     abstract?: string;
     file?: string;
     date_published?: string;
@@ -27,6 +32,9 @@ interface DocumentData {
     subject?: any;
     govt_field?: string;
     language?: string;
+    location?: string;
+    signer?: string;
+    judicial_review?: string;
     initiator?: string;
     related: any[];
     referenced_by: any[];
@@ -42,7 +50,7 @@ interface Props {
 const TABS = [
     { id: 'info', label: 'Informasi Detail', icon: Info },
     { id: 'preview', label: 'Pratinjau PDF', icon: Eye },
-    { id: 'status', label: 'Status Peraturan', icon: History },
+    { id: 'status', label: 'Status Hubungan', icon: History },
     { id: 'download', label: 'Unduhan', icon: Download },
 ];
 
@@ -57,17 +65,27 @@ export default function DetailDokumen({ kategori, title, code, document }: Props
     const subjects = Array.isArray(document.subject) ? document.subject : (document.subject ? JSON.parse(document.subject) : []);
 
     const metadata = [
-        { label: 'Jenis Produk Hukum', value: document.type },
+        { label: 'Tipe Dokumen', value: document.document_type || 'Peraturan Perundang-undangan' },
+        { label: 'Jenis', value: document.type },
+        { label: 'Judul', value: `${document.type} Nomor ${document.number} Tahun ${document.year} tentang ${document.title}` },
+        { label: 'T.E.U', value: document.teu || 'Banjarnegara' },
         { label: 'Nomor', value: document.number },
-        { label: 'Tahun', value: document.year },
+        { label: 'Tahun Terbit', value: document.year },
+        { label: 'Singkatan Jenis', value: document.abbreviation || document.code },
         { label: 'Tempat Penetapan', value: document.place || 'Banjarnegara' },
         { label: 'Tanggal Penetapan', value: fmtDate(document.date_published) },
         { label: 'Tanggal Pengundangan', value: fmtDate(document.date_promulgated) },
-        { label: 'Subjek / Kata Kunci', value: subjects.join(', ') || '-' },
-        { label: 'Urusan Pemerintahan', value: document.govt_field || '-' },
-        { label: 'Bahasa', value: document.language || 'Indonesia' },
-        { label: 'Pemrakarsa', value: document.initiator || '-' },
+        { label: 'Subjek', value: subjects.join(', ') || '-' },
         { label: 'Sumber', value: document.source || '-' },
+        { label: 'Status', value: document.status },
+        { label: 'Keterangan Status', value: document.status_note || '-' },
+        { label: 'Bahasa', value: document.language || 'Bahasa Indonesia' },
+        { label: 'Lokasi', value: document.location || 'Bagian Hukum SETDA Kabupaten Banjarnegara' },
+        { label: 'Bidang Hukum', value: document.govt_field || '-' },
+        { label: 'Penandatangan', value: document.signer || '-' },
+        { label: 'Hasil Uji Materi', value: document.judicial_review || '-' },
+        { label: 'Peraturan Terkait', value: document.related_text || '-' },
+        { label: 'Peraturan Pelaksana', value: document.implementing_regulations || '-' },
     ];
 
     return (

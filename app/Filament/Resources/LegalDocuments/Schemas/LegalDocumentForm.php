@@ -38,6 +38,17 @@ class LegalDocumentForm
                                     ->searchable()
                                     ->preload()
                                     ->required(),
+                                TextInput::make('abbreviation')
+                                    ->label('Singkatan Jenis')
+                                    ->placeholder('Misal: PERDA'),
+                                TextInput::make('document_type')
+                                    ->label('Tipe Dokumen')
+                                    ->default('Peraturan Perundang-undangan')
+                                    ->required(),
+                                TextInput::make('teu')
+                                    ->label('T.E.U (Tanda Entri Utama)')
+                                    ->default('Banjarnegara')
+                                    ->required(),
                                 Select::make('status')
                                     ->options([
                                         'Berlaku' => 'Berlaku',
@@ -48,8 +59,8 @@ class LegalDocumentForm
                                     ->required()
                                     ->default('Berlaku'),
                                 Textarea::make('status_note')
-                                    ->label('Catatan Status')
-                                    ->placeholder('Misal: Mencabut Perda No 1 Tahun 2020')
+                                    ->label('Keterangan Status')
+                                    ->placeholder('Misal: Mencabut Peraturan Daerah Nomor 5 Tahun 2018...')
                                     ->columnSpanFull(),
                             ])->columns(2),
 
@@ -65,14 +76,23 @@ class LegalDocumentForm
                                     ->default('Banjarnegara'),
                                 TextInput::make('source')
                                     ->label('Sumber / Media Pengundangan')
-                                    ->placeholder('Misal: Lembaran Daerah Tahun 2025 Nomor 1'),
+                                    ->placeholder('Misal: Lembaran Daerah Tahun 2025 Nomor 16...'),
                                 TextInput::make('govt_field')
-                                    ->label('Urusan Pemerintahan'),
+                                    ->label('Bidang Hukum / Urusan'),
                                 TextInput::make('language')
                                     ->label('Bahasa')
-                                    ->default('Indonesia'),
+                                    ->default('Bahasa Indonesia'),
+                                TextInput::make('location')
+                                    ->label('Lokasi')
+                                    ->default('Bagian Hukum SETDA Kabupaten Banjarnegara'),
+                                TextInput::make('signer')
+                                    ->label('Penandatangan'),
                                 TextInput::make('initiator')
                                     ->label('Pemrakarsa'),
+                                Textarea::make('judicial_review')
+                                    ->label('Hasil Uji Materi')
+                                    ->placeholder('-')
+                                    ->columnSpanFull(),
                                 \Filament\Forms\Components\TagsInput::make('subject')
                                     ->label('Subjek / Kata Kunci')
                                     ->placeholder('Tambah kata kunci...')
@@ -83,12 +103,11 @@ class LegalDocumentForm
                             ->icon('heroicon-m-arrows-right-left')
                             ->schema([
                                 \Filament\Forms\Components\Repeater::make('relatedDocuments')
-                                    ->label('Hubungan Dokumen')
+                                    ->label('Visual Hubungan Dokumen (Sistem)')
                                     ->relationship('relatedDocuments')
                                     ->schema([
                                         Select::make('related_document_id')
                                             ->label('Pilih Dokumen')
-                                            ->relationship('category', 'title') // Wait, this needs to be the legal document itself
                                             ->options(fn () => \App\Models\LegalDocument::all()->pluck('title', 'id'))
                                             ->searchable()
                                             ->required(),
@@ -106,6 +125,12 @@ class LegalDocumentForm
                                     ])
                                     ->columns(2)
                                     ->columnSpanFull(),
+                                Textarea::make('related_regulations_text')
+                                    ->label('Peraturan Terkait (Teks)')
+                                    ->placeholder('-'),
+                                Textarea::make('implementing_regulations')
+                                    ->label('Peraturan Pelaksana (Teks)')
+                                    ->placeholder('-'),
                             ]),
 
                         \Filament\Forms\Components\Tabs\Tab::make('Abstrak & File')
