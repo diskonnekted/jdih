@@ -97,11 +97,52 @@ foreach ($kategoriRoutes as $slug => [$title, $code]) {
         ]);
     });
     Route::get("/{$slug}/{id}", function(string $id) use ($slug, $title, $code) {
+        $document = \App\Models\LegalDocument::with(['category', 'relatedDocuments', 'referencedByDocuments'])->find($id);
+        
+        if (!$document) {
+            abort(404);
+        }
+
         return Inertia::render('Hukum/DetailDokumen', [
             'kategori' => $slug,
             'title'    => $title,
             'code'     => $code,
-            'id'       => $id,
+            'document' => [
+                'id' => $document->id,
+                'title' => $document->title,
+                'number' => $document->document_number,
+                'year' => $document->year,
+                'type' => $document->category->name,
+                'code' => $code,
+                'status' => $document->status,
+                'status_note' => $document->status_note,
+                'abstract' => $document->abstract,
+                'file' => $document->file_path ? asset('storage/' . $document->file_path) : null,
+                'date_published' => $document->published_at,
+                'date_promulgated' => $document->promulgated_at,
+                'place' => $document->place_of_enactment,
+                'source' => $document->source,
+                'subject' => $document->subject, // This is JSON from TagsInput
+                'govt_field' => $document->govt_field,
+                'language' => $document->language,
+                'initiator' => $document->initiator,
+                'related' => $document->relatedDocuments->map(fn($r) => [
+                    'id' => $r->id,
+                    'title' => $r->title,
+                    'number' => $r->document_number,
+                    'year' => $r->year,
+                    'type' => $r->pivot->relation_type,
+                    'slug' => Str::slug($r->category->name ?? 'peraturan'),
+                ]),
+                'referenced_by' => $document->referencedByDocuments->map(fn($r) => [
+                    'id' => $r->id,
+                    'title' => $r->title,
+                    'number' => $r->document_number,
+                    'year' => $r->year,
+                    'type' => $r->pivot->relation_type,
+                    'slug' => Str::slug($r->category->name ?? 'peraturan'),
+                ]),
+            ]
         ]);
     });
 }
