@@ -104,9 +104,7 @@ function Navbar({ user, variant = 'classic' }: { user?: any; variant?: 'classic'
             <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
                 {/* Logo & Brand */}
                 <Link href="/" className="flex items-center gap-3 shrink-0 group">
-                    <div className="bg-[#003366] p-2 rounded shadow-sm group-hover:scale-105 transition-transform">
-                        <Scale className="h-6 w-6 text-white" />
-                    </div>
+                    <img src="/images/logo-jdih.png" alt="Logo JDIH Banjarnegara" className="h-12 w-auto object-contain group-hover:scale-105 transition-transform" />
                     <div className="hidden sm:block">
                         <h2 className={`font-bold text-base leading-tight ${isModern ? 'text-[#003399]' : 'text-white'}`}>JDIH Banjarnegara</h2>
                         <p className={`text-[9px] uppercase tracking-widest font-semibold opacity-60 ${isModern ? 'text-[#003399]' : 'text-slate-400'}`}>Jaringan Dokumentasi Hukum</p>
