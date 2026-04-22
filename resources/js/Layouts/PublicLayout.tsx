@@ -158,12 +158,7 @@ function Navbar({ user, variant = 'classic' }: { user?: any; variant?: 'classic'
                         Cari Dokumen
                     </Link>
 
-                    {/* Admin button for classic or secondary for modern */}
-                    {!isModern && (
-                        <Link href="/admin" className="ml-2 px-3 py-2 bg-white/10 text-white rounded font-semibold hover:bg-white/20 transition-colors text-xs">
-                            Admin
-                        </Link>
-                    )}
+                    {/* Admin button removed from navbar in classic theme per user request */}
                 </div>
 
                 {/* Mobile toggle */}
