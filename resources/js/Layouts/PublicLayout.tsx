@@ -10,7 +10,7 @@ import {
 /* NAVIGATION DATA                                                      */
 /* ------------------------------------------------------------------ */
 const NAV_ITEMS = [
-/*    {
+    {
         label: 'Profil Kami',
         children: [
             { label: 'Visi Misi', href: '/visi-misi' },
@@ -21,7 +21,7 @@ const NAV_ITEMS = [
             { label: 'Kedudukan dan Alamat', href: '/kedudukan-dan-alamat' },
             { label: 'SOP', href: '/sop' },
         ]
-    }, */
+    },
     {
         label: 'Peraturan Per-UU',
         children: [
