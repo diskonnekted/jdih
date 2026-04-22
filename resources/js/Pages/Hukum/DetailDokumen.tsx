@@ -102,7 +102,7 @@ export default function DetailDokumen({ kategori, title, code, document }: Props
                 ]}
             />
 
-            <section className="py-12 bg-slate-50 min-h-screen">
+            <section className="py-20 bg-slate-50 min-h-screen">
                 <div className="max-w-7xl mx-auto px-6">
                     
                     {/* Header Info Card */}

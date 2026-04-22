@@ -348,8 +348,8 @@ export default function PublicLayout({ children, user, variant = 'classic' }: Pu
     return (
         <div className={`min-h-screen flex flex-col transition-colors duration-300 ${isModern ? 'bg-white' : 'bg-white'}`}>
             <Navbar user={user} variant={variant} />
-            {/* Offset for fixed navbar (top bar approx 28px + main nav approx 56-64px) */}
-            <div className={`${isModern ? 'pt-[92px]' : 'pt-[84px]'} flex-1`}>
+            {/* Offset for fixed navbar (top bar approx 28px + main nav approx 64px = 92px) */}
+            <div className="pt-[92px] lg:pt-[100px] flex-1">
                 {children}
             </div>
             <Footer />
