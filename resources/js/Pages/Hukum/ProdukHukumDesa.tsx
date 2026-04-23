@@ -59,6 +59,23 @@ export default function ProdukHukumDesa({ villagesMapping }: Props) {
     const [search, setSearch] = useState('');
     const [activeCat, setActiveCat] = useState('');
     const [year, setYear] = useState('');
+    const [progress, setProgress] = useState(0);
+
+    useEffect(() => {
+        let interval: any;
+        if (loading) {
+            setProgress(0);
+            interval = setInterval(() => {
+                setProgress(prev => {
+                    if (prev >= 92) return prev + 0.5 > 98 ? 98 : prev + 0.2; 
+                    return prev + 8;
+                });
+            }, 100);
+        } else {
+            setProgress(100);
+        }
+        return () => clearInterval(interval);
+    }, [loading]);
 
     useEffect(() => {
         if (selectedDesa.name && selectedDesa.url) {
@@ -193,8 +210,17 @@ export default function ProdukHukumDesa({ villagesMapping }: Props) {
                     </div>
 
                     {/* MAIN CONTENT AREA */}
-                    <div className="lg:col-span-3 space-y-6">
-                        
+                    <div className="lg:col-span-3 space-y-6 relative">
+                        {/* Top Progress Bar for refreshes */}
+                        {loading && products.length > 0 && (
+                            <div className="absolute -top-6 left-0 right-0 h-1 bg-slate-100 rounded-full overflow-hidden z-10">
+                                <div 
+                                    className="h-full bg-[#0d9488] transition-all duration-300 ease-out"
+                                    style={{ width: `${progress}%` }}
+                                />
+                            </div>
+                        )}
+
                         {/* SEARCH & FILTER BAR */}
                         <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
                             <div className="flex flex-col md:flex-row gap-4">
@@ -232,10 +258,47 @@ export default function ProdukHukumDesa({ villagesMapping }: Props) {
 
                         {/* DATA LISTING (TABLE VIEW) */}
                         {loading && products.length === 0 ? (
-                            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-20 flex flex-col items-center text-center">
-                                <Loader2 className="h-10 w-10 text-[#0d9488] animate-spin mb-4" />
-                                <h3 className="text-slate-900 font-bold mb-1">Menghubungkan ke Server Desa...</h3>
-                                <p className="text-slate-400 text-sm">Mohon tunggu sebentar, kami sedang mengambil data terbaru.</p>
+                            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-20 flex flex-col items-center text-center relative overflow-hidden">
+                                {/* Subtle background pulse */}
+                                <div className="absolute inset-0 bg-slate-50/50 animate-pulse" />
+                                
+                                <div className="relative z-10 flex flex-col items-center">
+                                    <div className="bg-[#0d9488]/10 p-4 rounded-2xl mb-6 relative">
+                                        <Loader2 className="h-10 w-10 text-[#0d9488] animate-spin" />
+                                        <div className="absolute -top-1 -right-1 flex h-4 w-4">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0d9488] opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-4 w-4 bg-[#0d9488]"></span>
+                                        </div>
+                                    </div>
+                                    
+                                    <h3 className="text-slate-900 font-black text-lg mb-2 uppercase tracking-tight">Menghubungkan ke Server Desa...</h3>
+                                    <p className="text-slate-500 text-sm max-w-xs mb-8 leading-relaxed">
+                                        Mohon tunggu sebentar, kami sedang sinkronisasi data dari portal resmi Desa <strong>{selectedDesa.name}</strong>.
+                                    </p>
+
+                                    {/* Progress Bar Container */}
+                                    <div className="w-full max-w-sm">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <span className="text-[10px] font-black text-[#0d9488] uppercase tracking-widest">Sinkronisasi Data</span>
+                                            <span className="text-[10px] font-black text-slate-400">{Math.round(progress)}%</span>
+                                        </div>
+                                        <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden border border-slate-200/50 p-0.5">
+                                            <div 
+                                                className="h-full bg-gradient-to-r from-[#0d9488] to-emerald-400 rounded-full transition-all duration-300 ease-out shadow-[0_0_10px_rgba(13,148,136,0.3)]"
+                                                style={{ width: `${progress}%` }}
+                                            />
+                                        </div>
+                                        <div className="mt-4 flex justify-center gap-1.5">
+                                            {[...Array(3)].map((_, i) => (
+                                                <div 
+                                                    key={i} 
+                                                    className={`h-1.5 w-1.5 rounded-full bg-[#0d9488] animate-bounce`} 
+                                                    style={{ animationDelay: `${i * 0.15}s` }} 
+                                                />
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         ) : error ? (
                             <div className="bg-rose-50 rounded-2xl border border-rose-100 p-12 flex flex-col items-center text-center">
