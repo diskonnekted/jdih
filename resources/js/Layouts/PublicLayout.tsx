@@ -138,8 +138,8 @@ function Navbar({ user, variant = 'classic' }: { user?: any; variant?: 'classic'
             {/* Main nav */}
             <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
                 {/* Logo & Brand */}
-                <Link href="/" className="flex items-center gap-3 shrink-0 group">
-                    <img src="/images/logo-jdih.png" alt="Logo JDIH Banjarnegara" className="h-12 w-auto object-contain group-hover:scale-105 transition-transform" />
+                <Link href="/" className="flex items-center gap-3 shrink-0 group" aria-label="Beranda JDIH Banjarnegara">
+                    <img src="/images/logo-jdih.png" alt="Logo JDIH Banjarnegara" width={180} height={48} className="h-12 w-auto object-contain group-hover:scale-105 transition-transform" />
                 </Link>
 
                 {/* Desktop Menu */}
@@ -147,7 +147,10 @@ function Navbar({ user, variant = 'classic' }: { user?: any; variant?: 'classic'
                     {NAV_ITEMS.map((item) => (
                         <div key={item.label} className="relative group/nav">
                             {item.children ? (
-                                <button className={`flex items-center gap-1.5 px-4 py-2 rounded-full transition-all whitespace-nowrap ${
+                                <button 
+                                    aria-haspopup="true"
+                                    aria-expanded="false"
+                                    className={`flex items-center gap-1.5 px-4 py-2 rounded-full transition-all whitespace-nowrap ${
                                     isModern 
                                     ? 'text-slate-600 hover:text-[#003399] hover:bg-slate-50' 
                                     : 'text-slate-200 hover:text-white hover:bg-white/10'
@@ -204,6 +207,8 @@ function Navbar({ user, variant = 'classic' }: { user?: any; variant?: 'classic'
                 {/* Mobile Toggle */}
                 <button 
                     onClick={() => setMobileOpen(!mobileOpen)}
+                    aria-label={mobileOpen ? "Tutup Menu" : "Buka Menu"}
+                    aria-expanded={mobileOpen}
                     className={`lg:hidden p-2 rounded-lg ${isModern ? 'text-slate-600 hover:bg-slate-50' : 'text-slate-200 hover:bg-white/10'}`}
                 >
                     {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -285,8 +290,8 @@ function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10 pb-10 border-b border-slate-700">
                     {/* Brand */}
                     <div className="md:col-span-2">
-                        <Link href="/" className="inline-block mb-4">
-                            <img src="/images/logo-jdih.png" alt="Logo JDIH Banjarnegara" className="h-14 w-auto object-contain" />
+                        <Link href="/" className="inline-block mb-4" aria-label="Beranda JDIH">
+                            <img src="/images/logo-jdih.png" alt="Logo JDIH Banjarnegara" width={200} height={56} className="h-14 w-auto object-contain" />
                         </Link>
                         <p className="text-sm leading-relaxed mb-5 max-w-sm">
                             Jaringan Dokumentasi dan Informasi Hukum Kabupaten Banjarnegara – wadah pendayagunaan bersama atas dokumen hukum secara tertib, terpadu dan berkesinambungan.

@@ -341,6 +341,8 @@ function NewsSection({ news, variant = 'classic' }: { news: any[], variant?: 'cl
                                 <img
                                     src={article.image}
                                     alt={article.title}
+                                    width={400}
+                                    height={225}
                                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                     loading="lazy"
                                 />
@@ -390,6 +392,8 @@ function VideoSection({ variant = 'classic' }: { variant?: 'classic' | 'modern' 
                                 <img 
                                     src={v.image} 
                                     alt={v.title} 
+                                    width={400}
+                                    height={225}
                                     className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
@@ -427,7 +431,7 @@ function RelatedLinks({ variant = 'classic' }: { variant?: 'classic' | 'modern' 
                         <a key={link.label} href={link.href} target="_blank" rel="noreferrer"
                             className={`group flex items-center gap-4 p-4 border border-slate-200 rounded-lg transition-all ${variant === 'modern' ? 'hover:border-[#003399] hover:bg-blue-50/20' : 'hover:border-[#0d9488] hover:bg-slate-50'}`}>
                             <div className="h-10 w-10 bg-white rounded flex items-center justify-center shrink-0 border border-slate-100 p-1">
-                                <img src={link.image} alt={link.label} className="h-full w-full object-contain" />
+                                <img src={link.image} alt={link.label} width={40} height={40} className="h-full w-full object-contain" />
                             </div>
                             <span className={`font-semibold text-[#1e293b] text-sm transition-colors flex-1 ${variant === 'modern' ? 'group-hover:text-[#003399]' : 'group-hover:text-[#0d9488]'}`}>{link.label}</span>
                             <ExternalLink className={`h-4 w-4 text-slate-400 shrink-0 transition-colors ${variant === 'modern' ? 'group-hover:text-[#003399]' : 'group-hover:text-[#0d9488]'}`} />
@@ -608,6 +612,8 @@ function InfografisSection({ items, variant = 'classic' }: { items: any[], varia
                             <img
                                 src={item.image}
                                 alt={item.title}
+                                width={400}
+                                height={400}
                                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                 loading="lazy"
                             />
@@ -684,7 +690,10 @@ export default function Welcome({ auth, news = [], banner = null, isMobile = fal
 
     return (
         <PublicLayout user={auth?.user} variant={activeModel}>
-            <Head title="JDIH Kabupaten Banjarnegara – Jaringan Dokumentasi & Informasi Hukum" />
+            <Head>
+                <title>JDIH Kabupaten Banjarnegara – Jaringan Dokumentasi & Informasi Hukum</title>
+                <link rel="preload" as="image" href={banner?.image || '/images/hero.jpg'} fetchPriority="high" />
+            </Head>
             
             {activeModel === 'classic' ? (
                 <Hero banner={banner} />

@@ -122,10 +122,11 @@ export default function SearchForm({
             <div className="space-y-4">
                 {/* Row 1: Nama Dokumen */}
                 <div>
-                    <label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">
+                    <label htmlFor="namaDokumen" className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">
                         Nama Dokumen
                     </label>
                     <input
+                        id="namaDokumen"
                         type="text"
                         placeholder="Masukkan Nama Dokumen"
                         value={values.namaDokumen}
@@ -137,10 +138,11 @@ export default function SearchForm({
                 {/* Row 2: Jenis Dokumen */}
                 {!hideJenis && (
                     <div>
-                        <label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">
+                        <label htmlFor="jenisDokumen" className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">
                             Jenis Dokumen
                         </label>
                         <select
+                            id="jenisDokumen"
                             value={values.jenisDokumen}
                             onChange={(e) => handleChange('jenisDokumen', e.target.value)}
                             className="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm text-slate-800 focus:outline-none focus:border-[#0d9488] focus:ring-1 focus:ring-[#0d9488]/20 transition-colors bg-white appearance-none cursor-pointer"
@@ -157,10 +159,11 @@ export default function SearchForm({
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     {/* Nomor */}
                     <div>
-                        <label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">
+                        <label htmlFor="nomor" className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">
                             Nomor
                         </label>
                         <input
+                            id="nomor"
                             type="text"
                             placeholder="Nomor Dokumen"
                             value={values.nomor}
@@ -171,10 +174,11 @@ export default function SearchForm({
 
                     {/* Tahun */}
                     <div>
-                        <label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">
+                        <label htmlFor="tahun" className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">
                             Tahun
                         </label>
                         <select
+                            id="tahun"
                             value={values.tahun}
                             onChange={(e) => handleChange('tahun', e.target.value)}
                             className="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm text-slate-800 focus:outline-none focus:border-[#0d9488] focus:ring-1 focus:ring-[#0d9488]/20 transition-colors bg-white appearance-none cursor-pointer"
@@ -188,10 +192,11 @@ export default function SearchForm({
 
                     {/* Status */}
                     <div>
-                        <label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">
+                        <label htmlFor="status" className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">
                             Status
                         </label>
                         <select
+                            id="status"
                             value={values.status}
                             onChange={(e) => handleChange('status', e.target.value)}
                             className="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm text-slate-800 focus:outline-none focus:border-[#0d9488] focus:ring-1 focus:ring-[#0d9488]/20 transition-colors bg-white appearance-none cursor-pointer"

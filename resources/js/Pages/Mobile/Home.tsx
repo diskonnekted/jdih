@@ -5,7 +5,6 @@ import {
     Search, Newspaper, Building2, Info, Gavel, 
     ArrowRight, MapPin, Phone, Download, Clock
 } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 interface Props {
     latestNews: any[];
