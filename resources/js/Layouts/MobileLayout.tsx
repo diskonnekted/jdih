@@ -40,7 +40,10 @@ export default function MobileLayout({ children }: Props) {
                     </div>
                 </Link>
                 <div className="flex items-center gap-4">
-                    <button className="p-2 text-slate-400 hover:text-[#003399] transition-colors relative">
+                    <button 
+                        className="p-2 text-slate-400 hover:text-[#003399] transition-colors relative"
+                        aria-label="Notifikasi"
+                    >
                         <Bell className="h-5 w-5" />
                         <span className="absolute top-2 right-2 h-2 w-2 bg-red-500 rounded-full border-2 border-white" />
                     </button>
