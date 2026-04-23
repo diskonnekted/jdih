@@ -9,6 +9,7 @@ import {
     Scale, Shield, CheckCircle2, Eye, X
 } from 'lucide-react';
 import axios from 'axios';
+import Modal from '@/Components/Modal';
 
 interface Category {
     id: string;
@@ -56,6 +57,9 @@ export default function ProdukHukumDesa({ villagesMapping }: Props) {
     const [search, setSearch] = useState('');
     const [activeCat, setActiveCat] = useState('');
     const [year, setYear] = useState('');
+
+    const [activeProduct, setActiveProduct] = useState<LegalProduct | null>(null);
+    const [showPreview, setShowPreview] = useState(false);
 
     useEffect(() => {
         if (selectedDesa.name && selectedDesa.url) {
@@ -110,6 +114,11 @@ export default function ProdukHukumDesa({ villagesMapping }: Props) {
     const fmtDate = (d: string) => {
         if (!d) return '-';
         return new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    };
+
+    const openPreview = (product: LegalProduct) => {
+        setActiveProduct(product);
+        setShowPreview(true);
     };
 
     return (
@@ -212,10 +221,9 @@ export default function ProdukHukumDesa({ villagesMapping }: Props) {
                                         className="bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-[#0d9488] focus:border-[#0d9488] font-bold text-slate-600 px-4"
                                     >
                                         <option value="">Semua Kategori</option>
-                                        <option value="SK">SK</option>
-                                        <option value="Peraturan Desa">Perdes</option>
-                                        <option value="RPJMDes">RPJMdes</option>
-                                        <option value="Keuangan">Keuangan</option>
+                                        {categories.map(c => (
+                                            <option key={c.id} value={c.nama}>{c.nama}</option>
+                                        ))}
                                     </select>
                                     <button 
                                         onClick={fetchProducts}
@@ -228,7 +236,7 @@ export default function ProdukHukumDesa({ villagesMapping }: Props) {
                             </div>
                         </div>
 
-                        {/* DATA LISTING (REFACTORED TO LIST STYLE) */}
+                        {/* DATA LISTING (TABLE VIEW) */}
                         {loading && products.length === 0 ? (
                             <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-20 flex flex-col items-center text-center">
                                 <Loader2 className="h-10 w-10 text-[#0d9488] animate-spin mb-4" />
@@ -258,78 +266,118 @@ export default function ProdukHukumDesa({ villagesMapping }: Props) {
                                 <p className="text-slate-400 text-sm max-w-xs">Belum ada dokumen yang dipublikasikan oleh Desa {selectedDesa.name}.</p>
                             </div>
                         ) : (
-                            <div className="space-y-4">
-                                {products.map((product) => (
-                                    <div 
-                                        key={product.id}
-                                        className="bg-white border border-slate-200 hover:border-[#0d9488] hover:shadow-xl hover:shadow-[#0d9488]/5 transition-all group overflow-hidden"
-                                    >
-                                        <div className="flex flex-col md:flex-row">
-                                            {/* Status Accent */}
-                                            <div className="w-full md:w-1.5 shrink-0 bg-emerald-500" />
-                                            
-                                            <div className="flex-1 p-5 md:p-6 flex flex-col md:flex-row md:items-center gap-6">
-                                                {/* Icon / Info */}
-                                                <div className="hidden md:flex h-14 w-14 bg-slate-50 rounded-lg items-center justify-center shrink-0 border border-slate-100 group-hover:bg-[#0d9488]/5 transition-colors">
-                                                    <FileText className="h-6 w-6 text-slate-300 group-hover:text-[#0d9488]" />
-                                                </div>
-
-                                                {/* Content */}
-                                                <div className="flex-1 min-w-0">
-                                                    <div className="flex flex-wrap items-center gap-3 mb-2">
-                                                        <span className="bg-[#0d9488] text-white text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-widest">
+                            <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr className="bg-slate-50 border-b border-slate-200">
+                                                <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center w-16">No</th>
+                                                <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Judul Produk Hukum</th>
+                                                <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest w-40">Jenis</th>
+                                                <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center w-24">Tahun</th>
+                                                <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center w-32">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-slate-100">
+                                            {products.map((product, idx) => (
+                                                <tr key={product.id} className="hover:bg-slate-50/50 transition-colors group">
+                                                    <td className="px-6 py-4 text-center text-xs font-bold text-slate-400">{idx + 1}</td>
+                                                    <td className="px-6 py-4">
+                                                        <div className="text-sm font-bold text-slate-900 leading-relaxed group-hover:text-[#0d9488] transition-colors">
+                                                            {product.attributes.nama}
+                                                        </div>
+                                                        <div className="flex items-center gap-2 mt-1">
+                                                            <Calendar className="h-3 w-3 text-slate-300" />
+                                                            <span className="text-[10px] text-slate-400 font-medium">Diunggah pada {fmtDate(product.attributes.tgl_upload)}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        <span className="inline-flex px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[9px] font-black uppercase tracking-wider border border-emerald-100">
                                                             {product.attributes.kategori || 'DESA'}
                                                         </span>
-                                                        <span className="flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 rounded border bg-emerald-50 text-emerald-700 border-emerald-100 uppercase">
-                                                            <CheckCircle2 className="h-2.5 w-2.5" /> BERLAKU
-                                                        </span>
-                                                        <span className="flex items-center gap-1.5 text-[10px] text-slate-400 font-bold">
-                                                            <Calendar className="h-3 w-3" /> {fmtDate(product.attributes.tgl_upload)}
-                                                        </span>
-                                                    </div>
-                                                    <div className="block text-sm md:text-base font-bold text-slate-900 group-hover:text-[#0d9488] transition-colors leading-relaxed line-clamp-2">
-                                                        {product.attributes.nama}
-                                                    </div>
-                                                    <div className="mt-2 text-[10px] text-slate-400 font-bold uppercase tracking-[0.1em] flex items-center gap-2">
-                                                        <span>Desa {selectedDesa.name}</span>
-                                                        <span className="opacity-30">•</span>
-                                                        <span>Tahun {product.attributes.tahun}</span>
-                                                    </div>
-                                                </div>
-
-                                                {/* Action Buttons */}
-                                                <div className="flex items-center gap-2 shrink-0 md:pl-4">
-                                                    {product.attributes.url_file && (
-                                                        <>
-                                                            <a
-                                                                href={product.attributes.url_file}
-                                                                target="_blank"
-                                                                rel="noreferrer"
-                                                                className="h-10 w-10 flex items-center justify-center rounded-lg bg-[#1e293b] text-white hover:bg-black transition-colors"
-                                                                title="Lihat Dokumen"
+                                                    </td>
+                                                    <td className="px-6 py-4 text-center text-sm font-bold text-slate-600">
+                                                        {product.attributes.tahun}
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        <div className="flex items-center justify-center gap-2">
+                                                            <button 
+                                                                onClick={() => openPreview(product)}
+                                                                className="flex items-center gap-2 px-4 py-2 bg-[#0d9488] text-white text-[10px] font-black uppercase tracking-widest rounded hover:bg-teal-700 transition-all active:scale-95 shadow-lg shadow-teal-900/10"
                                                             >
-                                                                <Eye className="h-4 w-4" />
-                                                            </a>
-                                                            <a
-                                                                href={product.attributes.url_file}
-                                                                download
-                                                                className="h-10 px-4 flex items-center justify-center gap-2 rounded-lg bg-slate-100 text-slate-600 font-bold text-xs hover:bg-slate-200 transition-colors"
-                                                            >
-                                                                <Download className="h-4 w-4" />
-                                                                Unduh
-                                                            </a>
-                                                        </>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
+                                                                <Eye className="h-3.5 w-3.5" /> LIHAT
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         )}
                     </div>
                 </div>
             </div>
+
+            {/* PREVIEW MODAL */}
+            <Modal 
+                show={showPreview} 
+                onClose={() => setShowPreview(false)}
+                maxWidth="5xl"
+            >
+                {activeProduct && (
+                    <div className="flex flex-col h-[85vh] bg-white">
+                        {/* Modal Header */}
+                        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-emerald-100 rounded-lg">
+                                    <FileText className="h-5 w-5 text-emerald-600" />
+                                </div>
+                                <div className="min-w-0">
+                                    <h3 className="text-sm font-bold text-slate-900 truncate max-w-md">
+                                        {activeProduct.attributes.nama}
+                                    </h3>
+                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                                        {activeProduct.attributes.kategori} • Tahun {activeProduct.attributes.tahun}
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <a 
+                                    href={activeProduct.attributes.url_file}
+                                    download
+                                    className="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded hover:bg-black transition-all"
+                                >
+                                    <Download className="h-3.5 w-3.5" /> UNDUH FILE
+                                </a>
+                                <button 
+                                    onClick={() => setShowPreview(false)}
+                                    className="p-2 text-slate-400 hover:text-rose-500 transition-colors"
+                                >
+                                    <X className="h-6 w-6" />
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Modal Content - PDF Viewer */}
+                        <div className="flex-1 overflow-hidden bg-slate-200">
+                            {activeProduct.attributes.url_file ? (
+                                <iframe 
+                                    src={`${activeProduct.attributes.url_file}#toolbar=0`} 
+                                    className="w-full h-full border-none"
+                                    title="Pratinjau Dokumen"
+                                />
+                            ) : (
+                                <div className="h-full flex flex-col items-center justify-center text-slate-500 gap-4">
+                                    <AlertCircle className="h-12 w-12 opacity-20" />
+                                    <p className="font-bold text-sm">Pratinjau tidak tersedia untuk dokumen ini.</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+            </Modal>
         </PublicLayout>
     );
 }
