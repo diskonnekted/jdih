@@ -23,8 +23,11 @@ interface LegalProduct {
         tahun: string;
         satuan: string; 
         kategori: string;
-        tgl_upload: string;
-        url_file: string;
+        tgl_upload?: string;
+        url_file?: string;
+        attr?: {
+            tgl_ditetapkan?: string;
+        }
     };
 }
 
@@ -288,7 +291,7 @@ export default function ProdukHukumDesa({ villagesMapping }: Props) {
                                                         </div>
                                                         <div className="flex items-center gap-2 mt-1">
                                                             <Calendar className="h-3 w-3 text-slate-300" />
-                                                            <span className="text-[10px] text-slate-400 font-medium">Diunggah pada {fmtDate(product.attributes.tgl_upload)}</span>
+                                                            <span className="text-[10px] text-slate-400 font-medium">Diunggah pada {fmtDate(product.attributes.tgl_upload || product.attributes.attr?.tgl_ditetapkan || '')}</span>
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-4">
@@ -345,7 +348,7 @@ export default function ProdukHukumDesa({ villagesMapping }: Props) {
                             </div>
                             <div className="flex items-center gap-2">
                                 <a 
-                                    href={activeProduct.attributes.url_file}
+                                    href={activeProduct.attributes.satuan || activeProduct.attributes.url_file}
                                     download
                                     className="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded hover:bg-black transition-all"
                                 >
@@ -362,12 +365,29 @@ export default function ProdukHukumDesa({ villagesMapping }: Props) {
 
                         {/* Modal Content - PDF Viewer */}
                         <div className="flex-1 overflow-hidden bg-slate-200">
-                            {activeProduct.attributes.url_file ? (
-                                <iframe 
-                                    src={`${activeProduct.attributes.url_file}#toolbar=0`} 
-                                    className="w-full h-full border-none"
-                                    title="Pratinjau Dokumen"
-                                />
+                            {(activeProduct.attributes.satuan || activeProduct.attributes.url_file) ? (
+                                <div className="h-full relative">
+                                    {(activeProduct.attributes.satuan || activeProduct.attributes.url_file)?.toLowerCase().includes('.doc') && (
+                                        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-slate-900/80 text-white p-6 text-center">
+                                            <AlertCircle className="h-12 w-12 text-yellow-400 mb-4" />
+                                            <h4 className="text-lg font-bold mb-2">Pratinjau Terbatas</h4>
+                                            <p className="text-sm opacity-80 max-w-md mb-6">
+                                                Dokumen ini dalam format Word (.doc/.docx). Browser Anda mungkin akan mengunduhnya secara otomatis karena pratinjau langsung hanya didukung untuk format PDF.
+                                            </p>
+                                            <a 
+                                                href={activeProduct.attributes.satuan || activeProduct.attributes.url_file}
+                                                className="px-6 py-2 bg-white text-slate-900 rounded-lg font-bold text-sm"
+                                            >
+                                                UNDUH SEKARANG
+                                            </a>
+                                        </div>
+                                    )}
+                                    <iframe 
+                                        src={`${activeProduct.attributes.satuan || activeProduct.attributes.url_file}#toolbar=0`} 
+                                        className="w-full h-full border-none"
+                                        title="Pratinjau Dokumen"
+                                    />
+                                </div>
                             ) : (
                                 <div className="h-full flex flex-col items-center justify-center text-slate-500 gap-4">
                                     <AlertCircle className="h-12 w-12 opacity-20" />
