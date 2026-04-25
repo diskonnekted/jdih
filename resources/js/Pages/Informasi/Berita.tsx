@@ -4,6 +4,10 @@ import PublicLayout from '@/Layouts/PublicLayout';
 import PageHeader from '@/Components/PageHeader';
 import { Newspaper, Calendar, Tag, ChevronLeft, ChevronRight, Search } from 'lucide-react';
 
+function fmtDate(d: string) {
+    return new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
 export default function Berita({ news }: { news: any }) {
     const [search, setSearch] = useState('');
 
