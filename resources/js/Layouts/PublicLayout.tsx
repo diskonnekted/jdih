@@ -208,7 +208,7 @@ function Navbar({ user, variant = 'classic' }: { user?: any; variant?: 'classic'
                             )}
                             {item.children && (
                                 <div className="absolute top-full left-0 pt-2 w-64 opacity-0 group-hover/nav:opacity-100 pointer-events-none group-hover/nav:pointer-events-auto transition-all translate-y-2 group-hover/nav:translate-y-0 z-50">
-                                    <div className="bg-white border border-slate-100 shadow-2xl rounded-xl overflow-hidden">
+                                    <div className="bg-white border border-slate-100 shadow-2xl rounded-xl">
                                         <div className="p-2 grid grid-cols-1">
                                             {item.children.map((child) => (
                                                 <div key={child.label} className="relative group/sub">
