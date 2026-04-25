@@ -172,8 +172,34 @@ Route::get('/berita/{slug}',    function($slug) {
         'post' => $post
     ]);
 });
-Route::get('/galeri',        fn() => Inertia::render('Informasi/Galeri'));
-Route::get('/video',         fn() => Inertia::render('Informasi/Video'));
+Route::get('/galeri', function() {
+    $items = \App\Models\GalleryItem::latest('date')
+        ->get()
+        ->map(fn($item) => [
+            'id' => $item->id,
+            'title' => $item->title,
+            'image' => asset('storage/' . $item->image_path),
+            'date' => $item->date ? $item->date->format('Y-m-d') : null,
+        ]);
+
+    return Inertia::render('Informasi/Galeri', [
+        'items' => $items
+    ]);
+});
+Route::get('/video', function() {
+    $items = \App\Models\VideoContent::latest()
+        ->get()
+        ->map(fn($item) => [
+            'id' => $item->id,
+            'title' => $item->title,
+            'video_url' => $item->video_url,
+            'description' => $item->description,
+        ]);
+
+    return Inertia::render('Informasi/Video', [
+        'items' => $items
+    ]);
+});
 Route::get('/unduh',         fn() => Inertia::render('Informasi/Download'));
 
 // ---------------------------------------------------------------
