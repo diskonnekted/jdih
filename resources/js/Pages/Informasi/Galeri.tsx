@@ -4,31 +4,22 @@ import PublicLayout from '@/Layouts/PublicLayout';
 import PageHeader from '@/Components/PageHeader';
 import { Image, X } from 'lucide-react';
 
-const GALERI = [
-    { id: 1, judul: 'Penandatanganan MOU Kejaksaan Negeri Banjarnegara', kategori: 'Kerja Sama', tahun: 2025 },
-    { id: 2, judul: 'Study Referensi Bagian Hukum ke Kabupaten Temanggung', kategori: 'Kegiatan', tahun: 2025 },
-    { id: 3, judul: 'Forum Satu Data Indonesia Kabupaten Banjarnegara', kategori: 'Forum', tahun: 2025 },
-    { id: 4, judul: 'Bimtek Legal Drafting KPU Banjarnegara 2025', kategori: 'Bimtek', tahun: 2025 },
-    { id: 5, judul: 'Sosialisasi Perda Pajak Daerah 2025', kategori: 'Sosialisasi', tahun: 2025 },
-    { id: 6, judul: 'Rapat Penyusunan Propemperda 2026', kategori: 'Rapat', tahun: 2025 },
-    { id: 7, judul: 'Pelatihan SDM Hukum Bersama Universitas Jenderal Soedirman', kategori: 'Pelatihan', tahun: 2024 },
-    { id: 8, judul: 'Evaluasi JDIH Tingkat Kabupaten Tahun 2024', kategori: 'Evaluasi', tahun: 2024 },
-    { id: 9, judul: 'Penghargaan JDIH Terbaik Jawa Tengah 2024', kategori: 'Penghargaan', tahun: 2024 },
-    { id: 10, judul: 'Penyuluhan Hukum di Kecamatan Banjarmangu', kategori: 'Sosialisasi', tahun: 2024 },
-    { id: 11, judul: 'Workshop Penyusunan Naskah Akademik', kategori: 'Workshop', tahun: 2023 },
-    { id: 12, judul: 'Pelantikan Kepala Sub Bagian Hukum', kategori: 'Kegiatan', tahun: 2023 },
-];
-
-const PLACEHOLDER_COLORS = [
-    '#0d9488', '#1e293b', '#6366f1', '#f59e0b', '#ec4899', '#8b5cf6',
-];
-
-export default function Galeri() {
-    const [selected, setSelected] = useState<typeof GALERI[0] | null>(null);
+export default function Galeri({ items = [] }: { items?: any[] }) {
+    const [selected, setSelected] = useState<any | null>(null);
     const [filterTahun, setFilterTahun] = useState('');
 
-    const years = [...new Set(GALERI.map(g => g.tahun))].sort((a, b) => b - a);
-    const filtered = filterTahun ? GALERI.filter(g => String(g.tahun) === filterTahun) : GALERI;
+    const displayItems = items.map(item => ({
+        ...item,
+        tahun: item.date ? new Date(item.date).getFullYear() : 'Lainnya'
+    }));
+
+    const years = [...new Set(displayItems.map(g => g.tahun))].sort((a, b) => {
+        if (a === 'Lainnya') return 1;
+        if (b === 'Lainnya') return -1;
+        return Number(b) - Number(a);
+    });
+
+    const filtered = filterTahun ? displayItems.filter(g => String(g.tahun) === filterTahun) : displayItems;
 
     return (
         <PublicLayout>
@@ -56,39 +47,59 @@ export default function Galeri() {
 
                     {/* Grid */}
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                        {filtered.map((item, i) => (
+                        {filtered.length > 0 ? filtered.map((item, i) => (
                             <button key={item.id} onClick={() => setSelected(item)}
                                 className="group relative aspect-square rounded-lg overflow-hidden border border-slate-200 hover:border-[#0d9488] hover:shadow-md transition-all text-left">
-                                <div className="absolute inset-0 flex items-center justify-center"
-                                    style={{ backgroundColor: PLACEHOLDER_COLORS[i % PLACEHOLDER_COLORS.length] + '22' }}>
-                                    <Image className="h-10 w-10 opacity-30" style={{ color: PLACEHOLDER_COLORS[i % PLACEHOLDER_COLORS.length] }} />
+                                <div className="absolute inset-0 flex items-center justify-center bg-slate-100">
+                                    <img 
+                                        src={item.image} 
+                                        alt={item.title} 
+                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                    />
                                 </div>
-                                <div className="absolute inset-0 bg-[#1e293b]/0 group-hover:bg-[#1e293b]/70 transition-all flex items-end">
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/60 transition-all flex items-end">
                                     <div className="p-3 text-white opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <p className="text-xs font-semibold leading-snug line-clamp-2">{item.judul}</p>
+                                        <p className="text-xs font-semibold leading-snug line-clamp-2">{item.title}</p>
                                         <p className="text-[10px] text-[#0d9488] mt-1">{item.tahun}</p>
                                     </div>
                                 </div>
                             </button>
-                        ))}
+                        )) : (
+                            <div className="col-span-full py-20 text-center text-slate-400">
+                                Belum ada dokumentasi foto untuk tahun ini.
+                            </div>
+                        )}
                     </div>
                 </div>
             </section>
 
             {/* Lightbox */}
             {selected && (
-                <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" onClick={() => setSelected(null)}>
-                    <div className="bg-white rounded-lg max-w-lg w-full overflow-hidden" onClick={e => e.stopPropagation()}>
-                        <div className="bg-[#1e293b] h-64 flex items-center justify-center relative">
-                            <Image className="h-20 w-20 text-[#0d9488]" />
+                <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4" onClick={() => setSelected(null)}>
+                    <div className="bg-white rounded-xl max-w-4xl w-full overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
+                        <div className="relative bg-slate-900 min-h-[300px] flex items-center justify-center">
+                            <img 
+                                src={selected.image} 
+                                alt={selected.title} 
+                                className="max-w-full max-h-[70vh] object-contain"
+                            />
                             <button onClick={() => setSelected(null)}
-                                className="absolute top-3 right-3 h-8 w-8 bg-white/10 rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-colors">
-                                <X className="h-4 w-4" />
+                                className="absolute top-4 right-4 h-10 w-10 bg-black/50 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-colors">
+                                <X className="h-6 w-6" />
                             </button>
                         </div>
-                        <div className="p-4">
-                            <p className="font-semibold text-[#1e293b]">{selected.judul}</p>
-                            <p className="text-sm text-slate-500 mt-1">{selected.kategori} · {selected.tahun}</p>
+                        <div className="p-6 bg-white">
+                            <h3 className="text-lg font-bold text-[#1e293b]">{selected.title}</h3>
+                            <div className="flex items-center gap-2 mt-2">
+                                <span className="text-xs font-bold px-2 py-1 bg-teal-50 text-[#0d9488] rounded">
+                                    {selected.tahun}
+                                </span>
+                                {selected.date && (
+                                    <span className="text-xs text-slate-400">
+                                        Diunggah pada {new Date(selected.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+                                    </span>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
