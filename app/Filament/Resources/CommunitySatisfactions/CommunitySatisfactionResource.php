@@ -24,7 +24,7 @@ class CommunitySatisfactionResource extends Resource
     protected static ?string $modelLabel = 'Data IKM';
     protected static ?string $pluralModelLabel = 'Indeks Kepuasan Masyarakat (IKM)';
     protected static ?string $navigationLabel = 'IKM (Survey Kepuasan)';
-    protected static ?string $navigationGroup = 'Layanan & Interaksi';
+    protected static \BackedEnum|string|null $navigationGroup = 'Layanan & Interaksi';
 
     protected static ?string $recordTitleAttribute = 'gender';
 

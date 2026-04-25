@@ -24,7 +24,7 @@ class VideoContentResource extends Resource
 
     protected static ?string $navigationLabel = 'Management Video Konten';
 
-    protected static ?string $navigationGroup = 'Berita & Media';
+    protected static \BackedEnum|string|null $navigationGroup = 'Berita & Media';
 
     protected static ?int $navigationSort = 9;
 

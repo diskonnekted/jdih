@@ -24,7 +24,7 @@ class ElectronicDocumentResource extends Resource
 
     protected static ?string $navigationLabel = 'Management PH elektronik';
 
-    protected static ?string $navigationGroup = 'Produk Hukum';
+    protected static \UnitEnum|string|null $navigationGroup = 'Produk Hukum';
 
     protected static ?int $navigationSort = 3;
 

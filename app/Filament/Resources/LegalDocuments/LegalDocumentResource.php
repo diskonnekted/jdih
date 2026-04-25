@@ -24,7 +24,7 @@ class LegalDocumentResource extends Resource
 
     protected static ?string $modelLabel = 'Produk Hukum';
     protected static ?string $pluralModelLabel = 'Produk Hukum';
-    protected static ?string $navigationGroup = 'Produk Hukum';
+    protected static \BackedEnum|string|null $navigationGroup = 'Produk Hukum';
 
     protected static \BackedEnum|string|null $navigationIcon = Heroicon::OutlinedScale;
 

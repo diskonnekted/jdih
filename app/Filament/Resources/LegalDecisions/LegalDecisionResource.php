@@ -24,7 +24,7 @@ class LegalDecisionResource extends Resource
     protected static ?string $pluralModelLabel = 'Putusan Hukum';
     protected static ?string $navigationLabel = 'Putusan Hukum';
 
-    protected static ?string $navigationGroup = 'Produk Hukum';
+    protected static \UnitEnum|string|null $navigationGroup = 'Produk Hukum';
 
     protected static ?int $navigationSort = 2;
 

@@ -24,7 +24,7 @@ class SurveyResource extends Resource
 
     protected static ?string $navigationLabel = 'Management Link Survey';
 
-    protected static ?string $navigationGroup = 'Layanan & Interaksi';
+    protected static \BackedEnum|string|null $navigationGroup = 'Layanan & Interaksi';
 
     protected static ?int $navigationSort = 5;
 

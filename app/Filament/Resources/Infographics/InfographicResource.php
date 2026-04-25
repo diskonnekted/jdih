@@ -21,7 +21,7 @@ class InfographicResource extends Resource
     protected static ?string $modelLabel = 'Infografis';
     protected static ?string $pluralModelLabel = 'Infografis';
     protected static ?string $navigationLabel = 'Infografis';
-    protected static ?string $navigationGroup = 'Berita & Media';
+    protected static \BackedEnum|string|null $navigationGroup = 'Berita & Media';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 

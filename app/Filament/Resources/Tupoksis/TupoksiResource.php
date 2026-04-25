@@ -20,7 +20,7 @@ class TupoksiResource extends Resource
 
     protected static ?string $navigationLabel = 'Tupoksi Bagian Hukum';
 
-    protected static ?string $navigationGroup = 'Profil Instansi';
+    protected static \BackedEnum|string|null $navigationGroup = 'Profil Instansi';
 
     protected static ?int $navigationSort = 3;
 

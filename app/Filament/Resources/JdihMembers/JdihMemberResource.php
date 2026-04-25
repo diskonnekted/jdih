@@ -24,7 +24,7 @@ class JdihMemberResource extends Resource
 
     protected static ?string $navigationLabel = 'Management Anggota JDIH';
 
-    protected static ?string $navigationGroup = 'Profil Instansi';
+    protected static \BackedEnum|string|null $navigationGroup = 'Profil Instansi';
 
     protected static ?int $navigationSort = 6;
 
