@@ -159,8 +159,19 @@ Route::post('/community-satisfaction', [\App\Http\Controllers\CommunitySatisfact
 // ---------------------------------------------------------------
 // INFORMASI
 // ---------------------------------------------------------------
-Route::get('/berita',        fn() => Inertia::render('Informasi/Berita'));
-Route::get('/berita/{slug}', fn(string $slug) => Inertia::render('Informasi/DetailBerita', ['slug' => $slug]));
+// INFORMASI
+// ---------------------------------------------------------------
+Route::get('/berita',          function() {
+    return Inertia::render('Informasi/Berita', [
+        'news' => \App\Models\Post::latest()->paginate(9)
+    ]);
+});
+Route::get('/berita/{slug}',    function($slug) {
+    $post = \App\Models\Post::where('slug', $slug)->firstOrFail();
+    return Inertia::render('Informasi/DetailBerita', [
+        'post' => $post
+    ]);
+});
 Route::get('/galeri',        fn() => Inertia::render('Informasi/Galeri'));
 Route::get('/video',         fn() => Inertia::render('Informasi/Video'));
 Route::get('/unduh',         fn() => Inertia::render('Informasi/Download'));
