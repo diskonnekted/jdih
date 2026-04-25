@@ -154,6 +154,7 @@ class LegalDocumentForm
                                     ->hint('Abstrak harus searchable dan memuat latar belakang, rumusan masalah, dan isi pokok.'),
                                 FileUpload::make('file_path')
                                     ->label('File PDF Utama (Searchable)')
+                                    ->disk('public')
                                     ->directory(fn ($get) => 'legal-documents/' . ($get('year') ?? date('Y')) . '/' . ($get('category_id') ?? 'uncategorized'))
                                     ->acceptedFileTypes(['application/pdf'])
                                     ->maxSize(5120) // 5MB sesuai standar JDIHN

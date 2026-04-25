@@ -22,6 +22,7 @@ class BannerForm
                 FileUpload::make('image_path')
                     ->label('Gambar Utama (Hero)')
                     ->image()
+                    ->disk('public')
                     ->directory('banners')
                     ->required(),
                 

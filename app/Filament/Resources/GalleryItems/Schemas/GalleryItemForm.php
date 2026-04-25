@@ -23,6 +23,7 @@ class GalleryItemForm
                 FileUpload::make('image_path')
                     ->label('File Foto')
                     ->image()
+                    ->disk('public')
                     ->directory('gallery')
                     ->required()
                     ->columnSpanFull(),

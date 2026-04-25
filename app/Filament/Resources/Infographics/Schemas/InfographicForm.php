@@ -24,6 +24,7 @@ class InfographicForm
                         FileUpload::make('image_path')
                             ->label('File Gambar')
                             ->image()
+                            ->disk('public')
                             ->directory('infographics')
                             ->required(),
                         TextInput::make('sort_order')

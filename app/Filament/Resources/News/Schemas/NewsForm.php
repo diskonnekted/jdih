@@ -43,6 +43,7 @@ class NewsForm
                 FileUpload::make('image')
                     ->label('Gambar Utama')
                     ->image()
+                    ->disk('public')
                     ->directory('news-images')
                     ->nullable(),
                 
