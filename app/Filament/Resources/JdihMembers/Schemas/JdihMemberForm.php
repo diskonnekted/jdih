@@ -22,6 +22,7 @@ class JdihMemberForm
                 FileUpload::make('photo_path')
                     ->label('Foto Profil')
                     ->image()
+                    ->disk('public')
                     ->directory('members')
                     ->required(),
             ]);
