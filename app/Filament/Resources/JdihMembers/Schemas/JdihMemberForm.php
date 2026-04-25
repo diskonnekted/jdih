@@ -14,17 +14,23 @@ class JdihMemberForm
         return $schema
             ->components([
                 TextInput::make('name')
-                    ->label('Nama Lengkap')
+                    ->label('Nama Lengkap / Instansi')
                     ->required(),
+                TextInput::make('category')
+                    ->label('Kategori')
+                    ->placeholder('e.g. Perangkat Daerah, Legislatif, Kabupaten/Kota'),
+                TextInput::make('url')
+                    ->label('Website URL')
+                    ->url(),
                 TextInput::make('position')
-                    ->label('Jabatan / Instansi')
-                    ->required(),
+                    ->label('Jabatan')
+                    ->helperText('Hanya untuk profil staf'),
                 FileUpload::make('photo_path')
                     ->label('Foto Profil')
                     ->image()
                     ->disk('public')
                     ->directory('members')
-                    ->required(),
+                    ->helperText('Hanya untuk profil staf'),
             ]);
     }
 }

@@ -1,3 +1,73 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    .profile-content-premium {
+        @apply space-y-10;
+    }
+
+    .profile-content-premium h2, 
+    .profile-content-premium h3 {
+        @apply flex items-center gap-4 px-6 py-4 bg-[#1e293b] text-white font-bold text-lg rounded-t-xl -mx-8 mb-6 mt-10;
+    }
+
+    .profile-content-premium h2:first-child,
+    .profile-content-premium h3:first-child {
+        @apply -mt-8;
+    }
+
+    /* Style for the first heading to be Teal if needed, or alternating */
+    .profile-content-premium h2:first-of-type,
+    .profile-content-premium h3:first-of-type {
+        @apply bg-[#0d9488];
+    }
+
+    .profile-content-premium p {
+        @apply text-slate-700 leading-relaxed text-[16px] mb-6 px-0;
+    }
+
+    /* Blockquote style (often used for Visi) */
+    .profile-content-premium blockquote {
+        @apply border-l-4 border-[#0d9488] pl-6 text-[#1e293b] text-lg font-medium leading-relaxed italic my-8;
+    }
+
+    /* List style (used for Misi and Functions) */
+    .profile-content-premium ol {
+        @apply space-y-5 list-none p-0;
+        counter-reset: profile-counter;
+    }
+
+    .profile-content-premium ol > li {
+        @apply flex items-start gap-4 relative;
+        counter-increment: profile-counter;
+    }
+
+    .profile-content-premium ol > li::before {
+        content: counter(profile-counter);
+        @apply h-8 w-8 bg-[#0d9488] text-white rounded-lg flex items-center justify-center font-bold text-sm shrink-0 mt-0.5;
+    }
+
+    .profile-content-premium ul {
+        @apply space-y-4 list-none p-0;
+    }
+
+    .profile-content-premium ul > li {
+        @apply flex items-start gap-4 relative;
+    }
+
+    .profile-content-premium ul > li::before {
+        content: "✓";
+        @apply h-6 w-6 bg-[#0d9488]/10 text-[#0d9488] rounded-full flex items-center justify-center font-bold text-xs shrink-0 mt-1;
+    }
+
+    /* Wrapper for the card body */
+    .profile-card-wrapper {
+        @apply bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm p-8 transition-all hover:shadow-md;
+    }
+
+    /* Image handling */
+    .profile-content-premium img {
+        @apply rounded-xl border border-slate-200 shadow-sm mx-auto my-8 max-w-full h-auto;
+    }
+}

@@ -6,5 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class JdihMember extends Model
 {
-    protected $fillable = ['name', 'position', 'photo_path', 'sort_order'];
+    protected $fillable = [
+        'name',
+        'position',
+        'photo_path',
+        'url',
+        'category',
+        'sort_order',
+    ];
 }

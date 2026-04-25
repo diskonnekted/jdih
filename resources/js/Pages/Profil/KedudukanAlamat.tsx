@@ -65,8 +65,8 @@ export default function KedudukanAlamat({ item }: { item?: any }) {
             <section className="py-12 px-6 bg-slate-50">
                 <div className="max-w-5xl mx-auto">
                     {item ? (
-                        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm p-8 prose prose-slate max-w-none">
-                            <div dangerouslySetInnerHTML={{ __html: item.content }} />
+                        <div className="profile-card-wrapper">
+                            <div className="profile-content-premium" dangerouslySetInnerHTML={{ __html: item.content }} />
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

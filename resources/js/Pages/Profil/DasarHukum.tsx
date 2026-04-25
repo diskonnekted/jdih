@@ -32,8 +32,8 @@ export default function DasarHukum({ item }: { item?: any }) {
             <section className="py-12 px-6">
                 <div className="max-w-5xl mx-auto">
                     {item ? (
-                        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm p-8 prose prose-slate max-w-none">
-                            <div dangerouslySetInnerHTML={{ __html: item.content }} />
+                        <div className="profile-card-wrapper">
+                            <div className="profile-content-premium" dangerouslySetInnerHTML={{ __html: item.content }} />
                         </div>
                     ) : (
                         <div className="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">

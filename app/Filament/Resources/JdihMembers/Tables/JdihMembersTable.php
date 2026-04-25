@@ -18,17 +18,26 @@ class JdihMembersTable
                 TextColumn::make('row_index')
                     ->label('No')
                     ->rowIndex(),
-                ImageColumn::make('photo_path')
-                    ->label('Foto')
-                    ->circular(),
                 TextColumn::make('name')
                     ->label('Nama')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('position')
-                    ->label('Jabatan / Instansi')
+                TextColumn::make('category')
+                    ->label('Kategori')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('url')
+                    ->label('Website')
+                    ->searchable(),
+                TextColumn::make('position')
+                    ->label('Jabatan')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                ImageColumn::make('photo_path')
+                    ->label('Foto')
+                    ->circular()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
