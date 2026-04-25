@@ -90,6 +90,28 @@ const NAV_ITEMS = [
     {
         label: 'Monografi Hukum',
         children: [
+            { label: 'Naskah Akademik', href: '/naskah-akademik' },
+            { label: 'Raperda', href: '/raperda' },
+            { label: 'Analisis Dan Evaluasi Hukum', href: '/analisis-evaluasi-hukum' },
+            { 
+                label: 'Hasil Fasilitasi', 
+                href: '#',
+                children: [
+                    { label: 'Hasil Fasilitasi Raperda Provinsi', href: '/fasilitasi-provinsi' },
+                    { label: 'Hasil Fasilitasi Raperda Kabupaten/Kota', href: '/fasilitasi-kabupaten-kota' },
+                ]
+            },
+            { 
+                label: 'Surat Edaran', 
+                href: '#',
+                children: [
+                    { label: 'Bupati/Wakil Bupati', href: '/surat-edaran-bupati' },
+                    { label: 'Sekretaris Daerah', href: '/surat-edaran-sekda' },
+                    { label: 'Kepala OPD', href: '/surat-edaran-opd' },
+                ]
+            },
+            { label: 'RANHAM', href: '/ranham' },
+            { label: 'Risalah Rapat', href: '/risalah-rapat' },
             { label: 'Monografi Hukum', href: '/monografi-hukum' },
             { label: 'Buku Hukum', href: '/buku-hukum' },
         ]
