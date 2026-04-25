@@ -163,11 +163,11 @@ Route::post('/community-satisfaction', [\App\Http\Controllers\CommunitySatisfact
 // ---------------------------------------------------------------
 Route::get('/berita',          function() {
     return Inertia::render('Informasi/Berita', [
-        'news' => \App\Models\Post::latest()->paginate(9)
+        'news' => \App\Models\News::latest()->paginate(9)
     ]);
 });
 Route::get('/berita/{slug}',    function($slug) {
-    $post = \App\Models\Post::where('slug', $slug)->firstOrFail();
+    $post = \App\Models\News::where('slug', $slug)->firstOrFail();
     return Inertia::render('Informasi/DetailBerita', [
         'post' => $post
     ]);
