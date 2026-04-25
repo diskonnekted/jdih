@@ -6,6 +6,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Table;
 
 class VideoContentsTable
@@ -17,14 +18,25 @@ class VideoContentsTable
                 TextColumn::make('row_index')
                     ->label('No')
                     ->rowIndex(),
+                ImageColumn::make('thumbnail_path')
+                    ->label('Cover')
+                    ->circular(),
                 TextColumn::make('title')
                     ->label('Judul Video')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('video_url')
-                    ->label('URL Video')
-                    ->limit(50)
-                    ->searchable(),
+                TextColumn::make('platform')
+                    ->label('Platform')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'TikTok' => 'gray',
+                        'Instagram' => 'danger',
+                        'Youtube' => 'info',
+                        default => 'gray',
+                    }),
+                TextColumn::make('year')
+                    ->label('Tahun')
+                    ->sortable(),
             ])
             ->filters([
                 //

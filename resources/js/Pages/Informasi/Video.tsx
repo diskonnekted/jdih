@@ -42,14 +42,14 @@ export default function Video({ items = [] }: { items?: any[] }) {
                                 {/* Thumbnail */}
                                 <div className="aspect-video bg-[#1e293b] flex items-center justify-center relative overflow-hidden">
                                     <img 
-                                        src={v.image || '/images/video-placeholder.png'} 
+                                        src={v.thumbnail_path ? `/storage/${v.thumbnail_path}` : (v.image || '/images/video-placeholder.png')} 
                                         alt={v.title} 
-                                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-60" 
+                                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80" 
                                     />
-                                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all" />
-                                    <div className="relative z-10 h-16 w-16 bg-[#0d9488] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-2xl">
-                                        <Play className="h-7 w-7 text-white ml-1 fill-white" />
-                                    </div>
+                                    <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all" />
+                                    <div className="relative z-10 h-16 w-16 bg-[#0d9488]/90 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-2xl backdrop-blur-sm">
+                                         <Play className="h-7 w-7 text-white ml-1 fill-white" />
+                                     </div>
                                     <div className="absolute top-4 right-4 z-10">
                                         <span className={`text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-full text-white ${v.platform === 'TikTok' ? 'bg-black' : 'bg-pink-600'}`}>
                                             {v.platform || 'Social'}

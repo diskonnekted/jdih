@@ -9,6 +9,10 @@ class VideoContent extends Model
     protected $fillable = [
         'title',
         'video_url',
+        'thumbnail_path',
+        'platform',
+        'duration',
+        'year',
         'description',
     ];
 }
