@@ -24,7 +24,7 @@ class SurveyResource extends Resource
 
     protected static ?string $navigationLabel = 'Management Link Survey';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Data Master';
+    protected static ?string $navigationGroup = 'Layanan & Interaksi';
 
     protected static ?int $navigationSort = 5;
 

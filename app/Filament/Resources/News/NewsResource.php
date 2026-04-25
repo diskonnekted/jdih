@@ -24,7 +24,7 @@ class NewsResource extends Resource
 
     protected static ?string $navigationLabel = 'Berita';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Berita & Media';
+    protected static ?string $navigationGroup = 'Berita & Media';
 
     protected static ?int $navigationSort = 1;
 

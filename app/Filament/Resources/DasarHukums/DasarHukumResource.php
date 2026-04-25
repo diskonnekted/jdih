@@ -20,7 +20,7 @@ class DasarHukumResource extends Resource
 
     protected static ?string $navigationLabel = 'Dasar Hukum';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Data Master Profile JDIH';
+    protected static ?string $navigationGroup = 'Profil Instansi';
 
     protected static ?int $navigationSort = 2;
 

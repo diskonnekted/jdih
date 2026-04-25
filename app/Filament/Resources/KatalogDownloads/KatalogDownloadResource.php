@@ -24,7 +24,7 @@ class KatalogDownloadResource extends Resource
     protected static ?string $pluralModelLabel = 'Pusat Unduhan';
     protected static ?string $navigationLabel = 'Pusat Unduhan';
 
-    protected static \UnitEnum|string|null $navigationGroup = null;
+    protected static ?string $navigationGroup = 'Data Master';
 
     protected static ?int $navigationSort = 5;
 

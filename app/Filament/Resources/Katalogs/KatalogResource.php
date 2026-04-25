@@ -24,7 +24,7 @@ class KatalogResource extends Resource
     protected static ?string $pluralModelLabel = 'Katalog Buku';
     protected static ?string $navigationLabel = 'Katalog Buku';
 
-    protected static \UnitEnum|string|null $navigationGroup = null;
+    protected static ?string $navigationGroup = 'Data Master';
 
     protected static ?int $navigationSort = 4;
 

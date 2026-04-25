@@ -24,7 +24,7 @@ class GalleryItemResource extends Resource
 
     protected static ?string $navigationLabel = 'Management Galeri';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Data Master';
+    protected static ?string $navigationGroup = 'Berita & Media';
 
     protected static ?int $navigationSort = 7;
 
