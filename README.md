@@ -9,7 +9,21 @@ Portal Jaringan Dokumentasi dan Informasi Hukum (JDIH) Kabupaten Banjarnegara ya
 
 ---
 
-## ✨ Fitur Unggulan
+## ✨ Fitur Unggulan Terbaru
+
+### 💎 Premium Profile Content
+- **Smart Dynamic System**: Menggabungkan konten teks dinamis dari database dengan elemen visual premium (grafis, peta, dan tabel) secara otomatis.
+- **Enhanced Pages**:
+  - **Visi & Misi**: Tampilan kutipan visi yang elegan.
+  - **Tugas & Fungsi**: Visualisasi tupoksi dengan ikonografi modern.
+  - **Kedudukan & Alamat**: Integrasi Google Maps dinamis dan informasi kontak interaktif.
+  - **Struktur Organisasi**: 3-tier diagram organisasi yang interaktif.
+  - **SOP**: Galeri alur kerja yang jernih untuk standar pelayanan.
+
+### 🎥 Management Video & Media
+- **Custom Covers**: Admin dapat mengunggah thumbnail kustom untuk setiap video media sosial (TikTok/Instagram/Youtube).
+- **Auto Metadata**: Penambahan informasi platform, durasi, dan tahun pada setiap konten video.
+- **Static Storage Path**: Penggunaan direktori `public/images/covers` untuk akses aset yang lebih cepat dan kompatibilitas server maksimal.
 
 ### 🖥️ Desktop Portal (Dual Experience)
 - **Classic Mode**: Tampilan korporat yang bersih dan formal dengan navigasi dropdown yang presisi.
@@ -19,59 +33,17 @@ Portal Jaringan Dokumentasi dan Informasi Hukum (JDIH) Kabupaten Banjarnegara ya
 ### 📱 Mobile PWA Experience
 - **Native-Look**: Antarmuka khusus mobile dengan *Bottom Navigation* ala aplikasi Android/iOS.
 - **PWA Integration**: Mendukung fitur "Add to Home Screen" untuk akses instan langsung dari ponsel.
-- **Performance**: Optimalisasi aset Vite untuk pemuatan halaman kilat di jaringan seluler.
-
-### 🛠️ Powerful Admin Dashboard (Filament v3)
-- **Statistik Interaktif**: Dashboard dengan bagan pengunjung dan tren produk hukum tahunan.
-- **Management Khusus**:
-  - **Produk Hukum**: Manajemen dokumen hukum dengan filter canggih.
-  - **Infografis Hukum**: Galeri visual (1:1 ratio) untuk edukasi hukum masyarakat.
-  - **Inovasi Desa**: Integrasi produk hukum desa via OpenSID API secara otomatis.
-- **Theme Switcher**: Dukungan Mode Terang (Light) dan Gelap (Dark) dengan mode terang sebagai default.
 
 ---
 
 ## 🚀 Tech Stack
 
 - **Backend**: Laravel 11
-- **Admin Panel**: Filament v3
+- **Admin Panel**: Filament v3 (Professional Dashboard)
 - **Frontend**: React.js with Inertia.js
-- **Styling**: Tailwind CSS
-- **PWA**: Custom Service Worker & Manifest integration
+- **Styling**: Vanilla CSS with Tailwind CSS Utilities
+- **Iconography**: Lucide React
 - **Database**: MySQL / MariaDB
-
----
-
-## 🛠️ Instalasi Lokal
-
-1. **Clone repository**:
-   ```bash
-   git clone https://github.com/diskonnekted/jdih.git
-   cd jdih
-   ```
-
-2. **Pasang dependensi**:
-   ```bash
-   composer install
-   npm install
-   ```
-
-3. **Konfigurasi Environment**:
-   ```bash
-   cp .env.example .env
-   php artisan key:generate
-   ```
-
-4. **Migrasi & Seed Database**:
-   ```bash
-   php artisan migrate --seed
-   ```
-
-5. **Build Aset & Jalankan**:
-   ```bash
-   npm run build
-   php artisan serve
-   ```
 
 ---
 
@@ -79,15 +51,23 @@ Portal Jaringan Dokumentasi dan Informasi Hukum (JDIH) Kabupaten Banjarnegara ya
 
 Aplikasi ini menggunakan sistem **Local Build** untuk memudahkan deployment di server yang tidak memiliki `npm`:
 
-1. Pastikan folder `public/build` sudah ter-upload (via `git push` dari lokal).
-2. Di terminal SSH server:
+1. **Build Aset di Lokal**:
+   ```bash
+   npm run build
+   git add .
+   git commit -m "build: finalized assets"
+   git push origin main
+   ```
+
+2. **Update di Server (SSH)**:
    ```bash
    git pull origin main
    php artisan migrate --force
-   php artisan livewire:publish --assets
+   php artisan storage:link
    php artisan optimize:clear
    ```
-3. Pastikan `APP_URL` di `.env` server menggunakan `https://`.
+
+3. **Penting**: Pastikan `APP_URL` di `.env` server menggunakan `https://` yang sesuai dengan domain utama.
 
 ---
 
