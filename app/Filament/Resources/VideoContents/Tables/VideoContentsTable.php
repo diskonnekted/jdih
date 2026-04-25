@@ -20,6 +20,7 @@ class VideoContentsTable
                     ->rowIndex(),
                 ImageColumn::make('thumbnail_path')
                     ->label('Cover')
+                    ->disk('public')
                     ->circular(),
                 TextColumn::make('title')
                     ->label('Judul Video')

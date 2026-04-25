@@ -26,7 +26,9 @@ class VideoContentForm
                 FileUpload::make('thumbnail_path')
                     ->label('Cover / Thumbnail')
                     ->image()
-                    ->directory('video-thumbnails'),
+                    ->disk('public')
+                    ->visibility('public')
+                    ->directory('covers'),
                 Select::make('platform')
                     ->options([
                         'TikTok' => 'TikTok',
