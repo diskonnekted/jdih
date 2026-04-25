@@ -26,7 +26,7 @@ class VideoContentForm
                 FileUpload::make('thumbnail_path')
                     ->label('Cover / Thumbnail')
                     ->image()
-                    ->disk('public')
+                    ->disk('static_images')
                     ->visibility('public')
                     ->directory('covers'),
                 Select::make('platform')

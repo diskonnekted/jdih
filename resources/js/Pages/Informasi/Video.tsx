@@ -42,7 +42,7 @@ export default function Video({ items = [] }: { items?: any[] }) {
                                 {/* Thumbnail */}
                                 <div className="aspect-video bg-[#1e293b] flex items-center justify-center relative overflow-hidden">
                                     <img 
-                                        src={v.thumbnail_path ? `/storage/${v.thumbnail_path}` : (v.image || '/images/video-placeholder.png')} 
+                                        src={v.thumbnail_path ? `/images/${v.thumbnail_path}` : (v.image || '/images/video-placeholder.png')} 
                                         alt={v.title} 
                                         className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80" 
                                     />
