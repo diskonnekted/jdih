@@ -20,7 +20,7 @@ class StrukturOrganisasiResource extends Resource
 
     protected static ?string $navigationLabel = 'Struktur Organisasi';
 
-    protected static \BackedEnum|string|null $navigationGroup = 'Profil Instansi';
+    protected static \UnitEnum|string|null $navigationGroup = 'Profil Instansi';
 
     protected static ?int $navigationSort = 5;
 

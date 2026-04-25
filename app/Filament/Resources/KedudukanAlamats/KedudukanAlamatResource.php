@@ -20,7 +20,7 @@ class KedudukanAlamatResource extends Resource
 
     protected static ?string $navigationLabel = 'Kedudukan dan Alamat';
 
-    protected static \BackedEnum|string|null $navigationGroup = 'Profil Instansi';
+    protected static \UnitEnum|string|null $navigationGroup = 'Profil Instansi';
 
     protected static ?int $navigationSort = 4;
 

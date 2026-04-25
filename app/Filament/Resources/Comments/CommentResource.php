@@ -31,7 +31,7 @@ class CommentResource extends Resource
     protected static ?string $modelLabel = 'Komentar Pengunjung';
     protected static ?string $pluralModelLabel = 'Komentar Pengunjung';
     protected static ?string $navigationLabel = 'Komentar Pengunjung';
-    protected static \BackedEnum|string|null $navigationGroup = 'Layanan & Interaksi';
+    protected static \UnitEnum|string|null $navigationGroup = 'Layanan & Interaksi';
 
     protected static ?string $recordTitleAttribute = 'name';
 

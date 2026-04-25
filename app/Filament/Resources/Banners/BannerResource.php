@@ -25,7 +25,7 @@ class BannerResource extends Resource
     protected static ?string $modelLabel = 'Banner';
     protected static ?string $pluralModelLabel = 'Banner Beranda';
     protected static ?string $navigationLabel = 'Banner Beranda';
-    protected static \BackedEnum|string|null $navigationGroup = 'Berita & Media';
+    protected static \UnitEnum|string|null $navigationGroup = 'Berita & Media';
 
     protected static ?int $navigationSort = 4;
 

@@ -24,7 +24,7 @@ class CategoryResource extends Resource
     protected static ?string $pluralModelLabel = 'Jenis Produk Hukum';
     protected static ?string $navigationLabel = 'Jenis Produk Hukum';
 
-    protected static \BackedEnum|string|null $navigationGroup = 'Produk Hukum';
+    protected static \UnitEnum|string|null $navigationGroup = 'Produk Hukum';
 
     protected static ?int $navigationSort = 1;
 

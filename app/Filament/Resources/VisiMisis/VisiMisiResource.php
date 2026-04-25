@@ -20,7 +20,7 @@ class VisiMisiResource extends Resource
 
     protected static ?string $navigationLabel = 'Visi Misi';
 
-    protected static \BackedEnum|string|null $navigationGroup = 'Profil Instansi';
+    protected static \UnitEnum|string|null $navigationGroup = 'Profil Instansi';
 
     protected static ?int $navigationSort = 1;
 

@@ -20,7 +20,7 @@ class DasarHukumResource extends Resource
 
     protected static ?string $navigationLabel = 'Dasar Hukum';
 
-    protected static \BackedEnum|string|null $navigationGroup = 'Profil Instansi';
+    protected static \UnitEnum|string|null $navigationGroup = 'Profil Instansi';
 
     protected static ?int $navigationSort = 2;
 
