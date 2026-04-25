@@ -11,4 +11,8 @@ class GalleryItem extends Model
         'image_path',
         'date',
     ];
+
+    protected $casts = [
+        'date' => 'date',
+    ];
 }
