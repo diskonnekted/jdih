@@ -36,8 +36,8 @@ class AdminPanelProvider extends PanelProvider
                 'warning' => Color::Orange,
                 'danger' => Color::Rose,
             ])
-            ->darkMode(false)
-            ->defaultThemeMode(ThemeMode::Light)
+            ->darkMode(true)
+            ->defaultThemeMode(ThemeMode::System)
             ->font('Outfit')
             ->brandName('JDIH Banjarnegara')
             ->brandLogo(asset('images/logo-jdih.png'))
@@ -49,13 +49,11 @@ class AdminPanelProvider extends PanelProvider
                     <style>
                         .fi-simple-main-ctn { 
                             padding: 3rem !important; 
-                            background: #f1f5f9 !important;
                         }
                         .fi-simple-card { 
                             border-radius: 3rem !important; 
                             padding: 4rem !important; 
                             box-shadow: 0 25px 50px -12px rgba(13, 148, 136, 0.25) !important;
-                            border: 1px solid #e2e8f0 !important;
                         }
                         .fi-logo {
                             background: #0f172a;
@@ -74,7 +72,6 @@ class AdminPanelProvider extends PanelProvider
                         .fi-simple-header-heading {
                             font-size: 2rem !important;
                             font-weight: 900 !important;
-                            color: #0f172a !important;
                         }
                         /* Captcha Label Styling */
                         [data-field-name="captcha"] label span {
