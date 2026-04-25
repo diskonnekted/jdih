@@ -4,21 +4,25 @@ namespace App\Filament\Resources\VisiMisis;
 
 use App\Models\ProfileItem;
 use App\Filament\Resources\VisiMisis\Pages\ManageVisiMisis;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\RichEditor;
+use App\Filament\Resources\VisiMisis\Schemas\VisiMisiForm;
+use App\Filament\Resources\VisiMisis\Tables\VisiMisisTable;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class VisiMisiResource extends Resource
 {
     protected static ?string $model = ProfileItem::class;
 
-    protected static \BackedEnum|string|null $navigationIcon = Heroicon::OutlinedDocumentText;
+    protected static ?string $slug = 'visi-misi';
 
+    protected static ?string $modelLabel = 'Visi Misi';
+    protected static ?string $pluralModelLabel = 'Visi Misi';
     protected static ?string $navigationLabel = 'Visi Misi';
+
+    protected static \BackedEnum|string|null $navigationIcon = Heroicon::OutlinedDocumentText;
 
     protected static \UnitEnum|string|null $navigationGroup = 'Profil Instansi';
 
@@ -28,35 +32,17 @@ class VisiMisiResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                TextInput::make('title')
-                    ->required()
-                    ->maxLength(255),
-                RichEditor::make('content')
-                    ->required()
-                    ->columnSpanFull(),
-            ]);
-    }
-
-    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
-    {
-        return parent::getEloquentQuery()->where('slug', 'visi-misi');
+        return VisiMisiForm::configure($schema);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                TextColumn::make('title'),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->label('Terakhir Diubah'),
-            ])
-            ->actions([
-                \Filament\Tables\Actions\EditAction::make()->button()->color('success'),
-            ])
-            ->bulkActions([]);
+        return VisiMisisTable::configure($table);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->where('slug', 'visi-misi');
     }
 
     public static function getPages(): array

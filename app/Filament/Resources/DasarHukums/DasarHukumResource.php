@@ -4,59 +4,42 @@ namespace App\Filament\Resources\DasarHukums;
 
 use App\Models\ProfileItem;
 use App\Filament\Resources\DasarHukums\Pages\ManageDasarHukums;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\RichEditor;
+use App\Filament\Resources\DasarHukums\Schemas\DasarHukumForm;
+use App\Filament\Resources\DasarHukums\Tables\DasarHukumsTable;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class DasarHukumResource extends Resource
 {
     protected static ?string $model = ProfileItem::class;
 
-    protected static \BackedEnum|string|null $navigationIcon = Heroicon::OutlinedDocumentText;
-
+    protected static ?string $modelLabel = 'Dasar Hukum';
+    protected static ?string $pluralModelLabel = 'Dasar Hukum';
     protected static ?string $navigationLabel = 'Dasar Hukum';
+
+    protected static \BackedEnum|string|null $navigationIcon = Heroicon::OutlinedDocumentText;
 
     protected static \UnitEnum|string|null $navigationGroup = 'Profil Instansi';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 4;
 
     protected static ?string $recordTitleAttribute = 'title';
 
     public static function form(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                TextInput::make('title')
-                    ->required()
-                    ->maxLength(255),
-                RichEditor::make('content')
-                    ->required()
-                    ->columnSpanFull(),
-            ]);
+        return DasarHukumForm::configure($schema);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return DasarHukumsTable::configure($table);
     }
 
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
         return parent::getEloquentQuery()->where('slug', 'dasar-hukum');
-    }
-
-    public static function table(Table $table): Table
-    {
-        return $table
-            ->columns([
-                TextColumn::make('title'),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->label('Terakhir Diubah'),
-            ])
-            ->actions([
-                \Filament\Tables\Actions\EditAction::make()->button()->color('success'),
-            ])
-            ->bulkActions([]);
     }
 
     public static function getPages(): array

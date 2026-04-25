@@ -4,21 +4,22 @@ namespace App\Filament\Resources\Tupoksis;
 
 use App\Models\ProfileItem;
 use App\Filament\Resources\Tupoksis\Pages\ManageTupoksis;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\RichEditor;
+use App\Filament\Resources\Tupoksis\Schemas\TupoksiForm;
+use App\Filament\Resources\Tupoksis\Tables\TupoksisTable;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class TupoksiResource extends Resource
 {
     protected static ?string $model = ProfileItem::class;
 
-    protected static \BackedEnum|string|null $navigationIcon = Heroicon::OutlinedDocumentText;
-
+    protected static ?string $modelLabel = 'Tupoksi Bagian Hukum';
+    protected static ?string $pluralModelLabel = 'Tupoksi Bagian Hukum';
     protected static ?string $navigationLabel = 'Tupoksi Bagian Hukum';
+
+    protected static \BackedEnum|string|null $navigationIcon = Heroicon::OutlinedDocumentText;
 
     protected static \UnitEnum|string|null $navigationGroup = 'Profil Instansi';
 
@@ -28,35 +29,17 @@ class TupoksiResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                TextInput::make('title')
-                    ->required()
-                    ->maxLength(255),
-                RichEditor::make('content')
-                    ->required()
-                    ->columnSpanFull(),
-            ]);
+        return TupoksiForm::configure($schema);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return TupoksisTable::configure($table);
     }
 
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
         return parent::getEloquentQuery()->where('slug', 'tupoksi');
-    }
-
-    public static function table(Table $table): Table
-    {
-        return $table
-            ->columns([
-                TextColumn::make('title'),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->label('Terakhir Diubah'),
-            ])
-            ->actions([
-                \Filament\Tables\Actions\EditAction::make()->button()->color('success'),
-            ])
-            ->bulkActions([]);
     }
 
     public static function getPages(): array

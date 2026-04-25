@@ -36,7 +36,27 @@ const KATEGORI_COLORS: Record<string, string> = {
     'UPTD': '#f59e0b',
 };
 
-export default function AnggotaJdih() {
+export default function AnggotaJdih({ members = [] }: { members?: any[] }) {
+    const ANGGOTA_DEFAULT = [
+        { no: 1, nama: 'Sekretariat Daerah Kab. Banjarnegara', url: 'https://setda.banjarnegarakab.go.id', kategori: 'Perangkat Daerah' },
+        { no: 2, nama: 'DPRD Kab. Banjarnegara', url: 'https://dprd.banjarnegarakab.go.id', kategori: 'Legislatif' },
+        { no: 3, nama: 'Inspektorat Daerah', url: 'https://inspektorat.banjarnegarakab.go.id', kategori: 'Perangkat Daerah' },
+    ];
+
+    const displayMembers = members.length > 0 ? members.map((m, i) => ({
+        no: i + 1,
+        nama: m.name,
+        url: m.url,
+        kategori: m.category || 'Perangkat Daerah'
+    })) : ANGGOTA_DEFAULT;
+
+    const KATEGORI_COLORS: Record<string, string> = {
+        'Perangkat Daerah': '#0d9488',
+        'Legislatif': '#1e293b',
+        'Dinas': '#6366f1',
+        'UPTD': '#f59e0b',
+    };
+
     return (
         <PublicLayout>
             <Head title="Anggota JDIH Banjarnegara – JDIH Banjarnegara" />
@@ -55,7 +75,7 @@ export default function AnggotaJdih() {
                                 <div>
                                     <div className="text-xs text-slate-500">{kat}</div>
                                     <div className="font-bold text-[#1e293b]">
-                                        {ANGGOTA.filter(a => a.kategori === kat).length} OPD
+                                        {displayMembers.filter(a => a.kategori === kat).length} OPD
                                     </div>
                                 </div>
                             </div>
@@ -63,37 +83,39 @@ export default function AnggotaJdih() {
                     </div>
 
                     {/* Table */}
-                    <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
+                    <div className="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
                         <div className="bg-[#1e293b] px-6 py-4 flex items-center gap-3">
                             <Building2 className="h-5 w-5 text-[#0d9488]" />
-                            <h2 className="text-white font-bold">Daftar Anggota JDIH ({ANGGOTA.length} OPD)</h2>
+                            <h2 className="text-white font-bold">Daftar Anggota JDIH ({displayMembers.length} OPD)</h2>
                         </div>
                         <div className="overflow-x-auto">
                             <table className="w-full text-sm">
                                 <thead>
                                     <tr className="bg-slate-50 border-b border-slate-200">
-                                        <th className="px-4 py-3 text-left text-[#1e293b] font-bold w-12">No</th>
+                                        <th className="px-4 py-3 text-left text-[#1e293b] font-bold w-12 text-center">No</th>
                                         <th className="px-4 py-3 text-left text-[#1e293b] font-bold">Nama Instansi</th>
                                         <th className="px-4 py-3 text-left text-[#1e293b] font-bold">Kategori</th>
                                         <th className="px-4 py-3 text-left text-[#1e293b] font-bold">Website</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {ANGGOTA.map((a, i) => (
-                                        <tr key={a.no} className={`border-b border-slate-100 hover:bg-slate-50 transition-colors ${i % 2 !== 0 ? 'bg-slate-50/40' : ''}`}>
+                                    {displayMembers.map((a, i) => (
+                                        <tr key={i} className={`border-b border-slate-100 hover:bg-slate-50 transition-colors ${i % 2 !== 0 ? 'bg-slate-50/40' : ''}`}>
                                             <td className="px-4 py-3 text-center text-slate-400 font-mono text-xs">{String(a.no).padStart(2, '0')}</td>
                                             <td className="px-4 py-3 font-medium text-[#1e293b]">{a.nama}</td>
                                             <td className="px-4 py-3">
-                                                <span className="text-xs font-bold px-2 py-1 rounded text-white"
+                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded text-white uppercase tracking-wider"
                                                     style={{ backgroundColor: KATEGORI_COLORS[a.kategori] ?? '#0d9488' }}>
                                                     {a.kategori}
                                                 </span>
                                             </td>
                                             <td className="px-4 py-3">
-                                                <a href={a.url} target="_blank" rel="noreferrer"
-                                                    className="flex items-center gap-1 text-[#0d9488] hover:text-teal-700 transition-colors text-xs">
-                                                    <Globe className="h-3.5 w-3.5" /> Kunjungi
-                                                </a>
+                                                {a.url ? (
+                                                    <a href={a.url} target="_blank" rel="noreferrer"
+                                                        className="flex items-center gap-1 text-[#0d9488] hover:text-teal-700 transition-colors text-xs font-semibold">
+                                                        <Globe className="h-3.5 w-3.5" /> Kunjungi
+                                                    </a>
+                                                ) : <span className="text-slate-300 text-xs">-</span>}
                                             </td>
                                         </tr>
                                     ))}

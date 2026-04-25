@@ -12,6 +12,9 @@ use Inertia\Inertia;
 // ---------------------------------------------------------------
 // HOME
 // ---------------------------------------------------------------
+// ---------------------------------------------------------------
+// HOME
+// ---------------------------------------------------------------
 Route::get('/', function () {
     $latestNews = \App\Models\News::where('status', 'published')
         ->orderBy('published_at', 'desc')
@@ -65,6 +68,8 @@ Route::get('/', function () {
             ->mapWithKeys(fn($item) => [$item->category->name ?? 'unknown' => $item->total]);
     });
 
+    $videos = \App\Models\VideoContent::latest()->take(3)->get();
+
     return Inertia::render('Welcome', [
         'canLogin'       => Route::has('login'),
         'canRegister'    => Route::has('register'),
@@ -74,6 +79,7 @@ Route::get('/', function () {
         'infographics'   => $infographics,
         'latestDocs'     => $latestLegalDocs,
         'counts'         => $counts,
+        'videos'         => $videos,
         'banner'         => $activeBanner ? [
             'id' => $activeBanner->id,
             'title' => $activeBanner->title,
@@ -86,13 +92,42 @@ Route::get('/', function () {
 // ---------------------------------------------------------------
 // PROFIL
 // ---------------------------------------------------------------
-Route::get('/visi-misi',            fn() => Inertia::render('Profil/VisiMisi'));
-Route::get('/dasar-hukum',          fn() => Inertia::render('Profil/DasarHukum'));
-Route::get('/struktur-organisasi',  fn() => Inertia::render('Profil/StrukturOrganisasi'));
-Route::get('/tupoksi-bag-hukum',    fn() => Inertia::render('Profil/Tupoksi'));
-Route::get('/anggota-jdih',         fn() => Inertia::render('Profil/AnggotaJdih'));
-Route::get('/kedudukan-dan-alamat', fn() => Inertia::render('Profil/KedudukanAlamat'));
-Route::get('/sop',                  fn() => Inertia::render('Profil/Sop'));
+Route::get('/visi-misi', function() {
+    return Inertia::render('Profil/VisiMisi', [
+        'item' => \App\Models\ProfileItem::where('slug', 'visi-misi')->first()
+    ]);
+});
+Route::get('/dasar-hukum', function() {
+    return Inertia::render('Profil/DasarHukum', [
+        'item' => \App\Models\ProfileItem::where('slug', 'dasar-hukum')->first()
+    ]);
+});
+Route::get('/struktur-organisasi', function() {
+    return Inertia::render('Profil/StrukturOrganisasi', [
+        'item' => \App\Models\ProfileItem::where('slug', 'struktur-organisasi')->first()
+    ]);
+});
+Route::get('/tupoksi-bag-hukum', function() {
+    return Inertia::render('Profil/Tupoksi', [
+        'item' => \App\Models\ProfileItem::where('slug', 'tupoksi')->first()
+    ]);
+});
+Route::get('/anggota-jdih', function() {
+    $members = \App\Models\JdihMember::orderBy('sort_order')->get();
+    return Inertia::render('Profil/AnggotaJdih', [
+        'members' => $members
+    ]);
+});
+Route::get('/kedudukan-dan-alamat', function() {
+    return Inertia::render('Profil/KedudukanAlamat', [
+        'item' => \App\Models\ProfileItem::where('slug', 'kedudukan-alamat')->first()
+    ]);
+});
+Route::get('/sop', function() {
+    return Inertia::render('Profil/Sop', [
+        'item' => \App\Models\ProfileItem::where('slug', 'sop')->first()
+    ]);
+});
 
 
 Route::get('/putusan', function(\Illuminate\Http\Request $request) {
@@ -207,7 +242,7 @@ Route::get('/video', function() {
         'items' => $items
     ]);
 });
-Route::get('/unduh',         fn() => Inertia::render('Informasi/Download'));
+
 
 // ---------------------------------------------------------------
 // DASHBOARD & PROFILE (AUTH)
@@ -221,6 +256,12 @@ Route::get('/bankum', fn() => redirect('/bantuan-hukum')); // Alias to prevent 4
 
 // Re-verify existing route
 // Route::get('/kerja-sama-daerah', fn() => Inertia::render('Hukum/KerjaSama'));
+
+Route::get('/unduh', function () {
+    return Inertia::render('Informasi/Download', [
+        'files' => \App\Models\KatalogDownload::orderBy('created_at', 'desc')->get()
+    ]);
+})->name('unduh');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

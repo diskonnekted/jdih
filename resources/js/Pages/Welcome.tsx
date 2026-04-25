@@ -632,12 +632,46 @@ function InfografisSection({ items, variant = 'classic' }: { items: any[], varia
 /* ------------------------------------------------------------------ */
 /* PAGE                                                                */
 /* ------------------------------------------------------------------ */
-export default function Welcome({ auth, news = [], banner = null, isMobile = false, infographics = [], latestDocs = [], counts = {} }: PageProps & { news?: any[], banner?: any, isMobile?: boolean, infographics?: any[], latestDocs?: any[], counts?: any }) {
+export default function Welcome({ 
+    auth, 
+    news = [], 
+    banner = null, 
+    isMobile = false, 
+    infographics = [], 
+    latestDocs = [], 
+    counts = {},
+    videos = [] 
+}: PageProps & { 
+    news?: any[], 
+    banner?: any, 
+    isMobile?: boolean, 
+    infographics?: any[], 
+    latestDocs?: any[], 
+    counts?: any,
+    videos?: any[]
+}) {
     const totalCount = Object.values(counts).reduce((a, b) => (a as number) + (b as number), 0) as number;
     const activeModel = 'classic';
 
+    const CATEGORIES_DYNAMIC = [
+        { title: 'Peraturan Daerah',   code: 'PERDA',  icon: Scale,         count: counts['Peraturan Daerah'] || 0, href: '/peraturan-daerah',          color: '#0d9488' },
+        { title: 'Peraturan Bupati',   code: 'PERBUP', icon: FileText,      count: counts['Peraturan Bupati'] || 0, href: '/peraturan-bupati',           color: '#1e293b' },
+        { title: 'Keputusan Bupati',   code: 'KEPBUP', icon: Gavel,         count: counts['Keputusan Bupati'] || 0, href: '/keputusan-bupati',           color: '#0d9488' },
+        { title: 'Surat Edaran',       code: 'SE',     icon: Megaphone,     count: counts['Surat Edaran'] || 0,   href: '/surat-edaran',              color: '#1e293b' },
+        { title: 'Instruksi Bupati',   code: 'INBUP',  icon: ClipboardList, count: counts['Instruksi Bupati'] || 0,   href: '/instruksi-bupati',          color: '#0d9488' },
+        { title: 'Monografi Hukum',    code: 'MONO',   icon: BookMarked,    count: counts['Monografi Hukum'] || 0,   href: '/naskah-akademik',           color: '#1e293b' },
+        { title: 'Naskah Akademik',    code: 'NA',     icon: FileSearch,    count: counts['Naskah Akademik'] || 0,    href: '/naskah-akademik',           color: '#0d9488' },
+        { title: 'Kerja Sama Daerah',  code: 'KSD',    icon: Handshake,     count: counts['Kerja Sama Daerah'] || 0,    href: '/kerja-sama-daerah',         color: '#1e293b' },
+    ];
+
+    const STATS_DYNAMIC = [
+        { label: 'Total Dokumen',    value: totalCount.toLocaleString('id-ID'), icon: FileText },
+        { label: 'Jenis Peraturan',  value: Object.keys(counts).length.toString(),     icon: Scale },
+        { label: 'Tahun Dokumen',    value: '40+',    icon: Calendar },
+        { label: 'Dilihat',          value: 'Tersedia', icon: Users },
+    ];
+
     const handleSearch = (values: any) => {
-        // Shared search logic
         const JENIS_SLUG: Record<string, string> = {
             'Peraturan Daerah':            '/peraturan-daerah',
             'Peraturan Bupati':            '/peraturan-bupati',
@@ -667,7 +701,6 @@ export default function Welcome({ auth, news = [], banner = null, isMobile = fal
         window.location.href = base + (params.toString() ? '?' + params.toString() : '');
     };
 
-    // If mobile, render the dedicated mobile experience
     if (isMobile) {
         return (
             <MobileHome 
@@ -694,16 +727,142 @@ export default function Welcome({ auth, news = [], banner = null, isMobile = fal
                 <link rel="preload" as="image" href={banner?.image || '/images/hero.jpg'} fetchPriority="high" />
             </Head>
             
-            <Hero banner={banner} />
+            <section>
+                <div className="relative bg-cover bg-left-center bg-no-repeat" style={{ backgroundImage: `url('${banner?.image || '/images/hero.jpg'}')` }}>
+                    <div className="absolute inset-0 bg-[#1e293b]/85" />
+                    <div className="relative z-10 max-w-7xl mx-auto px-6 py-14 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+                        <div>
+                            <div className="inline-block bg-[#0d9488] text-white text-xs font-bold px-4 py-1.5 rounded mb-6 tracking-widest uppercase">
+                                Jaringan Dokumentasi &amp; Informasi Hukum
+                            </div>
+                            <h1 className="text-4xl md:text-5xl font-bold text-white mb-5 leading-tight">
+                                Portal Produk Hukum<br />
+                                <span className="text-[#0d9488]">Kabupaten Banjarnegara</span>
+                            </h1>
+                            <p className="text-slate-300 text-base leading-relaxed mb-8 max-w-md">
+                                Akses mudah ke database peraturan daerah, keputusan bupati, dan produk hukum lainnya secara transparan dan terkini.
+                            </p>
+                            <div className="grid grid-cols-2 gap-4">
+                                {STATS_DYNAMIC.map((s) => (
+                                    <div key={s.label} className="flex items-center gap-3">
+                                        <div className="h-10 w-10 bg-[#0d9488]/20 rounded-lg flex items-center justify-center shrink-0">
+                                            <s.icon className="h-5 w-5 text-[#0d9488]" />
+                                        </div>
+                                        <div>
+                                            <div className="text-xl font-bold text-white leading-none">{s.value}</div>
+                                            <div className="text-xs text-slate-400">{s.label}</div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+                            <div className="bg-[#1e293b] px-6 py-4 flex items-center gap-3">
+                                <div className="h-8 w-8 bg-[#0d9488] rounded-lg flex items-center justify-center shrink-0">
+                                    <Search className="h-4 w-4 text-white" />
+                                </div>
+                                <div>
+                                    <p className="text-white font-bold text-sm">Pencarian Dokumen Hukum</p>
+                                    <p className="text-slate-400 text-xs">Temukan produk hukum Kab. Banjarnegara</p>
+                                </div>
+                            </div>
+                            <div className="p-6">
+                                <SearchForm mode="compact" onSearch={handleSearch} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-            <CategoryGrid variant={activeModel} counts={counts} />
-            <LatestDocuments variant={activeModel} documents={latestDocs} />
-            <StatistikSection variant={activeModel} />
-            <NewsSection news={news} variant={activeModel} />
-            <InfografisSection items={infographics} variant={activeModel} />
-            <VideoSection variant={activeModel} />
-            <RelatedLinks variant={activeModel} />
-            <CTA variant={activeModel} />
+            {/* Category Grid */}
+            <section className="py-16 bg-slate-50">
+                <div className="max-w-7xl mx-auto px-6">
+                    <div className="flex items-end justify-between mb-10">
+                        <div>
+                            <p className="text-sm font-bold uppercase tracking-widest mb-1 text-[#0d9488]">Database</p>
+                            <h2 className="text-3xl font-bold text-[#1e293b]">Kategori Produk Hukum</h2>
+                        </div>
+                        <Link href="/peraturan-daerah" className="hidden md:flex items-center gap-2 text-sm font-semibold text-[#0d9488]">
+                            Lihat Semua <ArrowRight className="h-4 w-4" />
+                        </Link>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                        {CATEGORIES_DYNAMIC.map((cat) => (
+                            <Link key={cat.code} href={cat.href} className="group flex items-center gap-4 p-5 bg-white border border-slate-200 rounded-lg transition-all hover:border-[#0d9488] hover:shadow-md">
+                                <div className="h-12 w-12 rounded flex items-center justify-center shrink-0" style={{ backgroundColor: cat.color }}>
+                                    <cat.icon className="h-6 w-6 text-white" />
+                                </div>
+                                <div className="min-w-0">
+                                    <div className="font-bold text-[#1e293b] text-sm group-hover:text-[#0d9488] truncate">{cat.title}</div>
+                                    <div className="text-slate-500 text-xs">{cat.count.toLocaleString('id-ID')} Dokumen</div>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            <LatestDocuments documents={latestDocs} />
+            
+            {/* Statistics Mini */}
+            <section className="py-16 bg-white">
+                <div className="max-w-7xl mx-auto px-6 text-center">
+                    <div className="mb-10">
+                        <p className="text-sm font-bold uppercase tracking-widest mb-1 text-[#0d9488]">Statistik</p>
+                        <h2 className="text-3xl font-bold text-[#1e293b]">Data Terintegrasi</h2>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                        {STATS_DYNAMIC.map((s) => (
+                            <div key={s.label}>
+                                <div className="h-16 w-16 bg-[#0d9488]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <s.icon className="h-8 w-8 text-[#0d9488]" />
+                                </div>
+                                <div className="text-3xl font-bold text-[#1e293b] mb-1">{s.value}</div>
+                                <div className="text-sm text-slate-500">{s.label}</div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            <NewsSection news={news} />
+            <InfografisSection items={infographics} />
+            
+            {/* Video Section */}
+            <section className="py-16 bg-[#1e293b]">
+                <div className="max-w-7xl mx-auto px-6">
+                    <div className="flex items-end justify-between mb-10">
+                        <div>
+                            <p className="text-sm font-bold uppercase tracking-widest mb-1 text-[#0d9488]">Media</p>
+                            <h2 className="text-3xl font-bold text-white">Video Terbaru</h2>
+                        </div>
+                        <Link href="/video" className="flex items-center gap-2 text-sm font-semibold text-[#0d9488]">
+                            Selengkapnya <ArrowRight className="h-4 w-4" />
+                        </Link>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        {videos.map((v: any) => (
+                            <a key={v.id} href={v.video_url} target="_blank" rel="noreferrer" className="group bg-slate-800 border border-slate-700 rounded-lg overflow-hidden hover:border-[#0d9488] transition-all">
+                                <div className="h-48 relative flex items-center justify-center overflow-hidden bg-slate-900">
+                                    <div className="absolute inset-0 bg-[#1e293b] flex items-center justify-center">
+                                        <Play className="h-12 w-12 text-[#0d9488]/30" />
+                                    </div>
+                                    <div className="relative z-10 h-14 w-14 rounded-full flex items-center justify-center bg-white/20 border border-white/30 backdrop-blur-sm group-hover:scale-110 transition-transform">
+                                        <Play className="h-6 w-6 text-white ml-1 fill-white" />
+                                    </div>
+                                </div>
+                                <div className="p-4">
+                                    <p className="text-white text-sm font-bold group-hover:text-[#0d9488] transition-colors line-clamp-2">{v.title}</p>
+                                    <span className="text-slate-400 text-[10px] uppercase font-black tracking-widest mt-2 block">Video Informasi</span>
+                                </div>
+                            </a>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            <RelatedLinks />
+            <CTA />
         </PublicLayout>
     );
 }
