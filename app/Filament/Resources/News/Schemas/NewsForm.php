@@ -45,6 +45,8 @@ class NewsForm
                     ->image()
                     ->disk('public')
                     ->directory('news-images')
+                    ->maxSize(2048)
+                    ->imageEditor()
                     ->nullable(),
                 
                 RichEditor::make('content')
