@@ -194,20 +194,21 @@ export default function StrukturOrganisasi({ item }: { item?: any }) {
 
             <section className="py-12 px-6 bg-slate-50">
                 <div className="max-w-6xl mx-auto">
-                    {item ? (
-                        <div className="profile-card-wrapper">
+                    {/* Intro from Database */}
+                    {item && (
+                        <div className="profile-card-wrapper mb-12">
                             <div className="profile-content-premium" dangerouslySetInnerHTML={{ __html: item.content }} />
                         </div>
-                    ) : (
-                        <>
-                            {/* Tab-like header */}
-                            <div className="text-center mb-10">
-                                <p className="text-[#0d9488] font-bold text-xs uppercase tracking-widest mb-2">Bagan Organisasi</p>
-                                <p className="text-slate-500 text-sm max-w-xl mx-auto">
-                                    Klik gambar untuk memperbesar. Terdapat {DIAGRAMS_DEFAULT.length} bagan struktur yang menggambarkan
-                                    susunan organisasi dan jaringan JDIH Kabupaten Banjarnegara.
-                                </p>
-                            </div>
+                    )}
+
+                    {/* Tab-like header */}
+                    <div className="text-center mb-10">
+                        <p className="text-[#0d9488] font-bold text-xs uppercase tracking-widest mb-2">Bagan Organisasi</p>
+                        <p className="text-slate-500 text-sm max-w-xl mx-auto">
+                            Klik gambar untuk memperbesar. Terdapat {DIAGRAMS_DEFAULT.length} bagan struktur yang menggambarkan
+                            susunan organisasi dan jaringan JDIH Kabupaten Banjarnegara.
+                        </p>
+                    </div>
 
                             {/* Card grid */}
                             <div className="space-y-8">
@@ -279,8 +280,6 @@ export default function StrukturOrganisasi({ item }: { item?: any }) {
                                 * Klik gambar atau tombol "Perbesar Gambar" untuk melihat detail bagan secara fullscreen.
                                 Gunakan tombol panah untuk berpindah antar bagan.
                             </p>
-                        </>
-                    )}
                 </div>
             </section>
 

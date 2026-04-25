@@ -2,107 +2,77 @@ import React from 'react';
 import { Head } from '@inertiajs/react';
 import PublicLayout from '@/Layouts/PublicLayout';
 import PageHeader from '@/Components/PageHeader';
-import { Target, ListChecks } from 'lucide-react';
+import { Target, ListChecks, CheckCircle2 } from 'lucide-react';
 
-/* ------------------------------------------------------------------ */
-/* DATA TUPOKSI – sesuai konten asli jdih.banjarnegarakab.go.id       */
-/* ------------------------------------------------------------------ */
-const TUGAS_POKOK = `Melaksanakan pengoordinasian penyusunan dan analisis kebijakan Daerah, pengoordinasian pelaksanaan tugas Perangkat Daerah, pemantauan dan evaluasi pelaksanaan kebijakan Daerah, membantu pelaksanaan tugas dan wewenang Gubernur sebagai wakil pemerintah pusat bidang hukum, pelayanan administratif dan pembinaan sumber daya ASN di bidang perundang-undangan, bantuan hukum dan hak asasi manusia dan pengawasan produk hukum daerah dan jaringan dokumentasi serta informasi hukum.`;
-
-const FUNGSI = [
-    'Pengoordinasian penyusunan dan analisis kebijakan Daerah di bidang perundang-undangan, bantuan hukum dan hak asasi manusia dan pengawasan produk hukum daerah, serta jaringan dokumentasi dan informasi hukum;',
-    'Pengoordinasian pelaksanaan tugas Perangkat Daerah di bidang perundang-undangan, bantuan hukum dan hak asasi manusia dan pengawasan produk hukum daerah, serta jaringan dokumentasi dan informasi hukum;',
-    'Pemantauan dan evaluasi pelaksanaan kebijakan Daerah di bidang perundang-undangan, bantuan hukum dan hak asasi manusia dan pengawasan produk hukum daerah, serta jaringan dokumentasi dan informasi hukum;',
-    'Pengoordinasian pelaksanaan tugas dan wewenang Bupati sebagai wakil pemerintah provinsi bidang hukum;',
-    'Pelaksanaan pelayanan administratif dan pembinaan sumber daya ASN di bidang perundang-undangan, bantuan hukum dan hak asasi manusia dan pengawasan produk hukum daerah, serta jaringan dokumentasi dan informasi hukum; dan',
-    'Pelaksanaan tugas lain yang diberikan oleh Asisten Pemerintahan dan Kesejahteraan Rakyat.',
-];
-
-/* ------------------------------------------------------------------ */
-/* PAGE                                                                */
-/* ------------------------------------------------------------------ */
 export default function Tupoksi({ item }: { item?: any }) {
-    const TUGAS_POKOK_DEFAULT = `Melaksanakan pengoordinasian penyusunan dan analisis kebijakan Daerah, pengoordinasian pelaksanaan tugas Perangkat Daerah, pemantauan dan evaluasi pelaksanaan kebijakan Daerah, membantu pelaksanaan tugas dan wewenang Gubernur sebagai wakil pemerintah pusat bidang hukum, pelayanan administratif dan pembinaan sumber daya ASN di bidang perundang-undangan, bantuan hukum dan hak asasi manusia dan pengawasan produk hukum daerah dan jaringan dokumentasi serta informasi hukum.`;
-
-    const FUNGSI_DEFAULT = [
-        'Pengoordinasian penyusunan dan analisis kebijakan Daerah di bidang perundang-undangan, bantuan hukum dan hak asasi manusia dan pengawasan produk hukum daerah, serta jaringan dokumentasi dan informasi hukum;',
-        'Pengoordinasian pelaksanaan tugas Perangkat Daerah di bidang perundang-undangan, bantuan hukum dan hak asasi manusia dan pengawasan produk hukum daerah, serta jaringan dokumentasi dan informasi hukum;',
-        'Pemantauan dan evaluasi pelaksanaan kebijakan Daerah di bidang perundang-undangan, bantuan hukum dan hak asasi manusia dan pengawasan produk hukum daerah, serta jaringan dokumentasi dan informasi hukum;',
-        'Pengoordinasian pelaksanaan tugas dan wewenang Bupati sebagai wakil pemerintah provinsi bidang hukum;',
-        'Pelaksanaan pelayanan administratif dan pembinaan sumber daya ASN di bidang perundang-undangan, bantuan hukum dan hak asasi manusia dan pengawasan produk hukum daerah, serta jaringan dokumentasi dan informasi hukum; dan',
-        'Pelaksanaan tugas lain yang diberikan oleh Asisten Pemerintahan dan Kesejahteraan Rakyat.',
+    const FUNGSI = [
+        'Pengkoordinasian penyusunan kebijakan daerah di bidang perundang-undangan, bantuan hukum, serta dokumentasi dan informasi.',
+        'Pengkoordinasian pelaksanaan tugas Perangkat Daerah di bidang perundang-undangan, bantuan hukum, serta dokumentasi dan informasi.',
+        'Pemantauan dan evaluasi pelaksanaan kebijakan daerah terkait bidang hukum.',
+        'Pelaksanaan fungsi kedinasan lain yang diberikan oleh Asisten Pemerintahan dan Kesejahteraan Rakyat yang berkaitan dengan tugasnya.',
     ];
 
     return (
         <PublicLayout>
-            <Head title="Tupoksi Bagian Hukum – JDIH Banjarnegara" />
+            <Head title="Tugas Pokok dan Fungsi – JDIH Banjarnegara" />
 
             <PageHeader
-                title="Tupoksi Bagian Hukum"
-                subtitle="Tugas Pokok dan Fungsi Bagian Hukum Sekretariat Daerah Kabupaten Banjarnegara"
-                breadcrumbs={[{ label: 'Profil Kami' }, { label: 'Tupoksi Bagian Hukum' }]}
+                title="Tugas Pokok dan Fungsi"
+                subtitle="Penjabaran tugas pokok dan fungsi Bagian Hukum Sekretariat Daerah Kabupaten Banjarnegara"
+                breadcrumbs={[{ label: 'Profil Kami' }, { label: 'Tugas dan Fungsi' }]}
             />
 
             <section className="py-12 px-6 bg-slate-50">
                 <div className="max-w-4xl mx-auto space-y-8">
-                    {item ? (
-                        <div className="profile-card-wrapper">
+                    {/* Intro from Database */}
+                    {item && (
+                        <div className="profile-card-wrapper mb-8">
                             <div className="profile-content-premium" dangerouslySetInnerHTML={{ __html: item.content }} />
                         </div>
-                    ) : (
-                        <>
-                            {/* ── TUGAS POKOK ── */}
-                            <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-                                <div className="bg-[#0d9488] px-6 py-5 flex items-center gap-4">
-                                    <div className="h-10 w-10 bg-white/20 rounded-lg flex items-center justify-center shrink-0">
-                                        <Target className="h-5 w-5 text-white" />
-                                    </div>
-                                    <div>
-                                        <p className="text-teal-100 text-xs font-semibold uppercase tracking-widest">Bagian Hukum Setda Kab. Banjarnegara</p>
-                                        <h2 className="text-white font-bold text-lg">Tugas Pokok</h2>
-                                    </div>
-                                </div>
-                                <div className="px-6 py-6">
-                                    <p className="text-slate-700 leading-relaxed text-[15px]">
-                                        {TUGAS_POKOK_DEFAULT}
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* ── FUNGSI ── */}
-                            <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-                                <div className="bg-[#1e293b] px-6 py-5 flex items-center gap-4">
-                                    <div className="h-10 w-10 bg-[#0d9488]/30 rounded-lg flex items-center justify-center shrink-0">
-                                        <ListChecks className="h-5 w-5 text-[#0d9488]" />
-                                    </div>
-                                    <div>
-                                        <p className="text-slate-400 text-xs font-semibold uppercase tracking-widest">Bagian Hukum Setda Kab. Banjarnegara</p>
-                                        <h2 className="text-white font-bold text-lg">Fungsi</h2>
-                                    </div>
-                                </div>
-                                <div className="px-6 py-6">
-                                    <ol className="space-y-5">
-                                        {FUNGSI_DEFAULT.map((item, i) => (
-                                            <li key={i} className="flex items-start gap-4">
-                                                <span className="h-8 w-8 bg-[#0d9488] text-white rounded-lg flex items-center justify-center font-bold text-sm shrink-0 mt-0.5">
-                                                    {i + 1}
-                                                </span>
-                                                <p className="text-slate-700 leading-relaxed text-[15px] pt-1">
-                                                    {item}
-                                                </p>
-                                            </li>
-                                        ))}
-                                    </ol>
-                                </div>
-                            </div>
-
-                            <div className="border border-[#0d9488]/30 bg-[#0d9488]/5 rounded-lg px-5 py-4 text-sm text-slate-600">
-                                <span className="font-semibold text-[#0d9488]">Dasar Hukum:</span>{' '}
-                                Peraturan Bupati Banjarnegara tentang Kedudukan, Susunan Organisasi, Tugas dan Fungsi
-                                serta Tata Kerja Sekretariat Daerah Kabupaten Banjarnegara.
-                            </div>
-                        </>
                     )}
+
+                    {/* ── TUGAS POKOK ── */}
+                    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                        <div className="bg-[#0d9488] px-6 py-5 flex items-center gap-4">
+                            <div className="h-10 w-10 bg-white/20 rounded-lg flex items-center justify-center shrink-0">
+                                <Target className="h-5 w-5 text-white" />
+                            </div>
+                            <div>
+                                <p className="text-teal-100 text-xs font-semibold uppercase tracking-widest">Bagian Hukum Setda Kab. Banjarnegara</p>
+                                <h2 className="text-white font-bold text-lg">Tugas Pokok</h2>
+                            </div>
+                        </div>
+                        <div className="px-6 py-6">
+                            <p className="text-slate-700 leading-relaxed text-[15px]">
+                                Bagian Hukum mempunyai tugas melaksanakan pengkoordinasian perumusan kebijakan daerah, 
+                                pengkoordinasian pelaksanaan tugas Perangkat Daerah, pemantauan dan evaluasi pelaksanaan 
+                                kebijakan daerah di bidang perundang-undangan, bantuan hukum, serta dokumentasi dan informasi.
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* ── FUNGSI ── */}
+                    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                        <div className="bg-[#1e293b] px-6 py-5 flex items-center gap-4">
+                            <div className="h-10 w-10 bg-[#0d9488]/20 rounded-lg flex items-center justify-center shrink-0">
+                                <ListChecks className="h-5 w-5 text-[#0d9488]" />
+                            </div>
+                            <div>
+                                <p className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em]">Uraian Tugas</p>
+                                <h2 className="text-white font-bold text-lg">Fungsi Utama</h2>
+                            </div>
+                        </div>
+                        <div className="p-0">
+                            {FUNGSI.map((txt, i) => (
+                                <div key={i} className={`flex items-start gap-4 px-6 py-5 ${i !== FUNGSI.length - 1 ? 'border-b border-slate-100' : ''}`}>
+                                    <div className="mt-1">
+                                        <CheckCircle2 className="h-5 w-5 text-[#0d9488]" />
+                                    </div>
+                                    <p className="text-slate-600 text-[15px] leading-relaxed">{txt}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </section>
         </PublicLayout>

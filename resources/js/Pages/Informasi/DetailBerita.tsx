@@ -68,7 +68,7 @@ export default function DetailBerita({ post, relatedNews = [] }: { post: any; re
                                         {artikel.judul}
                                     </h1>
                                     
-                                    <div className="prose prose-slate max-w-none text-slate-700 leading-relaxed text-base">
+                                    <div className="profile-content-premium text-slate-700 leading-relaxed text-base">
                                         <div dangerouslySetInnerHTML={{ __html: artikel.isi }} />
                                     </div>
 

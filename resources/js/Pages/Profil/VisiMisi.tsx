@@ -34,14 +34,16 @@ export default function VisiMisi({ item }: { item?: any }) {
 
             <section className="py-12 px-6">
                 <div className="max-w-4xl mx-auto space-y-10">
-                    {item ? (
-                        <div className="profile-card-wrapper">
+                    {/* Intro from Database */}
+                    {item && (
+                        <div className="profile-card-wrapper mb-12">
                             <div className="profile-content-premium" dangerouslySetInnerHTML={{ __html: item.content }} />
                         </div>
-                    ) : (
-                        <>
-                            {/* VISI */}
-                            <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
+                    )}
+
+                    <>
+                        {/* ── VISI ── */}
+                        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
                                 <div className="bg-[#0d9488] px-6 py-4 flex items-center gap-3">
                                     <Target className="h-6 w-6 text-white" />
                                     <h2 className="text-lg font-bold text-white tracking-wide">Visi Bagian Hukum</h2>
@@ -71,9 +73,7 @@ export default function VisiMisi({ item }: { item?: any }) {
                                         ))}
                                     </ol>
                                 </div>
-                            </div>
-                        </>
-                    )}
+                        </div>
                 </div>
             </section>
         </PublicLayout>

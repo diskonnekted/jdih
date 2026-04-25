@@ -31,12 +31,14 @@ export default function DasarHukum({ item }: { item?: any }) {
             />
             <section className="py-12 px-6">
                 <div className="max-w-5xl mx-auto">
-                    {item ? (
-                        <div className="profile-card-wrapper">
+                    {/* Intro from Database */}
+                    {item && (
+                        <div className="profile-card-wrapper mb-12">
                             <div className="profile-content-premium" dangerouslySetInnerHTML={{ __html: item.content }} />
                         </div>
-                    ) : (
-                        <div className="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
+                    )}
+
+                    <div className="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
                             <div className="bg-[#1e293b] px-6 py-4 flex items-center gap-3">
                                 <FileText className="h-5 w-5 text-[#0d9488]" />
                                 <h2 className="text-white font-bold">Daftar Dasar Hukum JDIH Banjarnegara</h2>
@@ -66,7 +68,6 @@ export default function DasarHukum({ item }: { item?: any }) {
                                 </table>
                             </div>
                         </div>
-                    )}
                 </div>
             </section>
         </PublicLayout>

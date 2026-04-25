@@ -64,12 +64,14 @@ export default function KedudukanAlamat({ item }: { item?: any }) {
 
             <section className="py-12 px-6 bg-slate-50">
                 <div className="max-w-5xl mx-auto">
-                    {item ? (
-                        <div className="profile-card-wrapper">
+                    {/* Intro from Database */}
+                    {item && (
+                        <div className="profile-card-wrapper mb-12">
                             <div className="profile-content-premium" dangerouslySetInnerHTML={{ __html: item.content }} />
                         </div>
-                    ) : (
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    )}
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                             {/* ── Info Card ── */}
                             <div className="space-y-5">
                                 <div className="bg-[#1e293b] rounded-xl px-6 py-5">
@@ -139,9 +141,7 @@ export default function KedudukanAlamat({ item }: { item?: any }) {
                                         ↗ Buka di Google Maps
                                     </a>
                                 </div>
-                            </div>
                         </div>
-                    )}
                 </div>
             </section>
         </PublicLayout>
