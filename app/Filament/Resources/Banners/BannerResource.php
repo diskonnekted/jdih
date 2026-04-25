@@ -22,8 +22,9 @@ class BannerResource extends Resource
 
     protected static \BackedEnum|string|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static ?string $navigationLabel = 'Management Banner';
-
+    protected static ?string $modelLabel = 'Banner';
+    protected static ?string $pluralModelLabel = 'Banner Beranda';
+    protected static ?string $navigationLabel = 'Banner Beranda';
     protected static \UnitEnum|string|null $navigationGroup = 'Data Master';
 
     protected static ?int $navigationSort = 4;

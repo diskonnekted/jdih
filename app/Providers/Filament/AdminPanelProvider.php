@@ -28,22 +28,65 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login()
+            ->login(\App\Filament\Pages\Auth\Login::class)
             ->colors([
-                'primary' => '#1e3a8a', // Modern deep royal blue
+                'primary' => '#0d9488', // JDIH Teal
                 'info' => Color::Blue,
                 'success' => Color::Emerald,
                 'warning' => Color::Orange,
                 'danger' => Color::Rose,
             ])
-            ->darkMode(true)
+            ->darkMode(false)
             ->defaultThemeMode(ThemeMode::Light)
-            ->font('Inter')
+            ->font('Outfit')
             ->brandName('JDIH Banjarnegara')
-            ->maxContentWidth('full')
-            ->assets([
-                \Filament\Support\Assets\Css::make('filament-custom', public_path('css/filament-custom.css')),
-            ])
+            ->brandLogo(asset('images/logo-jdih.png'))
+            ->brandLogoHeight('2.5rem')
+            ->maxContentWidth(\Filament\Support\Enums\Width::Full)
+            ->renderHook(
+                'panels::auth.login.before',
+                fn (): string => \Illuminate\Support\Facades\Blade::render('
+                    <style>
+                        .fi-simple-main-ctn { 
+                            padding: 3rem !important; 
+                            background: #f1f5f9 !important;
+                        }
+                        .fi-simple-card { 
+                            border-radius: 3rem !important; 
+                            padding: 4rem !important; 
+                            box-shadow: 0 25px 50px -12px rgba(13, 148, 136, 0.25) !important;
+                            border: 1px solid #e2e8f0 !important;
+                        }
+                        .fi-logo {
+                            background: #0f172a;
+                            padding: 1.5rem;
+                            border-radius: 1.5rem;
+                            margin-bottom: 2rem !important;
+                            display: inline-block;
+                            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2);
+                        }
+                        .fi-logo img {
+                            filter: drop-shadow(0 0 10px rgba(255,255,255,0.2)) !important;
+                        }
+                        .fi-fo-field-wrp {
+                            margin-bottom: 2rem !important;
+                        }
+                        .fi-simple-header-heading {
+                            font-size: 2rem !important;
+                            font-weight: 900 !important;
+                            color: #0f172a !important;
+                        }
+                        /* Captcha Label Styling */
+                        [data-field-name="captcha"] label span {
+                            background: #0d9488 !important;
+                            color: white !important;
+                            padding: 0.5rem 1rem !important;
+                            border-radius: 0.5rem !important;
+                            font-weight: 800 !important;
+                        }
+                    </style>
+                '),
+            )
             ->resources([
                 \App\Filament\Resources\LegalDocuments\LegalDocumentResource::class,
                 \App\Filament\Resources\Categories\CategoryResource::class,

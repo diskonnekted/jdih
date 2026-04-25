@@ -1,127 +1,77 @@
-/* Membuat Kontainer Filter & Tombol Sejajar */
-.fi-ta-header-toolbar > div {
-    flex-wrap: wrap;
+/* Custom Styles for Filament JDIH Banjarnegara */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap');
+
+.fi-body {
+    font-family: 'Outfit', sans-serif !important;
 }
 
-.fi-ta-filters {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: flex-end !important;
-    gap: 1rem !important;
-    padding-bottom: 0.5rem;
+/* Login Page Styling */
+.fi-simple-page {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
 }
 
-/* Memastikan grid filter tidak menumpuk ke bawah */
-.fi-ta-filters > div:first-child {
-    display: flex !important;
-    flex-direction: row !important;
-    gap: 1rem !important;
-    flex-grow: 1;
+.fi-simple-main-ctn {
+    backdrop-filter: blur(10px);
+    padding: 2rem !important;
 }
 
-/* Meratakan setiap item filter */
-.fi-ta-filters > div:first-child > div {
-    flex-grow: 1;
-    min-width: 150px;
+.fi-simple-card {
+    border: none !important;
+    box-shadow: 0 25px 50px -12px rgba(13, 148, 136, 0.2) !important;
+    border-radius: 3rem !important;
+    padding: 3.5rem !important; /* Even more padding */
+    background: white !important;
+    margin: 1.5rem !important;
 }
 
-/* Memposisikan Tombol Apply & Reset */
-.fi-ta-filters .gap-3 {
-    margin-top: 0 !important;
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: flex-end !important;
+.fi-logo img {
+    /* Stronger shadow to make white "IH" text visible */
+    filter: drop-shadow(0 0 15px rgba(15, 23, 42, 0.4)) drop-shadow(0 4px 6px rgba(0,0,0,0.2)) !important;
+    margin-bottom: 1.5rem;
 }
 
-/* Mengubah Tautan Reset menjadi Tombol (Merah/Abu) */
-button[wire\:click="resetTableFiltersForm"] {
-    background-color: #ef4444 !important; /* warna merah */
-    color: #ffffff !important;
-    padding: 0.5rem 1rem !important;
-    border-radius: 0.5rem !important;
-    font-weight: 500 !important;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
-    transition: background-color 0.2s !important;
+.fi-simple-header-heading {
+    font-weight: 900 !important;
+    letter-spacing: -0.025em !important;
+    color: #0f172a !important;
+    margin-top: 1.5rem !important;
+    font-size: 1.75rem !important;
 }
-button[wire\:click="resetTableFiltersForm"] svg {
-    display: none !important; /* menyembunyikan ikon x-mark bawaan jika ada */
+
+/* Ensure fields have gap */
+.fi-fo-field-wrp {
+    margin-bottom: 1.5rem !important;
 }
-button[wire\:click="resetTableFiltersForm"] span {
-    text-decoration: none !important;
+
+/* Captcha Field Styling */
+.fi-fo-field-wrp[data-field-name="captcha"] label span {
+    background: #1e293b !important; /* Darker for better contrast */
     color: white !important;
-}
-button[wire\:click="resetTableFiltersForm"]:hover {
-    background-color: #dc2626 !important;
-}
-
-/* ================================================================== */
-/* STAT CARD — decorative background SVG icons                        */
-/* ================================================================== */
-.stat-card {
-    position: relative !important;
-    overflow: hidden !important;
+    padding: 0.6rem 1.2rem !important;
+    border-radius: 0.75rem !important;
+    font-weight: 800 !important;
+    display: inline-block !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+    margin-bottom: 0.75rem !important;
 }
 
-.stat-card::after {
-    content: '';
-    position: absolute;
-    right: -8px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 100px;
-    height: 100px;
-    opacity: 0.07;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    pointer-events: none;
-    z-index: 0;
+/* Fix for the grey background if it's too tight */
+.fi-simple-page main {
+    padding: 2rem !important;
 }
 
-/* Document icon — scales/law book */
-.stat-card--docs::after {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%2310b981'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25'/%3E%3C/svg%3E");
-    opacity: 0.10;
-    width: 110px;
-    height: 110px;
+/* Button Styling */
+.fi-btn {
+    border-radius: 1rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+    transition: all 0.3s ease !important;
 }
 
-/* News icon — newspaper */
-.stat-card--news::after {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%233b82f6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5M6 7.5h3v3H6V7.5Z'/%3E%3C/svg%3E");
-    opacity: 0.10;
-    width: 110px;
-    height: 110px;
-}
-
-/* Tag icon — categories */
-.stat-card--categories::after {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%23f59e0b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z'/%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M6 6h.008v.008H6V6Z'/%3E%3C/svg%3E");
-    opacity: 0.12;
-    width: 105px;
-    height: 105px;
-}
-
-/* Photo icon — banners */
-.stat-card--banners::after {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%23ef4444'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21Zm14.25-14.25h.008v.008h-.008V6.75Z'/%3E%3C/svg%3E");
-    opacity: 0.10;
-    width: 108px;
-    height: 108px;
-}
-
-/* Users icon — members */
-.stat-card--members::after {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%2310b981'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z'/%3E%3C/svg%3E");
-    opacity: 0.10;
-    width: 115px;
-    height: 115px;
-}
-
-/* Download icon — downloads */
-.stat-card--downloads::after {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%233b82f6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3'/%3E%3C/svg%3E");
-    opacity: 0.10;
-    width: 105px;
-    height: 105px;
+.fi-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(13, 148, 136, 0.3) !important;
 }

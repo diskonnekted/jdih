@@ -20,8 +20,9 @@ class VillageResource extends Resource
 
     protected static \BackedEnum|string|null $navigationIcon = Heroicon::OutlinedBuildingOffice;
 
-    protected static ?string $navigationLabel = 'Mapping Website Desa';
-
+    protected static ?string $modelLabel = 'Integrasi Desa';
+    protected static ?string $pluralModelLabel = 'Integrasi Website Desa';
+    protected static ?string $navigationLabel = 'Integrasi Website Desa';
     protected static \UnitEnum|string|null $navigationGroup = 'Data Master';
 
     protected static ?int $navigationSort = 2;

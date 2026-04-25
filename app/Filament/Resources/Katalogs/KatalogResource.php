@@ -20,9 +20,9 @@ class KatalogResource extends Resource
 {
     protected static ?string $model = Katalog::class;
 
-    protected static \BackedEnum|string|null $navigationIcon = Heroicon::OutlinedFolder;
-
-    protected static ?string $navigationLabel = 'Katalog';
+    protected static ?string $modelLabel = 'Katalog';
+    protected static ?string $pluralModelLabel = 'Katalog Buku';
+    protected static ?string $navigationLabel = 'Katalog Buku';
 
     protected static \UnitEnum|string|null $navigationGroup = null;
 

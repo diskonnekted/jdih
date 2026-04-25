@@ -18,6 +18,10 @@ class InfographicResource extends Resource
 {
     protected static ?string $model = Infographic::class;
 
+    protected static ?string $modelLabel = 'Infografis';
+    protected static ?string $pluralModelLabel = 'Infografis';
+    protected static ?string $navigationLabel = 'Infografis';
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'title';

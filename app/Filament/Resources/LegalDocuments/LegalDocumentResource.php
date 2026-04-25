@@ -22,13 +22,13 @@ class LegalDocumentResource extends Resource
 {
     protected static ?string $model = LegalDocument::class;
 
+    protected static ?string $modelLabel = 'Produk Hukum';
+
+    protected static ?string $pluralModelLabel = 'Produk Hukum';
+
     protected static \BackedEnum|string|null $navigationIcon = Heroicon::OutlinedScale;
 
     protected static ?string $navigationLabel = 'Produk Hukum';
-
-    protected static \UnitEnum|string|null $navigationGroup = null;
-
-    protected static ?int $navigationSort = 1;
 
     
 

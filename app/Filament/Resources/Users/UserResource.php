@@ -22,8 +22,9 @@ class UserResource extends Resource
 
     protected static \BackedEnum|string|null $navigationIcon = Heroicon::OutlinedUsers;
 
-    protected static ?string $navigationLabel = 'Management User';
-
+    protected static ?string $modelLabel = 'Pengguna';
+    protected static ?string $pluralModelLabel = 'Manajemen Pengguna';
+    protected static ?string $navigationLabel = 'Manajemen Pengguna';
     protected static \UnitEnum|string|null $navigationGroup = 'Data Master';
 
     protected static ?int $navigationSort = 2;

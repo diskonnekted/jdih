@@ -20,6 +20,7 @@ class LegalDocument extends Model
         'related_regulations_text',
         'implementing_regulations',
         'abstract',
+        'abstract_file_path',
         'file_path',
         'published_at',
         'promulgated_at',
@@ -76,5 +77,13 @@ class LegalDocument extends Model
         return $this->belongsToMany(LegalDocument::class, 'legal_document_relations', 'related_document_id', 'main_document_id')
             ->withPivot('relation_type')
             ->withTimestamps();
+    }
+
+    /**
+     * Get the comments for the document.
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
     }
 }

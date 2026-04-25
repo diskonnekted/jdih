@@ -15,10 +15,10 @@ class LegalDocumentForm
     {
         return $schema
             ->components([
-                \Filament\Forms\Components\Tabs::make('Dokumen Hukum')
+                \Filament\Schemas\Components\Tabs::make('Dokumen Hukum')
                     ->columnSpanFull()
                     ->tabs([
-                        \Filament\Forms\Components\Tabs\Tab::make('Deskripsi Utama')
+                        \Filament\Schemas\Components\Tabs\Tab::make('Deskripsi Utama')
                             ->icon('heroicon-m-document-text')
                             ->schema([
                                 TextInput::make('title')
@@ -28,10 +28,11 @@ class LegalDocumentForm
                                 TextInput::make('document_number')
                                     ->label('Nomor')
                                     ->required(),
-                                TextInput::make('year')
+                                Select::make('year')
                                     ->label('Tahun')
-                                    ->required()
-                                    ->numeric(),
+                                    ->options(array_combine(range(date('Y'), 1945), range(date('Y'), 1945)))
+                                    ->searchable()
+                                    ->required(),
                                 Select::make('category_id')
                                     ->label('Jenis Produk Hukum')
                                     ->relationship('category', 'name')
@@ -41,13 +42,24 @@ class LegalDocumentForm
                                 TextInput::make('abbreviation')
                                     ->label('Singkatan Jenis')
                                     ->placeholder('Misal: PERDA'),
-                                TextInput::make('document_type')
+                                Select::make('document_type')
                                     ->label('Tipe Dokumen')
+                                    ->options([
+                                        'Peraturan Perundang-undangan' => 'Peraturan Perundang-undangan',
+                                        'Monografi Hukum' => 'Monografi Hukum',
+                                        'Putusan Pengadilan' => 'Putusan Pengadilan',
+                                        'Artikel Hukum' => 'Artikel Hukum',
+                                    ])
                                     ->default('Peraturan Perundang-undangan')
                                     ->required(),
-                                TextInput::make('teu')
-                                    ->label('T.E.U (Tanda Entri Utama)')
-                                    ->default('Banjarnegara')
+                                Select::make('teu')
+                                    ->label('T.E.U (Tajuk Entri Utama)')
+                                    ->options([
+                                        'Pemerintah Kabupaten Banjarnegara' => 'Pemerintah Kabupaten Banjarnegara',
+                                        'DPRD Kabupaten Banjarnegara' => 'DPRD Kabupaten Banjarnegara',
+                                        'Sekretariat Daerah Kabupaten Banjarnegara' => 'Sekretariat Daerah Kabupaten Banjarnegara',
+                                    ])
+                                    ->default('Pemerintah Kabupaten Banjarnegara')
                                     ->required(),
                                 Select::make('status')
                                     ->options([
@@ -64,13 +76,15 @@ class LegalDocumentForm
                                     ->columnSpanFull(),
                             ])->columns(2),
 
-                        \Filament\Forms\Components\Tabs\Tab::make('Metadata Detail')
+                        \Filament\Schemas\Components\Tabs\Tab::make('Metadata Detail')
                             ->icon('heroicon-m-list-bullet')
                             ->schema([
                                 DatePicker::make('published_at')
-                                    ->label('Tanggal Penetapan'),
+                                    ->label('Tanggal Penetapan')
+                                    ->required(),
                                 DatePicker::make('promulgated_at')
-                                    ->label('Tanggal Pengundangan'),
+                                    ->label('Tanggal Pengundangan')
+                                    ->required(),
                                 TextInput::make('place_of_enactment')
                                     ->label('Tempat Penetapan')
                                     ->default('Banjarnegara'),
@@ -99,7 +113,7 @@ class LegalDocumentForm
                                     ->columnSpanFull(),
                             ])->columns(2),
 
-                        \Filament\Forms\Components\Tabs\Tab::make('Status & Hubungan')
+                        \Filament\Schemas\Components\Tabs\Tab::make('Status & Hubungan')
                             ->icon('heroicon-m-arrows-right-left')
                             ->schema([
                                 \Filament\Forms\Components\Repeater::make('relatedDocuments')
@@ -133,19 +147,27 @@ class LegalDocumentForm
                                     ->placeholder('-'),
                             ]),
 
-                        \Filament\Forms\Components\Tabs\Tab::make('Abstrak & File')
+                        \Filament\Schemas\Components\Tabs\Tab::make('Abstrak & File')
                             ->icon('heroicon-m-paper-clip')
                             ->schema([
                                 Textarea::make('abstract')
                                     ->label('Abstrak / Ringkasan')
+                                    ->placeholder("Format JDIHN:\n1. Latar Belakang\n2. Rumusan Masalah\n3. Isi Pokok Peraturan")
                                     ->rows(5)
-                                    ->columnSpanFull(),
+                                    ->columnSpanFull()
+                                    ->hint('Abstrak harus searchable dan memuat latar belakang, rumusan masalah, dan isi pokok.'),
                                 FileUpload::make('file_path')
-                                    ->label('File PDF Utama')
-                                    ->directory('legal-documents')
+                                    ->label('File PDF Utama (Searchable)')
+                                    ->directory(fn ($get) => 'legal-documents/' . ($get('year') ?? date('Y')) . '/' . ($get('category_id') ?? 'uncategorized'))
                                     ->acceptedFileTypes(['application/pdf'])
-                                    ->maxSize(51200) // 50MB
-                                    ->columnSpanFull(),
+                                    ->maxSize(5120) // 5MB sesuai standar JDIHN
+                                    ->getUploadedFileNameForStorageUsing(function ($file) {
+                                        $name = str_replace(['.', ' '], '_', pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
+                                        return $name . '.' . $file->getClientOriginalExtension();
+                                    })
+                                    ->required()
+                                    ->columnSpanFull()
+                                    ->hint('Pastikan file adalah searchable PDF (bukan hasil scan gambar) dan maksimal 5MB.'),
                             ]),
                     ]),
             ]);

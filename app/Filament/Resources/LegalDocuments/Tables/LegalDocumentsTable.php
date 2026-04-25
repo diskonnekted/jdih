@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\LegalDocuments\Tables;
 
+use App\Models\LegalDocument;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -15,10 +16,9 @@ class LegalDocumentsTable
     {
         return $table
             ->columns([
-                TextColumn::make('id')
+                TextColumn::make('row_index')
                     ->label('No')
-                    ->sortable()
-                    ->searchable(),
+                    ->rowIndex(),
                 TextColumn::make('category.name')
                     ->label('Jenis')
                     ->badge()
@@ -28,25 +28,42 @@ class LegalDocumentsTable
                     ->label('No Peraturan')
                     ->searchable(),
                 TextColumn::make('year')
-                    ->label('Tahun Di Undang')
+                    ->label('Tahun')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('published_at')
+                    ->label('Tgl Penetapan')
+                    ->date()
                     ->sortable(),
+                TextColumn::make('teu')
+                    ->label('T.E.U')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->searchable(),
                 TextColumn::make('title')
                     ->label('Judul')
                     ->wrap()
+                    ->limit(100)
+                    ->tooltip(fn (LegalDocument $record): string => $record->title)
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->label('Tgl Dibuat')
-                    ->dateTime('Y-m-d H:i:s')
-                    ->sortable(),
+                    ->dateTime('Y-m-d H:i')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
                     ->label('Terakhir Diubah')
-                    ->dateTime('Y-m-d H:i:s')
-                    ->sortable(),
+                    ->dateTime('Y-m-d H:i')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('status')
-                    ->label('Publish')
+                    ->label('Status')
                     ->badge()
-                    ->formatStateUsing(fn(string $state): string => 'Aktif')
-                    ->color('success'),
+                    ->color(fn (string $state): string => match ($state) {
+                        'Berlaku' => 'success',
+                        'Tidak Berlaku', 'Dicabut' => 'danger',
+                        'Diubah' => 'warning',
+                        default => 'gray',
+                    }),
             ])
             ->filters([
                 \Filament\Tables\Filters\Filter::make('judul_filter')
@@ -82,14 +99,13 @@ class LegalDocumentsTable
             ], layout: \Filament\Tables\Enums\FiltersLayout::AboveContent)
             ->filtersFormColumns(4)
             ->recordActions([
-                \Filament\Actions\DeleteAction::make()->label('Hapus')->color('danger')->icon('heroicon-m-trash')->button(),
-                \Filament\Actions\EditAction::make()->label('Edit')->color('success')->icon('heroicon-m-pencil')->button(),
-                \Filament\Actions\ViewAction::make()->label('Detail')->color('info')->icon('heroicon-m-eye')->button(),
+                \Filament\Actions\DeleteAction::make()->label('Hapus')->color('danger')->icon('heroicon-m-trash'),
+                \Filament\Actions\EditAction::make()->label('Edit')->color('success')->icon('heroicon-m-pencil'),
+                \Filament\Actions\ViewAction::make()->label('Detail')->color('info')->icon('heroicon-m-eye'),
                 \Filament\Actions\Action::make('proses')
                     ->label('Proses')
                     ->color('primary')
                     ->icon('heroicon-m-cog')
-                    ->button()
                     ->action(fn () => null),
             ])
             ->toolbarActions([

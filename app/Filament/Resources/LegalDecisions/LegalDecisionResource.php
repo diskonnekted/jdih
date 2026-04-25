@@ -20,9 +20,9 @@ class LegalDecisionResource extends Resource
 {
     protected static ?string $model = LegalDecision::class;
 
-    protected static \BackedEnum|string|null $navigationIcon = Heroicon::OutlinedScale;
-
-    protected static ?string $navigationLabel = 'Putusan';
+    protected static ?string $modelLabel = 'Putusan Hukum';
+    protected static ?string $pluralModelLabel = 'Putusan Hukum';
+    protected static ?string $navigationLabel = 'Putusan Hukum';
 
     protected static \UnitEnum|string|null $navigationGroup = null;
 

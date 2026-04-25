@@ -103,7 +103,7 @@ export default function SearchForm({
     return (
         <form
             onSubmit={handleSubmit}
-            className={`bg-white border border-slate-200 rounded-xl shadow-sm ${isCompact ? 'p-5' : 'p-6 md:p-8'}`}
+            className={isCompact ? "" : `bg-white border border-slate-200 rounded-xl shadow-sm p-6 md:p-8`}
         >
             {!isCompact && (
                 <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
@@ -119,10 +119,10 @@ export default function SearchForm({
                 </div>
             )}
 
-            <div className="space-y-4">
+            <div className={isCompact ? "space-y-6" : "space-y-4"}>
                 {/* Row 1: Nama Dokumen */}
                 <div>
-                    <label htmlFor="namaDokumen" className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">
+                    <label htmlFor="namaDokumen" className="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-widest">
                         Nama Dokumen
                     </label>
                     <input
@@ -131,21 +131,21 @@ export default function SearchForm({
                         placeholder="Masukkan Nama Dokumen"
                         value={values.namaDokumen}
                         onChange={(e) => handleChange('namaDokumen', e.target.value)}
-                        className="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#0d9488] focus:ring-1 focus:ring-[#0d9488]/20 transition-colors"
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0d9488] focus:border-transparent transition-all"
                     />
                 </div>
 
                 {/* Row 2: Jenis Dokumen */}
                 {!hideJenis && (
                     <div>
-                        <label htmlFor="jenisDokumen" className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">
+                        <label htmlFor="jenisDokumen" className="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-widest">
                             Jenis Dokumen
                         </label>
                         <select
                             id="jenisDokumen"
                             value={values.jenisDokumen}
                             onChange={(e) => handleChange('jenisDokumen', e.target.value)}
-                            className="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm text-slate-800 focus:outline-none focus:border-[#0d9488] focus:ring-1 focus:ring-[#0d9488]/20 transition-colors bg-white appearance-none cursor-pointer"
+                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0d9488] focus:border-transparent transition-all appearance-none cursor-pointer"
                         >
                             <option value="">-Jenis Dokumen-</option>
                             {JENIS_DOKUMEN.map((j) => (
@@ -156,32 +156,32 @@ export default function SearchForm({
                 )}
 
                 {/* Row 3: Nomor | Tahun | Status */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className={`grid gap-4 ${isCompact ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-3'}`}>
                     {/* Nomor */}
                     <div>
-                        <label htmlFor="nomor" className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">
+                        <label htmlFor="nomor" className="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-widest">
                             Nomor
                         </label>
                         <input
                             id="nomor"
                             type="text"
-                            placeholder="Nomor Dokumen"
+                            placeholder="Nomor"
                             value={values.nomor}
                             onChange={(e) => handleChange('nomor', e.target.value)}
-                            className="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#0d9488] focus:ring-1 focus:ring-[#0d9488]/20 transition-colors"
+                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0d9488] focus:border-transparent transition-all"
                         />
                     </div>
 
                     {/* Tahun */}
                     <div>
-                        <label htmlFor="tahun" className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">
+                        <label htmlFor="tahun" className="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-widest">
                             Tahun
                         </label>
                         <select
                             id="tahun"
                             value={values.tahun}
                             onChange={(e) => handleChange('tahun', e.target.value)}
-                            className="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm text-slate-800 focus:outline-none focus:border-[#0d9488] focus:ring-1 focus:ring-[#0d9488]/20 transition-colors bg-white appearance-none cursor-pointer"
+                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0d9488] focus:border-transparent transition-all appearance-none cursor-pointer"
                         >
                             <option value="">-Pilih Tahun-</option>
                             {YEARS.map((y) => (
@@ -192,14 +192,14 @@ export default function SearchForm({
 
                     {/* Status */}
                     <div>
-                        <label htmlFor="status" className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">
+                        <label htmlFor="status" className="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-widest">
                             Status
                         </label>
                         <select
                             id="status"
                             value={values.status}
                             onChange={(e) => handleChange('status', e.target.value)}
-                            className="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm text-slate-800 focus:outline-none focus:border-[#0d9488] focus:ring-1 focus:ring-[#0d9488]/20 transition-colors bg-white appearance-none cursor-pointer"
+                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0d9488] focus:border-transparent transition-all appearance-none cursor-pointer"
                         >
                             <option value="">-Pilih Status-</option>
                             {STATUS_DOKUMEN.map((s) => (
@@ -210,10 +210,14 @@ export default function SearchForm({
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center justify-center gap-3 pt-2">
+                <div className={`flex flex-col gap-3 pt-4`}>
                     <button
                         type="submit"
-                        className="flex items-center gap-2 px-8 py-2.5 border-2 border-[#0d9488] text-[#0d9488] font-bold text-sm rounded-lg hover:bg-[#0d9488] hover:text-white transition-all duration-200"
+                        className={`flex items-center justify-center gap-2 py-3.5 font-black text-xs uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-teal-900/10 active:scale-95 ${
+                            isCompact 
+                            ? 'w-full bg-[#0d9488] text-white hover:bg-[#0b7a6f]' 
+                            : 'px-10 border-2 border-[#0d9488] text-[#0d9488] hover:bg-[#0d9488] hover:text-white self-center'
+                        }`}
                     >
                         <Search className="h-4 w-4" />
                         CARI
@@ -222,9 +226,11 @@ export default function SearchForm({
                         <button
                             type="button"
                             onClick={handleReset}
-                            className="px-5 py-2.5 border border-slate-200 text-slate-500 font-medium text-sm rounded-lg hover:border-slate-400 hover:text-slate-700 transition-colors"
+                            className={`py-3 border border-slate-200 text-slate-500 font-bold text-xs uppercase tracking-widest rounded-xl hover:border-slate-400 hover:text-slate-700 transition-colors ${
+                                isCompact ? 'w-full' : 'px-6'
+                            }`}
                         >
-                            Reset
+                            Reset Filter
                         </button>
                     )}
                 </div>

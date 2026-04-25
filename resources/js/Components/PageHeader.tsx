@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from '@inertiajs/react';
+import { Link, Head } from '@inertiajs/react';
 import { ChevronRight, Home } from 'lucide-react';
 
 interface Breadcrumb {
@@ -16,6 +16,10 @@ interface PageHeaderProps {
 export default function PageHeader({ title, subtitle, breadcrumbs = [] }: PageHeaderProps) {
     return (
         <div className="bg-[#1e293b] py-8 px-6">
+            <Head>
+                <title>{`${title} – JDIH Banjarnegara`}</title>
+                {subtitle && <meta name="description" content={subtitle} />}
+            </Head>
             <div className="max-w-7xl mx-auto">
                 {/* Breadcrumb */}
                 <nav className="flex items-center gap-1.5 text-xs text-slate-400 mb-4">

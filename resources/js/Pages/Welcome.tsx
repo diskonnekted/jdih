@@ -9,7 +9,6 @@ import {
 import { PageProps } from '@/types';
 import PublicLayout from '@/Layouts/PublicLayout';
 import SearchForm, { SearchValues } from '@/Components/SearchForm';
-import HeroModern from '@/Components/HeroModern';
 import {
     BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
     LineChart, Line, CartesianGrid, Cell,
@@ -122,7 +121,7 @@ function Hero({ banner }: { banner?: any }) {
         };
         const base = JENIS_SLUG[values.jenisDokumen] ?? '/peraturan-daerah';
         const params = new URLSearchParams();
-        if (values.namaDokumen) params.set('q', values.namaDokumen);
+        if (values.namaDokumen) params.set('namaDokumen', values.namaDokumen);
         if (values.nomor)       params.set('nomor', values.nomor);
         if (values.tahun)       params.set('tahun', values.tahun);
         if (values.status)      params.set('status', values.status);
@@ -634,8 +633,8 @@ function InfografisSection({ items, variant = 'classic' }: { items: any[], varia
 /* PAGE                                                                */
 /* ------------------------------------------------------------------ */
 export default function Welcome({ auth, news = [], banner = null, isMobile = false, infographics = [], latestDocs = [], counts = {} }: PageProps & { news?: any[], banner?: any, isMobile?: boolean, infographics?: any[], latestDocs?: any[], counts?: any }) {
-    const [activeModel, setActiveModel] = useState<'classic' | 'modern'>('classic');
     const totalCount = Object.values(counts).reduce((a, b) => (a as number) + (b as number), 0) as number;
+    const activeModel = 'classic';
 
     const handleSearch = (values: any) => {
         // Shared search logic
@@ -689,17 +688,13 @@ export default function Welcome({ auth, news = [], banner = null, isMobile = fal
     }
 
     return (
-        <PublicLayout user={auth?.user} variant={activeModel}>
+        <PublicLayout user={auth?.user}>
             <Head>
                 <title>JDIH Kabupaten Banjarnegara – Jaringan Dokumentasi & Informasi Hukum</title>
                 <link rel="preload" as="image" href={banner?.image || '/images/hero.jpg'} fetchPriority="high" />
             </Head>
             
-            {activeModel === 'classic' ? (
-                <Hero banner={banner} />
-            ) : (
-                <HeroModern onSearch={handleSearch} />
-            )}
+            <Hero banner={banner} />
 
             <CategoryGrid variant={activeModel} counts={counts} />
             <LatestDocuments variant={activeModel} documents={latestDocs} />
@@ -709,32 +704,6 @@ export default function Welcome({ auth, news = [], banner = null, isMobile = fal
             <VideoSection variant={activeModel} />
             <RelatedLinks variant={activeModel} />
             <CTA variant={activeModel} />
-
-            {/* Layout Switcher Toggle (Floating) */}
-            <div className="fixed bottom-8 right-8 z-[100]">
-                <div className="bg-white/80 backdrop-blur-xl p-1.5 rounded-2xl shadow-2xl border border-slate-200 flex gap-1">
-                    <button 
-                        onClick={() => setActiveModel('classic')}
-                        className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                            activeModel === 'classic' 
-                            ? 'bg-[#1e293b] text-white shadow-xl' 
-                            : 'text-slate-500 hover:bg-slate-100'
-                        }`}
-                    >
-                        Classic
-                    </button>
-                    <button 
-                        onClick={() => setActiveModel('modern')}
-                        className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                            activeModel === 'modern' 
-                            ? 'bg-[#003399] text-white shadow-xl' 
-                            : 'text-slate-500 hover:bg-slate-100'
-                        }`}
-                    >
-                        Modern
-                    </button>
-                </div>
-            </div>
         </PublicLayout>
     );
 }

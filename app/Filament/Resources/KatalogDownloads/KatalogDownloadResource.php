@@ -20,9 +20,9 @@ class KatalogDownloadResource extends Resource
 {
     protected static ?string $model = KatalogDownload::class;
 
-    protected static \BackedEnum|string|null $navigationIcon = Heroicon::OutlinedFolder;
-
-    protected static ?string $navigationLabel = 'Katalog Download';
+    protected static ?string $modelLabel = 'File Unduhan';
+    protected static ?string $pluralModelLabel = 'Pusat Unduhan';
+    protected static ?string $navigationLabel = 'Pusat Unduhan';
 
     protected static \UnitEnum|string|null $navigationGroup = null;
 

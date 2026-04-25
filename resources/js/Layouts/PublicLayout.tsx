@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from '@inertiajs/react';
+import PageHeader from '@/Components/PageHeader';
+import IKMSurveyModal from '@/Components/IKMSurveyModal';
+import AccessibilityWidget from '@/Components/AccessibilityWidget';
 import {
     ChevronDown, Menu, X, Phone, Mail, MapPin,
     ExternalLink, Building2, Globe, Shield, Landmark, BookOpen, Users,
@@ -17,40 +20,47 @@ const NAV_ITEMS = [
             { label: 'Dasar Hukum', href: '/dasar-hukum' },
             { label: 'Struktur Organisasi', href: '/struktur-organisasi' },
             { label: 'Tupoksi Bagian Hukum', href: '/tupoksi-bag-hukum' },
-            { label: 'Anggota JDIH Banjarnegara', href: '/anggota-jdih' },
+            { label: 'Anggota KAB Banjarnegara', href: '/anggota-jdih' },
             { label: 'Kedudukan dan Alamat', href: '/kedudukan-dan-alamat' },
             { label: 'SOP', href: '/sop' },
         ]
     },
     {
-        label: 'Peraturan Per-UU',
+        label: 'Peraturan',
         children: [
             { label: 'Peraturan Daerah', href: '/peraturan-daerah' },
             { label: 'Peraturan Bupati', href: '/peraturan-bupati' },
+            { label: 'Dokumen Hukum Terjemahan', href: '/dokumen-hukum-terjemahan' },
             { label: 'Keputusan Bupati', href: '/keputusan-bupati' },
             { label: 'Instruksi Bupati', href: '/instruksi-bupati' },
             { label: 'Keputusan Sekretaris Daerah', href: '/keputusan-sekretaris-daerah' },
-            { label: 'Dokumen Hukum Terjemahan', href: '/dokumen-hukum-terjemahan' },
+            { 
+                label: 'Peraturan/Keputusan Kepala OPD', 
+                href: '#',
+                children: [
+                    { label: 'Peraturan Kepala OPD', href: '/peraturan-kepala-opd' },
+                    { label: 'Keputusan Kepala OPD', href: '/keputusan-kepala-opd' },
+                ]
+            },
+            { 
+                label: 'Dokumen Kerjasama', 
+                href: '#',
+                children: [
+                    { label: 'Nota Kesepakatan', href: '/nota-kesepakatan' },
+                    { label: 'Kesepakatan Bersama', href: '/kesepakatan-bersama' },
+                    { label: 'Memorandum of Understanding', href: '/mou' },
+                    { label: 'Letter of Intent', href: '/loi' },
+                ]
+            },
             { label: 'Dokumen Hukum Langka', href: '/dokumen-hukum-langka' },
+            { label: 'Produk Hukum Desa', href: '/produk-hukum-desa' },
             { label: 'Propemperda', href: '/propemperda' },
             { label: 'Katalog', href: '/katalog' },
             { label: 'Peraturan Pusat ↗', href: 'https://jdihn.go.id/' },
-            { label: 'Produk Hukum Desa', href: '/produk-hukum-desa' },
         ]
     },
     {
-        label: 'Monografi Hukum',
-        children: [
-            { label: 'Naskah Akademik', href: '/naskah-akademik' },
-            { label: 'Raperda', href: '/raperda' },
-            { label: 'Analisis & Evaluasi Hukum', href: '/analisis-evaluasi-hukum' },
-            { label: 'RANHAM', href: '/ranham' },
-            { label: 'Risalah Rapat', href: '/risalah-rapat' },
-            { label: 'Artikel Bidang Hukum', href: '/artikel-bidang-hukum' },
-        ]
-    },
-    {
-        label: 'Pembentukan Peraturan',
+        label: 'Pembentukan Hukum',
         children: [
             { 
                 label: 'Propem', 
@@ -77,6 +87,14 @@ const NAV_ITEMS = [
             { label: 'Risalah Rapat', href: '/risalah-rapat' },
         ]
     },
+    {
+        label: 'Monografi Hukum',
+        children: [
+            { label: 'Monografi Hukum', href: '/monografi-hukum' },
+            { label: 'Buku Hukum', href: '/buku-hukum' },
+        ]
+    },
+    { label: 'Artikel Hukum', href: '/artikel-bidang-hukum' },
     { label: 'Putusan', href: '/putusan' },
     {
         label: 'Informasi',
@@ -136,7 +154,7 @@ function Navbar({ user, variant = 'classic' }: { user?: any; variant?: 'classic'
             </div>
 
             {/* Main nav */}
-            <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div className="max-w-screen-2xl mx-auto px-10 h-16 flex items-center justify-between gap-x-32">
                 {/* Logo & Brand */}
                 <Link href="/" className="flex items-center gap-3 shrink-0 group" aria-label="Beranda JDIH Banjarnegara">
                     <img src="/images/logo-jdih.png" alt="Logo JDIH Banjarnegara" width={180} height={48} className="h-12 w-auto object-contain group-hover:scale-105 transition-transform" />
@@ -256,9 +274,6 @@ function Navbar({ user, variant = 'classic' }: { user?: any; variant?: 'classic'
     );
 }
 
-/* ------------------------------------------------------------------ */
-/* FOOTER                                                              */
-/* ------------------------------------------------------------------ */
 function Footer() {
     const HUKUM_LINKS = [
         ['Peraturan Daerah', '/peraturan-daerah'],
@@ -288,7 +303,6 @@ function Footer() {
         <footer className="bg-[#1e293b] text-slate-400 pt-12 pb-6">
             <div className="max-w-7xl mx-auto px-6">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10 pb-10 border-b border-slate-700">
-                    {/* Brand */}
                     <div className="md:col-span-2">
                         <Link href="/" className="inline-block mb-4" aria-label="Beranda JDIH">
                             <img src="/images/logo-jdih.png" alt="Logo JDIH Banjarnegara" width={200} height={56} className="h-14 w-auto object-contain" />
@@ -310,19 +324,7 @@ function Footer() {
                                 <span>hukum@banjarnegarakab.go.id</span>
                             </div>
                         </div>
-                        <div className="flex gap-3 mt-5">
-                            <a href="https://www.tiktok.com/@jdih_banjarnegara" target="_blank" rel="noreferrer"
-                                className="px-3 py-1.5 text-xs border border-slate-600 rounded hover:border-[#0d9488] hover:text-[#0d9488] transition-colors">
-                                TikTok
-                            </a>
-                            <a href="https://www.instagram.com/jdih_banjarnegara/" target="_blank" rel="noreferrer"
-                                className="px-3 py-1.5 text-xs border border-slate-600 rounded hover:border-[#0d9488] hover:text-[#0d9488] transition-colors">
-                                Instagram
-                            </a>
-                        </div>
                     </div>
-
-                    {/* Produk Hukum */}
                     <div>
                         <h4 className="text-white font-bold text-sm uppercase tracking-widest mb-4">Produk Hukum</h4>
                         <ul className="space-y-2 text-sm">
@@ -333,8 +335,6 @@ function Footer() {
                             ))}
                         </ul>
                     </div>
-
-                    {/* Website OPD */}
                     <div>
                         <h4 className="text-white font-bold text-sm uppercase tracking-widest mb-4">Website OPD</h4>
                         <ul className="space-y-2 text-sm">
@@ -349,46 +349,36 @@ function Footer() {
                         </ul>
                     </div>
                 </div>
-
                 <div className="border-t border-slate-700 pt-5 flex flex-col md:flex-row justify-between items-center gap-3 text-xs">
                     <p>© 2025 Sekretariat Daerah Kabupaten Banjarnegara. Hak cipta dilindungi.</p>
-                    <div className="flex gap-4">
-                        <Link href="#" className="hover:text-white transition-colors">Disclaimer</Link>
-                        <Link href="#" className="hover:text-white transition-colors">Sitemap</Link>
-                        <a href="/admin" className="hover:text-white transition-colors">Admin Panel</a>
-                    </div>
                 </div>
             </div>
         </footer>
     );
 }
 
-/* ------------------------------------------------------------------ */
-/* PUBLIC LAYOUT                                                       */
-/* ------------------------------------------------------------------ */
 interface PublicLayoutProps {
     children: React.ReactNode;
     user?: any;
     variant?: 'classic' | 'modern';
 }
 
-export default function PublicLayout({ children, user, variant = 'classic' }: PublicLayoutProps) {
-    const isModern = variant === 'modern';
+export default function PublicLayout({ children, user }: PublicLayoutProps) {
+    const variant = 'classic';
+    const isModern = false;
     
     return (
         <div className={`min-h-screen flex flex-col transition-colors duration-300 bg-[#1e293b]`}>
             <Navbar user={user} variant={variant} />
-            
-            {/* Gap Filler: Ensures no white line shows through the fixed navbar */}
-            {!isModern && <div className="fixed top-0 w-full h-[95px] bg-[#0f172a] z-40" />}
-
-            {/* Offset for fixed navbar */}
+            <div className="fixed top-0 w-full h-[95px] bg-[#0f172a] z-40" />
             <div className="pt-[92px] pb-8 flex-1 relative z-10">
                 <div className="bg-white">
                     {children}
                 </div>
             </div>
             <Footer />
+            <IKMSurveyModal />
+            <AccessibilityWidget />
         </div>
     );
 }

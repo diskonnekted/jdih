@@ -133,8 +133,8 @@ export default function ProdukHukumDesa({ villagesMapping }: Props) {
     };
 
     return (
-        <PublicLayout variant="classic">
-            <Head title="Produk Hukum Desa – JDIH Banjarnegara" />
+        <PublicLayout>
+
             
             <PageHeader 
                 title="Produk Hukum Desa" 
