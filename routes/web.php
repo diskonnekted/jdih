@@ -272,6 +272,9 @@ Route::middleware('auth')->group(function () {
 
 
 
+
+require __DIR__.'/auth.php';
+
 // ---------------------------------------------------------------
 // INVENTARISASI HUKUM – LIST & DETAIL (dynamic)
 // ---------------------------------------------------------------
@@ -407,4 +410,3 @@ Route::get("/{category:slug}/{id}", function(string $slug, $id) {
     ]);
 });
 
-require __DIR__.'/auth.php';
