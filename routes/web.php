@@ -168,8 +168,15 @@ Route::get('/berita',          function() {
 });
 Route::get('/berita/{slug}',    function($slug) {
     $post = \App\Models\News::where('slug', $slug)->firstOrFail();
+    $related = \App\Models\News::where('id', '!=', $post->id)
+        ->where('status', 'published')
+        ->latest()
+        ->take(4)
+        ->get();
+
     return Inertia::render('Informasi/DetailBerita', [
-        'post' => $post
+        'post' => $post,
+        'relatedNews' => $related
     ]);
 });
 Route::get('/galeri', function() {
