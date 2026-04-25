@@ -52,13 +52,9 @@ class LegalDocumentForm
                                     ])
                                     ->default('Peraturan Perundang-undangan')
                                     ->required(),
-                                Select::make('teu')
+                                TextInput::make('teu')
                                     ->label('T.E.U (Tajuk Entri Utama)')
-                                    ->options([
-                                        'Pemerintah Kabupaten Banjarnegara' => 'Pemerintah Kabupaten Banjarnegara',
-                                        'DPRD Kabupaten Banjarnegara' => 'DPRD Kabupaten Banjarnegara',
-                                        'Sekretariat Daerah Kabupaten Banjarnegara' => 'Sekretariat Daerah Kabupaten Banjarnegara',
-                                    ])
+                                    ->placeholder('Misal: Pemerintah Kabupaten Banjarnegara')
                                     ->default('Pemerintah Kabupaten Banjarnegara')
                                     ->required(),
                                 Select::make('status')
