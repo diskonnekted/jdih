@@ -71,6 +71,7 @@ export default function IKMSurveyModal() {
                 {/* Close Button */}
                 <button 
                     onClick={closeSurvey}
+                    aria-label="Tutup Survei"
                     className="absolute top-6 right-6 p-2 bg-slate-100 hover:bg-slate-200 rounded-full text-slate-500 transition-colors z-10"
                 >
                     <X className="h-5 w-5" />

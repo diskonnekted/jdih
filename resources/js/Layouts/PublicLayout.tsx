@@ -363,7 +363,7 @@ function Footer() {
                         </div>
                     </div>
                     <div>
-                        <h4 className="text-white font-bold text-sm uppercase tracking-widest mb-4">Produk Hukum</h4>
+                        <h3 className="text-white font-bold text-sm uppercase tracking-widest mb-4">Produk Hukum</h3>
                         <ul className="space-y-2 text-sm">
                             {HUKUM_LINKS.map(([label, href]) => (
                                 <li key={label}>
@@ -373,7 +373,7 @@ function Footer() {
                         </ul>
                     </div>
                     <div>
-                        <h4 className="text-white font-bold text-sm uppercase tracking-widest mb-4">Website OPD</h4>
+                        <h3 className="text-white font-bold text-sm uppercase tracking-widest mb-4">Website OPD</h3>
                         <ul className="space-y-2 text-sm">
                             {OPD_LINKS.map(([label, href]) => (
                                 <li key={label}>
