@@ -16,7 +16,16 @@ class LegalDocumentForm
         return $schema
             ->components([
                 TextInput::make('title')
-                    ->label('TEST JUDUL')
+                    ->label('Judul Produk Hukum')
+                    ->required()
+                    ->columnSpanFull(),
+                TextInput::make('document_number')
+                    ->label('Nomor')
+                    ->required(),
+                Select::make('year')
+                    ->label('Tahun')
+                    ->options(array_combine(range(date('Y'), 1945), range(date('Y'), 1945)))
+                    ->searchable()
                     ->required(),
             ]);
     }

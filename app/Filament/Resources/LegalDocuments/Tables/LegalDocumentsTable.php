@@ -98,19 +98,19 @@ class LegalDocumentsTable
                     ->relationship('category', 'name'),
             ], layout: \Filament\Tables\Enums\FiltersLayout::AboveContent)
             ->filtersFormColumns(4)
-            ->recordActions([
-                \Filament\Actions\DeleteAction::make()->label('Hapus')->color('danger')->icon('heroicon-m-trash'),
-                \Filament\Actions\EditAction::make()->label('Edit')->color('success')->icon('heroicon-m-pencil'),
-                \Filament\Actions\ViewAction::make()->label('Detail')->color('info')->icon('heroicon-m-eye'),
-                \Filament\Actions\Action::make('proses')
+            ->actions([
+                \Filament\Tables\Actions\DeleteAction::make()->label('Hapus')->color('danger')->icon('heroicon-m-trash'),
+                \Filament\Tables\Actions\EditAction::make()->label('Edit')->color('success')->icon('heroicon-m-pencil'),
+                \Filament\Tables\Actions\ViewAction::make()->label('Detail')->color('info')->icon('heroicon-m-eye'),
+                \Filament\Tables\Actions\Action::make('proses')
                     ->label('Proses')
                     ->color('primary')
                     ->icon('heroicon-m-cog')
                     ->action(fn () => null),
             ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+            ->bulkActions([
+                \Filament\Tables\Actions\BulkActionGroup::make([
+                    \Filament\Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }
