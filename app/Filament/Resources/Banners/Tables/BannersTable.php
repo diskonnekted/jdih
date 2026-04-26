@@ -18,7 +18,8 @@ class BannersTable
                     ->sortable(),
                 \Filament\Tables\Columns\ImageColumn::make('image_path')
                     ->label('Gambar')
-                    ->square(),
+                    ->square()
+                    ->disk('public'),
                 \Filament\Tables\Columns\TextColumn::make('title')
                     ->label('Judul Banner')
                     ->wrap()
