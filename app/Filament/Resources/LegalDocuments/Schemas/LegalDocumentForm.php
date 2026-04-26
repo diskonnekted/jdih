@@ -162,6 +162,7 @@ class LegalDocumentForm
                                     ->required()
                                     ->openable()
                                     ->downloadable()
+                                    ->previewable(false)
                                     ->columnSpanFull()
                                     ->hint('Pastikan file adalah searchable PDF (bukan hasil scan gambar).'),
                             ]),
