@@ -13,7 +13,22 @@ class KatalogDownloadsTable
     {
         return $table
             ->columns([
-                //
+                \Filament\Tables\Columns\TextColumn::make('no')
+                    ->label('No')
+                    ->sortable()
+                    ->searchable(),
+                \Filament\Tables\Columns\TextColumn::make('title')
+                    ->label('Judul File')
+                    ->sortable()
+                    ->searchable(),
+                \Filament\Tables\Columns\TextColumn::make('file_path')
+                    ->label('File')
+                    ->limit(30),
+                \Filament\Tables\Columns\TextColumn::make('created_at')
+                    ->label('Dibuat')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
