@@ -112,6 +112,7 @@ class LegalDocumentForm
                         \Filament\Schemas\Components\Tabs\Tab::make('Status & Hubungan')
                             ->icon('heroicon-m-arrows-right-left')
                             ->schema([
+                                /*
                                 \Filament\Forms\Components\Repeater::make('relatedDocuments')
                                     ->label('Visual Hubungan Dokumen (Sistem)')
                                     ->relationship('relatedDocuments')
@@ -136,6 +137,7 @@ class LegalDocumentForm
                                     ])
                                     ->columns(2)
                                     ->columnSpanFull(),
+                                */
                                 Textarea::make('related_regulations_text')
                                     ->label('Peraturan Terkait (Teks)')
                                     ->placeholder('-'),
