@@ -68,7 +68,18 @@ Route::get('/', function () {
             ->mapWithKeys(fn($item) => [$item->category->name ?? 'unknown' => $item->total]);
     });
 
-    $videos = \App\Models\VideoContent::latest()->take(3)->get();
+    $videos = \App\Models\VideoContent::latest()
+        ->take(3)
+        ->get()
+        ->map(fn($v) => [
+            'id' => $v->id,
+            'title' => $v->title,
+            'video_url' => $v->video_url,
+            'thumbnail_path' => $v->thumbnail_path,
+            'platform' => $v->platform,
+            'year' => $v->year,
+            'duration' => $v->duration,
+        ]);
 
     return Inertia::render('Welcome', [
         'canLogin'       => Route::has('login'),
@@ -235,6 +246,10 @@ Route::get('/video', function() {
             'id' => $item->id,
             'title' => $item->title,
             'video_url' => $item->video_url,
+            'thumbnail_path' => $item->thumbnail_path,
+            'platform' => $item->platform,
+            'year' => $item->year,
+            'duration' => $item->duration,
             'description' => $item->description,
         ]);
 

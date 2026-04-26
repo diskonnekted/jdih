@@ -844,9 +844,12 @@ export default function Welcome({
                         {videos.map((v: any) => (
                             <a key={v.id} href={v.video_url} target="_blank" rel="noreferrer" className="group bg-slate-800 border border-slate-700 rounded-lg overflow-hidden hover:border-[#0d9488] transition-all">
                                 <div className="h-48 relative flex items-center justify-center overflow-hidden bg-slate-900">
-                                    <div className="absolute inset-0 bg-[#1e293b] flex items-center justify-center">
-                                        <Play className="h-12 w-12 text-[#0d9488]/30" />
-                                    </div>
+                                    <img 
+                                        src={v.thumbnail_path ? `/images/${v.thumbnail_path}` : '/images/video-placeholder.png'} 
+                                        alt={v.title} 
+                                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-60" 
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-[#1e293b] to-transparent opacity-60" />
                                     <div className="relative z-10 h-14 w-14 rounded-full flex items-center justify-center bg-white/20 border border-white/30 backdrop-blur-sm group-hover:scale-110 transition-transform">
                                         <Play className="h-6 w-6 text-white ml-1 fill-white" />
                                     </div>
