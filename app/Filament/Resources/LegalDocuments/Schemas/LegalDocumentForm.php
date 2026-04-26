@@ -154,17 +154,16 @@ class LegalDocumentForm
                                     ->hint('Abstrak harus searchable dan memuat latar belakang, rumusan masalah, dan isi pokok.'),
                                 FileUpload::make('file_path')
                                     ->label('File PDF Utama (Searchable)')
-                                    ->disk('public')
-                                    ->directory(fn ($get) => 'legal-documents/' . ($get('year') ?? date('Y')) . '/' . ($get('category_id') ?? 'uncategorized'))
+                                    ->disk('static_docs')
+                                    ->directory(fn ($get) => ($get('year') ?? date('Y')) . '/' . ($get('category_id') ?? 'uncategorized'))
                                     ->acceptedFileTypes(['application/pdf'])
-                                    ->maxSize(5120) // 5MB sesuai standar JDIHN
-                                    ->getUploadedFileNameForStorageUsing(function ($file) {
-                                        $name = str_replace(['.', ' '], '_', pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
-                                        return $name . '.' . $file->getClientOriginalExtension();
-                                    })
+                                    ->maxSize(10240) // Increased to 10MB just in case
+                                    ->preserveFilenames()
                                     ->required()
+                                    ->openable()
+                                    ->downloadable()
                                     ->columnSpanFull()
-                                    ->hint('Pastikan file adalah searchable PDF (bukan hasil scan gambar) dan maksimal 5MB.'),
+                                    ->hint('Pastikan file adalah searchable PDF (bukan hasil scan gambar).'),
                             ]),
                     ]),
             ]);
