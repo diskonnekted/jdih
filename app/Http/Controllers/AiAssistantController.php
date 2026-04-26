@@ -38,11 +38,11 @@ class AiAssistantController extends Controller
         Pertanyaan Pengguna: {$request->question}";
 
         try {
-            $response = Http::withHeaders([
+            $response = Http::withoutVerifying()->withHeaders([
                 'Authorization' => 'Bearer ' . $apiKey,
                 'Content-Type' => 'application/json',
             ])->post('https://api.groq.com/openai/v1/chat/completions', [
-                'model' => 'llama-3.1-8b-instant',
+                'model' => 'llama3-8b-8192',
                 'messages' => [
                     ['role' => 'system', 'content' => 'Anda adalah asisten hukum yang membantu dan akurat.'],
                     ['role' => 'user', 'content' => $prompt],
@@ -51,7 +51,7 @@ class AiAssistantController extends Controller
             ]);
 
             if ($response->failed()) {
-                \Log::error('AI Assistant Groq Failed: ' . $response->body());
+                \Log::error('AI Assistant Groq Failed: ' . $response->status() . ' - ' . $response->body());
                 return response()->json(['error' => 'Gagal menghubungi AI Groq. Silakan cek log.'], 500);
             }
 
