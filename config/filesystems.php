@@ -65,6 +65,15 @@ return [
             'report' => false,
         ],
 
+        'static_temp' => [
+            'driver' => 'local',
+            'root' => public_path('temp'),
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/temp',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

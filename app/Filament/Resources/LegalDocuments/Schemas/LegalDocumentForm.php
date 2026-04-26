@@ -155,16 +155,15 @@ class LegalDocumentForm
                                 FileUpload::make('file_path')
                                     ->label('File PDF Utama (Searchable)')
                                     ->disk('static_docs')
-                                    ->directory(fn ($get) => ($get('year') ?? date('Y')) . '/' . ($get('category_id') ?? 'uncategorized'))
+                                    ->directory('uploads')
                                     ->acceptedFileTypes(['application/pdf'])
-                                    ->maxSize(10240) // Increased to 10MB just in case
-                                    ->preserveFilenames()
+                                    ->maxSize(20480) // 20MB
                                     ->required()
                                     ->openable()
                                     ->downloadable()
                                     ->previewable(false)
                                     ->columnSpanFull()
-                                    ->hint('Pastikan file adalah searchable PDF (bukan hasil scan gambar).'),
+                                    ->hint('Pastikan file adalah searchable PDF.'),
                             ]),
                     ]),
             ]);
