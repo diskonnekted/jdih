@@ -6,6 +6,7 @@ use App\Http\Controllers\AiAssistantController;
 use App\Http\Controllers\CommentController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
@@ -45,7 +46,7 @@ Route::get('/', function () {
         ]);
 
     $latestLegalDocs = \App\Models\LegalDocument::with('category')
-        ->orderBy('published_at', 'desc')
+        ->orderByRaw('COALESCE(published_at, created_at) DESC')
         ->take(5)
         ->get()
         ->map(fn($doc) => [
@@ -60,13 +61,11 @@ Route::get('/', function () {
             'slug' => Str::slug($doc->category->name ?? 'peraturan'),
         ]);
 
-    $counts = \Illuminate\Support\Facades\Cache::remember('legal_document_counts', 3600, function() {
-        return \App\Models\LegalDocument::select('category_id', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
-            ->groupBy('category_id')
-            ->with('category')
-            ->get()
-            ->mapWithKeys(fn($item) => [$item->category->name ?? 'unknown' => $item->total]);
-    });
+    $counts = \App\Models\LegalDocument::select('category_id', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
+        ->groupBy('category_id')
+        ->with('category')
+        ->get()
+        ->mapWithKeys(fn($item) => [$item->category->name ?? 'unknown' => $item->total]);
 
     $videos = \App\Models\VideoContent::latest()
         ->take(3)
@@ -333,6 +332,24 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// ---------------------------------------------------------------
+// DOWNLOAD TRACKING — increment download_count & redirect to file
+// ---------------------------------------------------------------
+Route::get('/dokumen/{id}/unduh', function (int $id) {
+    $document = \App\Models\LegalDocument::findOrFail($id);
+
+    if (!$document->file_path) {
+        abort(404, 'File tidak tersedia.');
+    }
+
+    // Increment download count
+    $document->increment('download_count');
+
+    $fileUrl = Storage::disk('public')->url($document->file_path);
+
+    return redirect()->away($fileUrl);
+})->name('dokumen.unduh');
+
 
 
 
@@ -368,7 +385,7 @@ Route::get("/{category:slug}", function(string $slug, \Illuminate\Http\Request $
         $q->where('status', $val);
     });
 
-    $documents = $query->latest('published_at')
+    $documents = $query->orderByRaw('COALESCE(published_at, created_at) DESC')
         ->paginate(10)
         ->withQueryString()
         ->through(fn($doc) => [
@@ -398,78 +415,90 @@ Route::get("/{category:slug}", function(string $slug, \Illuminate\Http\Request $
 Route::get("/{category:slug}/{id}", function(string $slug, $id) {
     $cat = \App\Models\Category::where('slug', $slug)->firstOrFail();
     $document = \App\Models\LegalDocument::with(['category', 'relatedDocuments', 'referencedByDocuments'])->findOrFail($id);
-    
+
+    // Increment view count on every page visit
+    $document->increment('view_count');
+
+    // Resolve file URLs using the correct disk
+    $fileUrl = $document->file_path
+        ? Storage::disk('public')->url($document->file_path)
+        : null;
+
+    $abstractFileUrl = $document->abstract_file_path
+        ? Storage::disk('public')->url($document->abstract_file_path)
+        : null;
+
+    // Download tracking URL
+    $downloadUrl = $document->file_path
+        ? route('dokumen.unduh', $document->id)
+        : null;
+
     return Inertia::render('Hukum/DetailDokumen', [
         'kategori' => $cat->slug,
         'title'    => $cat->name,
         'code'     => $cat->code,
         'document' => [
-            'id' => $document->id,
-            'title' => $document->title,
-            'number' => $document->document_number,
-            'document_number' => $document->document_number,
-            'year' => $document->year,
-            'type' => $document->category->name,
-            'document_type' => $document->document_type,
-            'teu' => $document->teu,
-            'abbreviation' => $document->abbreviation,
-            'code' => $cat->code,
-            'status' => $document->status,
-            'status_note' => $document->status_note,
-            'related_text' => $document->related_regulations_text,
+            'id'                      => $document->id,
+            'title'                   => $document->title,
+            'number'                  => $document->document_number,
+            'document_number'         => $document->document_number,
+            'year'                    => $document->year,
+            'type'                    => $document->category->name,
+            'document_type'           => $document->document_type,
+            'teu'                     => $document->teu,
+            'abbreviation'            => $document->abbreviation,
+            'code'                    => $cat->code,
+            'status'                  => $document->status,
+            'status_note'             => $document->status_note,
+            'related_text'            => $document->related_regulations_text,
             'implementing_regulations' => $document->implementing_regulations,
-            'abstract' => $document->abstract,
-            'abstract_file_path' => $document->abstract_file_path,
-            'abstract_file' => $document->abstract_file_path ? asset('storage/' . $document->abstract_file_path) : null,
-            'file_path' => $document->file_path,
-            'comments' => $document->comments()->where('is_approved', true)->orderBy('created_at', 'desc')->get(),
-            'published_at' => $document->published_at,
-            'promulgated_at' => $document->promulgated_at,
-            'place_of_enactment' => $document->place_of_enactment,
-            'publisher_place' => $document->publisher_place,
-            'source' => $document->source,
-            'subject_text' => $document->subject,
-            'govt_field' => $document->govt_field,
-            'legal_field' => $document->legal_field,
-            'language' => $document->language,
-            'location' => $document->location,
-            'signer' => $document->signer,
-            'author' => $document->author,
-            'initiator' => $document->initiator,
-            'view_count' => $document->view_count,
-            'download_count' => $document->download_count,
-            'page_count' => $document->page_count,
-            'entity' => $document->entity,
-            'category' => $document->category,
-            'file' => $document->file_path ? asset('storage/' . $document->file_path) : null,
-            'date_published' => $document->published_at?->format('Y-m-d'),
-            'date_promulgated' => $document->promulgated_at?->format('Y-m-d'),
-            'place' => $document->place_of_enactment,
-            'source' => $document->source,
-            'subject' => is_string($document->subject) ? json_decode($document->subject) : $document->subject,
-            'govt_field' => $document->govt_field,
-            'language' => $document->language,
-            'location' => $document->location,
-            'signer' => $document->signer,
-            'judicial_review' => $document->judicial_review,
-            'initiator' => $document->initiator,
-            'related' => $document->relatedDocuments->map(fn($r) => [
-                'id' => $r->id,
+            'abstract'                => $document->abstract,
+            'abstract_file_path'      => $document->abstract_file_path,
+            'abstract_file'           => $abstractFileUrl,
+            'file_path'               => $document->file_path,
+            'file'                    => $fileUrl,
+            'download_url'            => $downloadUrl,
+            'comments'                => $document->comments()->where('is_approved', true)->orderBy('created_at', 'desc')->get(),
+            'published_at'            => $document->published_at,
+            'promulgated_at'          => $document->promulgated_at,
+            'place_of_enactment'      => $document->place_of_enactment,
+            'publisher_place'         => $document->publisher_place,
+            'source'                  => $document->source,
+            'subject_text'            => $document->subject,
+            'subject'                 => is_string($document->subject) ? json_decode($document->subject) : $document->subject,
+            'govt_field'              => $document->govt_field,
+            'legal_field'             => $document->legal_field,
+            'language'                => $document->language,
+            'location'                => $document->location,
+            'signer'                  => $document->signer,
+            'judicial_review'         => $document->judicial_review,
+            'initiator'               => $document->initiator,
+            'view_count'              => $document->view_count,
+            'download_count'          => $document->download_count,
+            'page_count'              => $document->page_count,
+            'entity'                  => $document->entity,
+            'created_at'              => $document->created_at?->toISOString(),
+            'updated_at'              => $document->updated_at?->toISOString(),
+            'category'                => $document->category,
+            'date_published'          => $document->published_at?->format('Y-m-d'),
+            'date_promulgated'        => $document->promulgated_at?->format('Y-m-d'),
+            'place'                   => $document->place_of_enactment,
+            'related'                 => $document->relatedDocuments->map(fn($r) => [
+                'id'     => $r->id,
                 'number' => $r->document_number,
-                'year' => $r->year,
-                'title' => $r->title,
-                'type' => $r->category?->name ?? 'Dokumen',
-                'slug' => $r->category?->slug ?? 'katalog',
+                'year'   => $r->year,
+                'title'  => $r->title,
+                'type'   => $r->category?->name ?? 'Dokumen',
+                'slug'   => $r->category?->slug ?? 'katalog',
             ]),
-            'referenced_by' => $document->referencedByDocuments->map(fn($r) => [
-                'id' => $r->id,
+            'referenced_by'           => $document->referencedByDocuments->map(fn($r) => [
+                'id'     => $r->id,
                 'number' => $r->document_number,
-                'year' => $r->year,
-                'title' => $r->title,
-                'type' => $r->category?->name ?? 'Dokumen',
-                'slug' => $r->category?->slug ?? 'katalog',
+                'year'   => $r->year,
+                'title'  => $r->title,
+                'type'   => $r->category?->name ?? 'Dokumen',
+                'slug'   => $r->category?->slug ?? 'katalog',
             ]),
         ],
     ]);
 });
-

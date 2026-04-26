@@ -57,9 +57,10 @@ export default function DetailDokumen({ document, category }: DocumentDetailProp
         }
     };
 
-    const fileUrl = document.file_path?.startsWith('http') 
-        ? document.file_path 
-        : `/storage/${document.file_path}`;
+    // Use server-resolved URLs directly
+    const fileUrl = document.file || null;
+    const abstractFileUrl = document.abstract_file || null;
+    const downloadUrl = document.download_url || fileUrl;
 
     const metadataGroups = [
         {
@@ -213,33 +214,44 @@ export default function DetailDokumen({ document, category }: DocumentDetailProp
                                                 <FileType className="h-4 w-4" />
                                                 Viewer Dokumen PDF
                                             </p>
-                                            <a 
-                                                href={fileUrl}
-                                                download
-                                                className="flex items-center gap-2 px-4 py-2 bg-[#1e293b] text-white text-xs font-bold rounded-lg hover:bg-black transition-colors"
-                                            >
-                                                <Download className="h-3.5 w-3.5" />
-                                                Unduh Dokumen
-                                            </a>
+                                            {downloadUrl ? (
+                                                <a 
+                                                    href={downloadUrl}
+                                                    className="flex items-center gap-2 px-4 py-2 bg-[#1e293b] text-white text-xs font-bold rounded-lg hover:bg-black transition-colors"
+                                                >
+                                                    <Download className="h-3.5 w-3.5" />
+                                                    Unduh Dokumen
+                                                </a>
+                                            ) : null}
                                         </div>
-                                        <div className="aspect-[4/5] md:aspect-[4/5.5] w-full bg-slate-900">
-                                            <object 
-                                                data={fileUrl}
-                                                type="application/pdf"
-                                                className="w-full h-full"
-                                            >
-                                                <div className="flex flex-col items-center justify-center h-full text-white p-8 text-center">
-                                                    <p className="text-sm font-bold mb-4">Browser Anda tidak mendukung preview PDF langsung.</p>
-                                                    <a href={fileUrl} className="px-6 py-2 bg-[#0d9488] rounded-lg text-xs font-bold">Download File di Sini</a>
-                                                </div>
-                                            </object>
-                                        </div>
+                                        {fileUrl ? (
+                                            <div className="aspect-[4/5] md:aspect-[4/5.5] w-full bg-slate-900">
+                                                <object 
+                                                    data={fileUrl}
+                                                    type="application/pdf"
+                                                    className="w-full h-full"
+                                                >
+                                                    <div className="flex flex-col items-center justify-center h-full text-white p-8 text-center">
+                                                        <p className="text-sm font-bold mb-4">Browser Anda tidak mendukung preview PDF langsung.</p>
+                                                        {downloadUrl && (
+                                                            <a href={downloadUrl} className="px-6 py-2 bg-[#0d9488] rounded-lg text-xs font-bold">Download File di Sini</a>
+                                                        )}
+                                                    </div>
+                                                </object>
+                                            </div>
+                                        ) : (
+                                            <div className="flex flex-col items-center justify-center p-20 text-center bg-slate-50">
+                                                <FileText className="h-16 w-16 text-slate-200 mb-4" />
+                                                <p className="text-slate-500 font-bold text-lg mb-2">File Tidak Tersedia</p>
+                                                <p className="text-slate-400 text-sm">File PDF untuk dokumen ini belum diunggah atau sedang dalam proses digitalisasi.</p>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
 
                                 {activeTab === 'abstrak' && (
                                     <div className="p-0">
-                                        {document.abstract_file ? (
+                                        {abstractFileUrl ? (
                                             <>
                                                 <div className="bg-slate-50 p-6 border-b border-slate-200 flex justify-between items-center">
                                                     <p className="text-sm font-bold text-slate-600 flex items-center gap-2">
@@ -247,7 +259,7 @@ export default function DetailDokumen({ document, category }: DocumentDetailProp
                                                         Viewer Abstrak PDF
                                                     </p>
                                                     <a 
-                                                        href={document.abstract_file}
+                                                        href={abstractFileUrl}
                                                         download
                                                         className="flex items-center gap-2 px-4 py-2 bg-[#1e293b] text-white text-xs font-bold rounded-lg hover:bg-black transition-colors"
                                                     >
@@ -257,18 +269,19 @@ export default function DetailDokumen({ document, category }: DocumentDetailProp
                                                 </div>
                                                 <div className="aspect-[4/5] md:aspect-[4/5.5] w-full bg-slate-900">
                                                     <object 
-                                                        data={document.abstract_file}
+                                                        data={abstractFileUrl}
                                                         type="application/pdf"
                                                         className="w-full h-full"
                                                     >
                                                         <div className="flex flex-col items-center justify-center h-full text-white p-8 text-center">
                                                             <p className="text-sm font-bold mb-4">Browser Anda tidak mendukung preview PDF langsung.</p>
-                                                            <a href={document.abstract_file} className="px-6 py-2 bg-[#0d9488] rounded-lg text-xs font-bold">Download Abstrak di Sini</a>
+                                                            <a href={abstractFileUrl} className="px-6 py-2 bg-[#0d9488] rounded-lg text-xs font-bold">Download Abstrak di Sini</a>
                                                         </div>
                                                     </object>
                                                 </div>
                                             </>
                                         ) : (
+
                                             <div className="p-10 text-center">
                                                 <div className="bg-slate-50 rounded-3xl p-10 border-2 border-dashed border-slate-200 max-w-2xl mx-auto">
                                                     <FileText className="h-16 w-16 text-slate-300 mx-auto mb-6" />

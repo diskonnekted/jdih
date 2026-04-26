@@ -3,8 +3,10 @@
 namespace App\Filament\Resources\LegalDocuments\Pages;
 
 use App\Filament\Resources\LegalDocuments\LegalDocumentResource;
+use App\Models\LegalDocument;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Support\Facades\Storage;
 
 class ListLegalDocuments extends ListRecords
 {

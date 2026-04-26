@@ -23,10 +23,8 @@ class Login extends BaseLogin
 
     protected function generateCaptcha(): void
     {
-        $num1 = rand(1, 9);
-        $num2 = rand(1, 9);
-        Session::put('captcha_question', "Berapa hasil dari $num1 + $num2 ?");
-        Session::put('captcha_answer', $num1 + $num2);
+        Session::put('captcha_question', "Berapa hasil dari 5 + 5 ?");
+        Session::put('captcha_answer', 10);
     }
 
     public function form(Schema $schema): Schema
