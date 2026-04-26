@@ -39,6 +39,7 @@ const YEARS = Array.from({ length: CURRENT_YEAR - 1979 }, (_, i) => CURRENT_YEAR
 /* TYPES                                                               */
 /* ------------------------------------------------------------------ */
 export interface SearchValues {
+    [key: string]: any;
     namaDokumen: string;
     jenisDokumen: string;
     nomor: string;

@@ -59,7 +59,7 @@ export default function DaftarDokumen({ kategori, title, code, documents, filter
 
     function handleSearch(values: SearchValues) {
         setFilters(values);
-        router.get(`/${kategori}`, values as any, {
+        router.get(`/${kategori}`, values, {
             preserveState: true,
             replace: true,
         });
