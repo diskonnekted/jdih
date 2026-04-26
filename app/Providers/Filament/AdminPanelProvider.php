@@ -42,6 +42,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('JDIH Banjarnegara')
             ->brandLogo(asset('images/logo-jdih.png'))
             ->brandLogoHeight('2.5rem')
+            ->favicon(asset('favicon.png'))
             ->maxContentWidth(\Filament\Support\Enums\Width::Full)
             ->renderHook(
                 'panels::auth.login.before',
