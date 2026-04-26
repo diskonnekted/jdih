@@ -16,8 +16,8 @@ const SOP_GROUPS_DEFAULT = [
         disahkanOleh: 'Kepala Bagian Hukum',
         tujuan: 'Menjamin berjalannya proses layanan perpustakaan JDIH, yang meliputi peminjaman dan pengembalian koleksi perpustakaan hukum, sehingga penyedia dokumen dan informasi hukum dapat berjalan dengan baik.',
         pages: [
-            { src: '/images/SOP_JDIH_001.png', label: 'Halaman 1 – Prosedur Peminjaman (Langkah 1–6)' },
-            { src: '/images/SOP_JDIH_002.png', label: 'Halaman 2 – Prosedur Peminjaman (Langkah 7–14)' },
+            { src: '/images/SOP_JDIH_001.webp', label: 'Halaman 1 – Prosedur Peminjaman (Langkah 1–6)' },
+            { src: '/images/SOP_JDIH_002.webp', label: 'Halaman 2 – Prosedur Peminjaman (Langkah 7–14)' },
         ],
     },
     {
@@ -28,7 +28,7 @@ const SOP_GROUPS_DEFAULT = [
         disahkanOleh: 'Kepala Bagian Hukum',
         tujuan: 'Keanggotaan Perpustakaan JDIH dibutuhkan untuk mengetahui aktivitas layanan perpustakaan JDIH, sehingga perlu menjamin proses pendaftaran anggota secara cepat, mudah dan akurat.',
         pages: [
-            { src: '/images/SOP_JDIH_003.png', label: 'Prosedur Pendaftaran Anggota Perpustakaan JDIH' },
+            { src: '/images/SOP_JDIH_003.webp', label: 'Prosedur Pendaftaran Anggota Perpustakaan JDIH' },
         ],
     },
     {
@@ -39,7 +39,7 @@ const SOP_GROUPS_DEFAULT = [
         disahkanOleh: 'Kepala Bagian Hukum',
         tujuan: 'Prosedur pengolahan dokumen hukum agar tertata dengan rapi dan mudah ditemukan kembali.',
         pages: [
-            { src: '/images/SOP_JDIH_004.png', label: 'Prosedur Pengolahan Dokumen Hukum' },
+            { src: '/images/SOP_JDIH_004.webp', label: 'Prosedur Pengolahan Dokumen Hukum' },
         ],
     },
 ];

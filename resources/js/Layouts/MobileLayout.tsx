@@ -31,17 +31,17 @@ export default function MobileLayout({ children }: Props) {
             {/* Header */}
             <header className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-slate-100 flex items-center justify-between px-6 z-50">
                 <Link href="/" className="flex items-center gap-2">
-                    <div className="bg-[#003399] p-1.5 rounded-lg shadow-blue-900/10">
+                    <div className="bg-[#0d9488] p-1.5 rounded-lg shadow-teal-900/10">
                         <Scale className="h-5 w-5 text-white" />
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-sm font-black text-[#003399] leading-tight">JDIH BNA</span>
+                        <span className="text-sm font-black text-[#0d9488] leading-tight">JDIH BNA</span>
                         <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Banjarnegara</span>
                     </div>
                 </Link>
                 <div className="flex items-center gap-4">
                     <button 
-                        className="p-2 text-slate-400 hover:text-[#003399] transition-colors relative"
+                        className="p-2 text-slate-400 hover:text-[#0d9488] transition-colors relative"
                         aria-label="Notifikasi"
                     >
                         <Bell className="h-5 w-5" />
@@ -73,12 +73,12 @@ export default function MobileLayout({ children }: Props) {
                         <Link 
                             key={tab.label} 
                             href={tab.href}
-                            className={`flex flex-col items-center gap-1 p-2 transition-all relative ${active ? 'text-[#003399]' : 'text-slate-400'}`}
+                            className={`flex flex-col items-center gap-1 p-2 transition-all relative ${active ? 'text-[#0d9488]' : 'text-slate-400'}`}
                         >
                             {active && (
                                 <motion.div 
                                     layoutId="navbg"
-                                    className="absolute -top-1 h-1 w-8 bg-[#003399] rounded-full"
+                                    className="absolute -top-1 h-1 w-8 bg-[#0d9488] rounded-full"
                                 />
                             )}
                             {tab.icon}

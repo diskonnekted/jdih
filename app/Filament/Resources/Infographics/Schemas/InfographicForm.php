@@ -26,6 +26,8 @@ class InfographicForm
                             ->image()
                             ->disk('public')
                             ->directory('infographics')
+                            ->imageResizeMode('cover')
+                            ->imageResizeTargetWidth('1200')
                             ->required(),
                         TextInput::make('sort_order')
                             ->label('Urutan Tampil')

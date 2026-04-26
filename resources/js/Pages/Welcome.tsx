@@ -50,18 +50,18 @@ const STATS = [
 ];
 
 const RELATED_LINKS = [
-    { label: 'Pemerintah Kab. Banjarnegara', href: 'http://banjarnegarakab.go.id', image: '/images/pemerintah kab .png' },
-    { label: 'Kemendagri RI',                href: 'http://www.kemendagri.go.id',  image: '/images/kemendagri.png' },
-    { label: 'Kementerian Setneg RI',        href: 'https://www.setneg.go.id',     image: '/images/setneg.png' },
-    { label: 'JDIHN',                        href: 'https://www.jdihn.go.id',      image: '/images/jdihn.png' },
+    { label: 'Pemerintah Kab. Banjarnegara', href: 'http://banjarnegarakab.go.id', image: '/images/pemerintah kab .webp' },
+    { label: 'Kemendagri RI',                href: 'http://www.kemendagri.go.id',  image: '/images/kemendagri.webp' },
+    { label: 'Kementerian Setneg RI',        href: 'https://www.setneg.go.id',     image: '/images/setneg.webp' },
+    { label: 'JDIHN',                        href: 'https://www.jdihn.go.id',      image: '/images/jdihn.webp' },
     { label: 'JDIH DPRD Provinsi Jawa Tengah', href: 'http://jdih.dprd.jatengprov.go.id', image: '/images/jdih dprd.svg' },
-    { label: 'BPHN Kemenkumham RI',          href: 'http://www.bphn.go.id',        image: '/images/bphn.png' },
+    { label: 'BPHN Kemenkumham RI',          href: 'http://www.bphn.go.id',        image: '/images/bphn.webp' },
 ];
 
 const VIDEOS = [
-    { id: 1, title: 'Perbup Nomor 54 Tahun 2025', href: 'https://vt.tiktok.com/ZSas6yLNF/', duration: '1:30', image: '/images/covers/cover_perbup_54_2025.png' },
-    { id: 2, title: 'Tutorial Pengumpulan Produk Hukum Daerah', href: 'https://www.tiktok.com/@jdih_banjarnegara', duration: '2:45', image: '/images/covers/cover_tutorial.png' },
-    { id: 3, title: 'Penyelenggaraan Koperasi Merah Putih', href: 'https://www.tiktok.com/@jdih_banjarnegara', duration: '3:10', image: '/images/covers/cover_koperasi.png' },
+    { id: 1, title: 'Perbup Nomor 54 Tahun 2025', href: 'https://vt.tiktok.com/ZSas6yLNF/', duration: '1:30', image: '/images/covers/cover_perbup_54_2025.webp' },
+    { id: 2, title: 'Tutorial Pengumpulan Produk Hukum Daerah', href: 'https://www.tiktok.com/@jdih_banjarnegara', duration: '2:45', image: '/images/covers/cover_tutorial.webp' },
+    { id: 3, title: 'Penyelenggaraan Koperasi Merah Putih', href: 'https://www.tiktok.com/@jdih_banjarnegara', duration: '3:10', image: '/images/covers/cover_koperasi.webp' },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -100,7 +100,7 @@ function TypeBadge({ type, variant = 'classic' }: { type: string, variant?: 'cla
 /* HERO  –  2-column split layout                                      */
 /* ------------------------------------------------------------------ */
 function Hero({ banner }: { banner?: any }) {
-    const bgImage = banner?.image || '/images/hero.jpg';
+    const bgImage = banner?.image || '/images/hero.webp';
     function handleSearch(values: SearchValues) {
         const JENIS_SLUG: Record<string, string> = {
             'Peraturan Daerah':            '/peraturan-daerah',
@@ -753,6 +753,13 @@ export default function Welcome({
                     date: fmtDate(n.date)
                 }))}
                 infographics={infographics}
+                latestDocs={latestDocs}
+                videos={videos.length > 0 ? videos.map((v: any) => ({
+                    title: v.title,
+                    href: v.video_url || v.href,
+                    image: v.thumbnail_path ? `/images/${v.thumbnail_path}` : (v.image || '/images/video-placeholder.png')
+                })) : VIDEOS}
+                relatedLinks={RELATED_LINKS}
                 stats={{
                     total: totalCount,
                     perda: counts['Peraturan Daerah'] || 0,
@@ -770,7 +777,7 @@ export default function Welcome({
             </Head>
             
             <section>
-                <div className="relative bg-cover bg-left-center bg-no-repeat" style={{ backgroundImage: `url('${banner?.image || '/images/hero.jpg'}')` }}>
+                <div className="relative bg-cover bg-left-center bg-no-repeat" style={{ backgroundImage: `url('${banner?.image || '/images/hero.webp'}')` }}>
                     <div className="absolute inset-0 bg-[#1e293b]/85" />
                     <div className="relative z-10 max-w-7xl mx-auto px-6 py-14 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
                         <div>

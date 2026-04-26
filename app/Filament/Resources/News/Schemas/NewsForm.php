@@ -47,6 +47,14 @@ class NewsForm
                     ->directory('news-images')
                     ->maxSize(2048)
                     ->imageEditor()
+                    ->imageResizeMode('cover')
+                    ->imageResizeTargetWidth('1200')
+                    ->imageResizeTargetHeight('800')
+                    ->imageEditorAspectRatios([
+                        '16:9',
+                        '4:3',
+                        '1:1',
+                    ])
                     ->nullable(),
                 
                 RichEditor::make('content')

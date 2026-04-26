@@ -24,6 +24,9 @@ class BannerForm
                     ->image()
                     ->disk('public')
                     ->directory('banners')
+                    ->imageResizeMode('cover')
+                    ->imageResizeTargetWidth('1920')
+                    ->imageResizeTargetHeight('1080')
                     ->required(),
                 
                 TextInput::make('url')

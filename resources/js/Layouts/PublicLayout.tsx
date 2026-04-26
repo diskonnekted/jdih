@@ -139,12 +139,12 @@ const NAV_ITEMS = [
 ];
 
 const FOOTER_LINKS = [
-    { label: 'Pemerintah Kab. Banjarnegara', href: 'http://banjarnegarakab.go.id', image: '/images/pemerintah kab .png' },
-    { label: 'Kemendagri RI', href: 'http://www.kemendagri.go.id', image: '/images/kemendagri.png' },
-    { label: 'Kementerian Setneg RI', href: 'https://www.setneg.go.id', image: '/images/setneg.png' },
-    { label: 'JDIHN', href: 'https://www.jdihn.go.id', image: '/images/jdihn.png' },
+    { label: 'Pemerintah Kab. Banjarnegara', href: 'http://banjarnegarakab.go.id', image: '/images/pemerintah kab .webp' },
+    { label: 'Kemendagri RI', href: 'http://www.kemendagri.go.id', image: '/images/kemendagri.webp' },
+    { label: 'Kementerian Setneg RI', href: 'https://www.setneg.go.id', image: '/images/setneg.webp' },
+    { label: 'JDIHN', href: 'https://www.jdihn.go.id', image: '/images/jdihn.webp' },
     { label: 'JDIH DPRD Provinsi Jawa Tengah', href: 'http://jdih.dprd.jatengprov.go.id', image: '/images/jdih dprd.svg' },
-    { label: 'BPHN Kemenkumham RI', href: 'http://www.bphn.go.id', image: '/images/bphn.png' },
+    { label: 'BPHN Kemenkumham RI', href: 'http://www.bphn.go.id', image: '/images/bphn.webp' },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -180,7 +180,7 @@ function Navbar({ user, variant = 'classic' }: { user?: any; variant?: 'classic'
             <div className="max-w-screen-2xl mx-auto px-10 h-16 flex items-center justify-between gap-x-32">
                 {/* Logo & Brand */}
                 <Link href="/" className="flex items-center gap-3 shrink-0 group" aria-label="Beranda JDIH Banjarnegara">
-                    <img src="/images/logo-jdih.png" alt="Logo JDIH Banjarnegara" width={180} height={48} className="h-12 w-auto object-contain group-hover:scale-105 transition-transform" />
+                    <img src="/images/logo-jdih.webp" alt="Logo JDIH Banjarnegara" width={180} height={48} className="h-12 w-auto object-contain group-hover:scale-105 transition-transform" />
                 </Link>
 
                 {/* Desktop Menu */}
@@ -258,24 +258,34 @@ function Navbar({ user, variant = 'classic' }: { user?: any; variant?: 'classic'
 
             {/* Mobile Menu */}
             {mobileOpen && (
-                <div className="lg:hidden bg-white border-t border-slate-100 p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+                <div className="lg:hidden bg-white border-t border-slate-100 p-6 space-y-6 max-h-[80vh] overflow-y-auto shadow-inner">
                     {NAV_ITEMS.map((item) => (
-                        <div key={item.label} className="space-y-2">
-                            <div className="text-xs font-bold text-slate-400 uppercase tracking-widest px-2">{item.label}</div>
+                        <div key={item.label} className="space-y-3">
+                            <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-2">{item.label}</div>
                             {item.children ? (
                                 <div className="grid grid-cols-1 gap-1 pl-2">
                                     {item.children.map((child) => (
-                                        <div key={child.label}>
-                                            <Link 
-                                                href={child.href}
-                                                className="block px-4 py-2 text-slate-600 font-bold hover:text-[#0d9488]"
-                                            >
-                                                {child.label}
-                                            </Link>
+                                        <div key={child.label} className="space-y-1">
+                                            {child.href === '#' ? (
+                                                <div className="px-4 py-2 text-slate-800 font-black text-sm">{child.label}</div>
+                                            ) : (
+                                                <Link 
+                                                    href={child.href}
+                                                    onClick={() => setMobileOpen(false)}
+                                                    className="block px-4 py-2 text-slate-700 font-bold text-sm hover:text-[#0d9488] active:bg-slate-50 rounded-lg transition-colors"
+                                                >
+                                                    {child.label}
+                                                </Link>
+                                            )}
                                             {(child as any).children && (
-                                                <div className="pl-4 border-l border-slate-100 ml-4 space-y-1 mt-1">
+                                                <div className="pl-4 border-l-2 border-slate-100 ml-4 space-y-1 mt-1">
                                                     {(child as any).children.map((sub: any) => (
-                                                        <Link key={sub.label} href={sub.href} className="block px-4 py-1.5 text-xs text-slate-400 font-bold">
+                                                        <Link 
+                                                            key={sub.label} 
+                                                            href={sub.href}
+                                                            onClick={() => setMobileOpen(false)}
+                                                            className="block px-4 py-2 text-xs text-slate-500 font-bold hover:text-[#0d9488] active:bg-slate-50 rounded-lg transition-colors"
+                                                        >
                                                             {sub.label}
                                                         </Link>
                                                     ))}
@@ -285,7 +295,11 @@ function Navbar({ user, variant = 'classic' }: { user?: any; variant?: 'classic'
                                     ))}
                                 </div>
                             ) : (
-                                <Link href={(item as any).href} className="block px-4 py-2 text-slate-600 font-bold hover:text-[#0d9488]">
+                                <Link 
+                                    href={(item as any).href}
+                                    onClick={() => setMobileOpen(false)}
+                                    className="block px-4 py-2 text-slate-800 font-black text-sm hover:text-[#0d9488] active:bg-slate-50 rounded-lg transition-colors"
+                                >
                                     {item.label}
                                 </Link>
                             )}
@@ -328,7 +342,7 @@ function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10 pb-10 border-b border-slate-700">
                     <div className="md:col-span-2">
                         <Link href="/" className="inline-block mb-4" aria-label="Beranda JDIH">
-                            <img src="/images/logo-jdih.png" alt="Logo JDIH Banjarnegara" width={200} height={56} className="h-14 w-auto object-contain" />
+                            <img src="/images/logo-jdih.webp" alt="Logo JDIH Banjarnegara" width={200} height={56} className="h-14 w-auto object-contain" />
                         </Link>
                         <p className="text-sm leading-relaxed mb-5 max-w-sm">
                             Jaringan Dokumentasi dan Informasi Hukum Kabupaten Banjarnegara – wadah pendayagunaan bersama atas dokumen hukum secara tertib, terpadu dan berkesinambungan.
