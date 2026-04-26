@@ -118,7 +118,8 @@ class LegalDocumentForm
                                     ->schema([
                                         Select::make('related_document_id')
                                             ->label('Pilih Dokumen')
-                                            ->options(fn () => \App\Models\LegalDocument::all()->pluck('title', 'id'))
+                                            ->getSearchResultsUsing(fn (string $search): array => \App\Models\LegalDocument::where('title', 'like', "%{$search}%")->limit(50)->pluck('title', 'id')->toArray())
+                                            ->getOptionLabelUsing(fn ($value): ?string => \App\Models\LegalDocument::find($value)?->title)
                                             ->searchable()
                                             ->required(),
                                         Select::make('relation_type')
