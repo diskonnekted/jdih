@@ -1,0 +1,46 @@
+<?php
+
+namespace App\Filament\Resources\LegalConsultations\Tables;
+
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Tables\Table;
+
+class LegalConsultationsTable
+{
+    public static function configure(Table $table): Table
+    {
+        return $table
+            ->columns([
+                \Filament\Tables\Columns\TextColumn::make('name')
+                    ->searchable()
+                    ->sortable(),
+                \Filament\Tables\Columns\TextColumn::make('email')
+                    ->searchable(),
+                \Filament\Tables\Columns\TextColumn::make('topic')
+                    ->searchable()
+                    ->sortable(),
+                \Filament\Tables\Columns\IconColumn::make('is_answered')
+                    ->boolean()
+                    ->label('Dijawab'),
+                \Filament\Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->filters([
+                //
+            ])
+            ->recordActions([
+                ViewAction::make(),
+                EditAction::make(),
+            ])
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
+}

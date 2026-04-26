@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProdukHukumDesaController;
 use App\Http\Controllers\AiAssistantController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\LegalConsultationController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
@@ -320,6 +321,7 @@ Route::get('/video', function() {
 /* ------------------------------------------------------------------ */
 Route::get('/bantuan-hukum', fn() => Inertia::render('Layanan/BantuanHukum'))->name('layanan.bankum');
 Route::get('/konsultasi-hukum', fn() => Inertia::render('Layanan/KonsultasiHukum'))->name('layanan.konsultasi');
+Route::post('/konsultasi-hukum', [LegalConsultationController::class, 'store'])->name('layanan.konsultasi.store');
 Route::get('/bankum', fn() => redirect('/bantuan-hukum')); // Alias to prevent 404
 
 // Re-verify existing route

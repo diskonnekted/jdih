@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { FormEvent } from 'react';
 import PublicLayout from '@/Layouts/PublicLayout';
 import PageHeader from '@/Components/PageHeader';
-import { Head } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { 
     MessageSquare, Send, Phone, Mail, Clock, 
     ShieldCheck, Info, CheckCircle2, User,
@@ -9,6 +9,22 @@ import {
 } from 'lucide-react';
 
 export default function KonsultasiHukum() {
+    const { data, setData, post, processing, errors, reset } = useForm({
+        name: '',
+        email: '',
+        topic: '',
+        question: '',
+    });
+
+    const { flash } = usePage().props as unknown as { flash: { success?: string } };
+
+    const submit = (e: FormEvent) => {
+        e.preventDefault();
+        post(route('layanan.konsultasi.store'), {
+            onSuccess: () => reset(),
+        });
+    };
+
     return (
         <PublicLayout variant="classic">
             <Head title="Konsultasi Hukum Online – JDIH Banjarnegara" />
@@ -35,7 +51,20 @@ export default function KonsultasiHukum() {
                                 <MessageSquare className="absolute -right-4 -bottom-4 h-32 w-32 text-white/5 rotate-12" />
                             </div>
 
-                            <form className="p-8 space-y-6" onSubmit={(e) => e.preventDefault()}>
+                            {flash?.success && (
+                                <div className="bg-emerald-50 border-l-4 border-emerald-500 p-4 m-8 mb-0 rounded-r-xl">
+                                    <div className="flex">
+                                        <div className="flex-shrink-0">
+                                            <CheckCircle2 className="h-5 w-5 text-emerald-400" aria-hidden="true" />
+                                        </div>
+                                        <div className="ml-3">
+                                            <p className="text-sm text-emerald-700">{flash.success}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            <form className="p-8 space-y-6" onSubmit={submit}>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
                                         <label className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
@@ -43,9 +72,13 @@ export default function KonsultasiHukum() {
                                         </label>
                                         <input 
                                             type="text" 
+                                            value={data.name}
+                                            onChange={e => setData('name', e.target.value)}
                                             placeholder="Masukkan nama Anda"
                                             className="w-full bg-slate-50 border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-[#0d9488] focus:border-[#0d9488] font-medium transition-all"
+                                            required
                                         />
+                                        {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name}</p>}
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
@@ -53,9 +86,13 @@ export default function KonsultasiHukum() {
                                         </label>
                                         <input 
                                             type="email" 
+                                            value={data.email}
+                                            onChange={e => setData('email', e.target.value)}
                                             placeholder="contoh@email.com"
                                             className="w-full bg-slate-50 border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-[#0d9488] focus:border-[#0d9488] font-medium transition-all"
+                                            required
                                         />
+                                        {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email}</p>}
                                     </div>
                                 </div>
 
@@ -63,7 +100,12 @@ export default function KonsultasiHukum() {
                                     <label className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
                                         <FileQuestion className="h-3 w-3 text-[#0d9488]" /> Perihal / Topik Hukum
                                     </label>
-                                    <select className="w-full bg-slate-50 border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-[#0d9488] focus:border-[#0d9488] font-bold text-slate-600 transition-all">
+                                    <select 
+                                        value={data.topic}
+                                        onChange={e => setData('topic', e.target.value)}
+                                        className="w-full bg-slate-50 border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-[#0d9488] focus:border-[#0d9488] font-bold text-slate-600 transition-all"
+                                        required
+                                    >
                                         <option value="">Pilih Topik Konsultasi</option>
                                         <option value="perdata">Hukum Perdata</option>
                                         <option value="pidana">Hukum Pidana</option>
@@ -72,6 +114,7 @@ export default function KonsultasiHukum() {
                                         <option value="desa">Hukum Desa</option>
                                         <option value="lainnya">Lainnya</option>
                                     </select>
+                                    {errors.topic && <p className="text-xs text-red-500 mt-1">{errors.topic}</p>}
                                 </div>
 
                                 <div className="space-y-2">
@@ -80,9 +123,13 @@ export default function KonsultasiHukum() {
                                     </label>
                                     <textarea 
                                         rows={6}
+                                        value={data.question}
+                                        onChange={e => setData('question', e.target.value)}
                                         placeholder="Uraikan permasalahan hukum yang ingin Anda konsultasikan..."
                                         className="w-full bg-slate-50 border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-[#0d9488] focus:border-[#0d9488] font-medium transition-all"
+                                        required
                                     ></textarea>
+                                    {errors.question && <p className="text-xs text-red-500 mt-1">{errors.question}</p>}
                                 </div>
 
                                 <div className="flex items-center gap-3 p-4 bg-[#0d9488]/5 rounded-2xl border border-[#0d9488]/10">
@@ -92,8 +139,13 @@ export default function KonsultasiHukum() {
                                     </p>
                                 </div>
 
-                                <button className="w-full bg-[#0d9488] hover:bg-teal-700 text-white font-black uppercase tracking-[0.2em] py-4 rounded-xl shadow-lg shadow-[#0d9488]/20 transition-all flex items-center justify-center gap-3 group">
-                                    Kirim Konsultasi <Send className="h-4 w-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                                <button 
+                                    type="submit"
+                                    disabled={processing}
+                                    className="w-full bg-[#0d9488] hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-black uppercase tracking-[0.2em] py-4 rounded-xl shadow-lg shadow-[#0d9488]/20 transition-all flex items-center justify-center gap-3 group"
+                                >
+                                    {processing ? 'Mengirim...' : 'Kirim Konsultasi'} 
+                                    {!processing && <Send className="h-4 w-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />}
                                 </button>
                             </form>
                         </div>
