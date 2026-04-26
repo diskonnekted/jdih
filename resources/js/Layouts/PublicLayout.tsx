@@ -122,6 +122,7 @@ const NAV_ITEMS = [
         label: 'Informasi',
         children: [
             { label: 'Berita', href: '/berita' },
+            { label: 'Statistik', href: '/statistik' },
             { label: 'Download', href: '/unduh' },
             { label: 'Galeri', href: '/galeri' },
             { label: 'Video', href: '/video' },

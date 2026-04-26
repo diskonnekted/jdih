@@ -14,6 +14,7 @@ interface Props {
     dataTahun: any[];
     dataPie: any[];
     total: number;
+    ikmScore: number;
 }
 
 function CustomTooltip({ active, payload, label }: any) {
@@ -29,7 +30,7 @@ function CustomTooltip({ active, payload, label }: any) {
     );
 }
 
-export default function Statistik({ dataJenis, dataTahun, dataPie, total }: Props) {
+export default function Statistik({ dataJenis, dataTahun, dataPie, total, ikmScore }: Props) {
     return (
         <PublicLayout variant="classic">
             <Head title="Statistik – JDIH Banjarnegara" />
@@ -51,8 +52,8 @@ export default function Statistik({ dataJenis, dataTahun, dataPie, total }: Prop
                         {[
                             { label: 'Total Dokumen', value: total.toLocaleString('id-ID'), icon: Files, color: 'text-[#0d9488]', bg: 'bg-teal-50' },
                             { label: 'Kategori Produk', value: dataJenis.length, icon: Info, color: 'text-blue-600', bg: 'bg-blue-50' },
-                            { label: 'Update Terbaru', value: '2026', icon: Calendar, color: 'text-amber-600', bg: 'bg-amber-50' },
-                            { label: 'Tren Pertumbuhan', value: '+12%', icon: TrendingUp, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+                            { label: 'Indeks Kepuasan (IKM)', value: ikmScore > 0 ? ikmScore + '%' : 'N/A', icon: TrendingUp, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+                            { label: 'Update Terbaru', value: new Date().getFullYear(), icon: Calendar, color: 'text-amber-600', bg: 'bg-amber-50' },
                         ].map((s, i) => (
                             <div key={i} className="bg-white border border-slate-200 p-6 shadow-sm flex items-center gap-5 group hover:border-[#0d9488] transition-all">
                                 <div className={`h-14 w-14 ${s.bg} rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform`}>

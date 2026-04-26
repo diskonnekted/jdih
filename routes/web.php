@@ -206,6 +206,60 @@ Route::post('/community-satisfaction', [\App\Http\Controllers\CommunitySatisfact
 // ---------------------------------------------------------------
 // INFORMASI
 // ---------------------------------------------------------------
+Route::get('/statistik', function() {
+    $docs = \App\Models\LegalDocument::with('category')->get();
+    
+    // Data Jenis
+    $jenisCounts = $docs->groupBy(fn($d) => $d->category->name ?? 'Lainnya')
+        ->map(fn($group, $key) => [
+            'name' => $key,
+            'short' => $key,
+            'jumlah' => $group->count(),
+            'href' => '/pencarian?kategori=' . urlencode($key)
+        ])->values()->toArray();
+
+    // Data Tahun (Last 5 years)
+    $tahunCounts = $docs->groupBy('year')
+        ->map(fn($group, $year) => [
+            'year' => (string)$year,
+            'jumlah' => $group->count()
+        ])
+        ->sortBy('year')
+        ->take(-5)
+        ->values()->toArray();
+
+    // Data Pie
+    $colors = ['#0d9488', '#3b82f6', '#f59e0b', '#10b981', '#8b5cf6', '#ef4444'];
+    $dataPie = collect($jenisCounts)->sortByDesc('jumlah')->take(5)->values()->map(function($item, $index) use ($colors) {
+        return [
+            'name' => $item['name'],
+            'value' => $item['jumlah'],
+            'color' => $colors[$index % count($colors)]
+        ];
+    })->toArray();
+
+    // IKM Score
+    $ikm = \App\Models\CommunitySatisfaction::all();
+    $ikmScore = 0;
+    if($ikm->count() > 0) {
+        $total = 0; $count = 0;
+        foreach($ikm as $r) {
+            foreach(['u1','u2','u3','u4','u5','u6','u7','u8','u9'] as $u) {
+                if($r->$u) { $total += $r->$u; $count++; }
+            }
+        }
+        $ikmScore = $count > 0 ? round(($total/$count) * 25, 2) : 0;
+    }
+
+    return Inertia::render('Statistik', [
+        'dataJenis' => array_values($jenisCounts),
+        'dataTahun' => array_values($tahunCounts),
+        'dataPie' => $dataPie,
+        'total' => $docs->count(),
+        'ikmScore' => $ikmScore
+    ]);
+});
+
 Route::get('/berita',          function() {
     return Inertia::render('Informasi/Berita', [
         'news' => \App\Models\News::latest()->paginate(9)
