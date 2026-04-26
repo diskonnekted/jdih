@@ -4,7 +4,8 @@ import {
     Search, Scale, FileText, Gavel, Megaphone, ClipboardList,
     BookMarked, FileSearch, Handshake, Download, Eye, Calendar,
     ArrowRight, Users, Play, Newspaper, ExternalLink,
-    Building2, Globe, Shield, Landmark, BookOpen, Phone, Mail
+    Building2, Globe, Shield, Landmark, BookOpen, Phone, Mail,
+    X, ZoomIn
 } from 'lucide-react';
 import { PageProps } from '@/types';
 import PublicLayout from '@/Layouts/PublicLayout';
@@ -591,6 +592,7 @@ import MobileHome from './Mobile/Home';
 /* INFOGRAFIS                                                          */
 /* ------------------------------------------------------------------ */
 function InfografisSection({ items, variant = 'classic' }: { items: any[], variant?: 'classic' | 'modern' }) {
+    const [selectedImg, setSelectedImg] = useState<string | null>(null);
     const themeColor = getThemeColor(variant);
     
     if (!items.length) return null;
@@ -604,18 +606,27 @@ function InfografisSection({ items, variant = 'classic' }: { items: any[], varia
                         <h2 className="text-3xl font-bold text-[#1e293b]">Infografis Hukum</h2>
                     </div>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                     {items.map((item) => (
                         <div key={item.id} 
-                            className={`group relative aspect-square bg-slate-100 rounded-2xl overflow-hidden border border-slate-200 transition-all ${variant === 'modern' ? 'hover:border-[#003399] hover:shadow-xl' : 'hover:border-[#0d9488] hover:shadow-md'}`}>
+                            onClick={() => setSelectedImg(item.image)}
+                            className={`group relative aspect-square bg-slate-100 rounded-2xl overflow-hidden border border-slate-200 transition-all cursor-zoom-in ${variant === 'modern' ? 'hover:border-[#003399] hover:shadow-xl' : 'hover:border-[#0d9488] hover:shadow-md'}`}>
                             <img
                                 src={item.image}
                                 alt={item.title}
                                 width={400}
                                 height={400}
-                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                                 loading="lazy"
                             />
+                            
+                            {/* Overlay on hover */}
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <div className="bg-white/20 backdrop-blur-md p-3 rounded-full border border-white/30 transform scale-90 group-hover:scale-100 transition-transform">
+                                    <ZoomIn className="h-6 w-6 text-white" />
+                                </div>
+                            </div>
+
                             <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent translate-y-2 group-hover:translate-y-0 transition-transform">
                                 <p className="text-white text-[10px] font-black uppercase tracking-widest leading-tight">
                                     {item.title}
@@ -625,6 +636,30 @@ function InfografisSection({ items, variant = 'classic' }: { items: any[], varia
                     ))}
                 </div>
             </div>
+
+            {/* Lightbox Modal */}
+            {selectedImg && (
+                <div 
+                    className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-300"
+                    onClick={() => setSelectedImg(null)}
+                >
+                    <button 
+                        className="absolute top-6 right-6 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors z-10"
+                        onClick={(e) => { e.stopPropagation(); setSelectedImg(null); }}
+                    >
+                        <X className="h-8 w-8" />
+                    </button>
+                    
+                    <div className="relative max-w-5xl w-full h-full flex items-center justify-center p-4">
+                        <img 
+                            src={selectedImg} 
+                            alt="Infografis Full" 
+                            className="max-w-full max-h-full object-contain shadow-2xl rounded-lg animate-in zoom-in-95 duration-300"
+                            onClick={(e) => e.stopPropagation()}
+                        />
+                    </div>
+                </div>
+            )}
         </section>
     );
 }
