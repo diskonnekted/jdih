@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jdih-bna-cache-v2';
+const CACHE_NAME = 'jdih-bna-cache-v3';
 const ASSETS_TO_CACHE = [
     '/',
     '/manifest.json',
@@ -7,6 +7,7 @@ const ASSETS_TO_CACHE = [
 ];
 
 self.addEventListener('install', (event) => {
+    self.skipWaiting(); // Force update
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
             return cache.addAll(ASSETS_TO_CACHE);
@@ -15,20 +16,25 @@ self.addEventListener('install', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-    // Only cache GET requests
     if (event.request.method !== 'GET') return;
 
+    // Network-First Strategy for better updates
     event.respondWith(
-        caches.match(event.request).then((response) => {
-            return response || fetch(event.request).catch(() => {
-                // Only return fallback index if this is a navigation request (page load)
-                if (event.request.mode === 'navigate') {
-                    return caches.match('/');
-                }
-                // Otherwise, let it fail so the browser doesn't get text/html for a .js file
-                return null;
-            });
-        })
+        fetch(event.request)
+            .then((response) => {
+                // If network works, return it
+                return response;
+            })
+            .catch(() => {
+                // If network fails, try cache
+                return caches.match(event.request).then((cachedResponse) => {
+                    if (cachedResponse) return cachedResponse;
+                    if (event.request.mode === 'navigate') {
+                        return caches.match('/');
+                    }
+                    return null;
+                });
+            })
     );
 });
 
