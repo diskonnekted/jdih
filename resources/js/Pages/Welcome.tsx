@@ -420,21 +420,28 @@ function RelatedLinks({ variant = 'classic' }: { variant?: 'classic' | 'modern' 
     const themeColor = getThemeColor(variant);
 
     return (
-        <section className="py-16 bg-white">
+        <section className="py-20 bg-slate-50/50">
             <div className="max-w-7xl mx-auto px-6">
-                <div className="mb-10">
-                    <p className="text-sm font-bold uppercase tracking-widest mb-1" style={{ color: themeColor }}>Tautan</p>
-                    <h2 className="text-3xl font-bold text-[#1e293b]">Tautan Terkait</h2>
+                <div className="mb-12 text-center md:text-left">
+                    <p className="text-sm font-black uppercase tracking-widest mb-2" style={{ color: themeColor }}>Tautan Eksternal</p>
+                    <h2 className="text-3xl md:text-4xl font-black text-[#1e293b]">Tautan Terkait</h2>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {RELATED_LINKS.map((link) => (
                         <a key={link.label} href={link.href} target="_blank" rel="noreferrer"
-                            className={`group flex items-center gap-4 p-4 border border-slate-200 rounded-lg transition-all ${variant === 'modern' ? 'hover:border-[#003399] hover:bg-blue-50/20' : 'hover:border-[#0d9488] hover:bg-slate-50'}`}>
-                            <div className="h-10 w-10 bg-white rounded flex items-center justify-center shrink-0 border border-slate-100 p-1">
-                                <img src={link.image} alt={link.label} width={40} height={40} className="h-full w-full object-contain" />
+                            className={`group flex items-center gap-5 p-6 bg-white border border-slate-200 rounded-2xl shadow-sm hover:-translate-y-1.5 hover:shadow-xl transition-all duration-300 ${variant === 'modern' ? 'hover:border-[#003399]/30 hover:ring-4 hover:ring-blue-50' : 'hover:border-[#0d9488]/30 hover:ring-4 hover:ring-teal-50'}`}>
+                            
+                            <div className="h-16 w-16 bg-white rounded-2xl shadow-sm flex items-center justify-center shrink-0 border border-slate-100 p-2.5 group-hover:scale-110 transition-transform duration-300">
+                                <img src={link.image} alt={link.label} className="h-full w-full object-contain drop-shadow-sm" />
                             </div>
-                            <span className={`font-semibold text-[#1e293b] text-sm transition-colors flex-1 ${variant === 'modern' ? 'group-hover:text-[#003399]' : 'group-hover:text-[#0d9488]'}`}>{link.label}</span>
-                            <ExternalLink className={`h-4 w-4 text-slate-400 shrink-0 transition-colors ${variant === 'modern' ? 'group-hover:text-[#003399]' : 'group-hover:text-[#0d9488]'}`} />
+                            
+                            <span className={`font-bold text-slate-700 text-base leading-snug transition-colors flex-1 ${variant === 'modern' ? 'group-hover:text-[#003399]' : 'group-hover:text-[#0d9488]'}`}>
+                                {link.label}
+                            </span>
+                            
+                            <div className={`h-10 w-10 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${variant === 'modern' ? 'bg-slate-50 text-slate-400 group-hover:bg-[#003399] group-hover:text-white' : 'bg-slate-50 text-slate-400 group-hover:bg-[#0d9488] group-hover:text-white group-hover:rotate-45'}`}>
+                                <ExternalLink className="h-4 w-4" />
+                            </div>
                         </a>
                     ))}
                 </div>
