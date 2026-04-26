@@ -42,7 +42,7 @@ class AiAssistantController extends Controller
                 'Authorization' => 'Bearer ' . $apiKey,
                 'Content-Type' => 'application/json',
             ])->post('https://api.groq.com/openai/v1/chat/completions', [
-                'model' => 'llama3-8b-8192',
+                'model' => 'llama-3.1-8b-instant',
                 'messages' => [
                     ['role' => 'system', 'content' => 'Anda adalah asisten hukum yang membantu dan akurat.'],
                     ['role' => 'user', 'content' => $prompt],
