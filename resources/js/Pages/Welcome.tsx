@@ -876,11 +876,11 @@ export default function Welcome({
                         </Link>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                        {videos.map((v: any) => (
-                            <a key={v.id} href={v.video_url} target="_blank" rel="noreferrer" className="group bg-slate-800 border border-slate-700 rounded-lg overflow-hidden hover:border-[#0d9488] transition-all">
+                        {(videos.length > 0 ? videos : VIDEOS).map((v: any) => (
+                            <a key={v.id} href={v.video_url || v.href} target="_blank" rel="noreferrer" className="group bg-slate-800 border border-slate-700 rounded-lg overflow-hidden hover:border-[#0d9488] transition-all">
                                 <div className="h-48 relative flex items-center justify-center overflow-hidden bg-[#1e293b]">
                                     <img 
-                                        src={v.thumbnail_path ? `/images/${v.thumbnail_path}` : '/images/video-placeholder.png'} 
+                                        src={v.thumbnail_path ? `/images/${v.thumbnail_path}` : (v.image || '/images/video-placeholder.png')} 
                                         alt={v.title} 
                                         className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80" 
                                     />
@@ -891,7 +891,9 @@ export default function Welcome({
                                 </div>
                                 <div className="p-4">
                                     <p className="text-white text-sm font-bold group-hover:text-[#0d9488] transition-colors line-clamp-2">{v.title}</p>
-                                    <span className="text-slate-400 text-[10px] uppercase font-black tracking-widest mt-2 block">Video Informasi</span>
+                                    <span className="text-slate-400 text-[10px] uppercase font-black tracking-widest mt-2 block">
+                                        {v.duration ? `Durasi ${v.duration}` : 'Video Informasi'}
+                                    </span>
                                 </div>
                             </a>
                         ))}
