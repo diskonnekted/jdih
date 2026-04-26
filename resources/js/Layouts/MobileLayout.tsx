@@ -15,7 +15,7 @@ export default function MobileLayout({ children }: Props) {
 
     const tabs = [
         { label: 'Home', icon: <Home className="h-6 w-6" />, href: '/' },
-        { label: 'Search', icon: <Search className="h-6 w-6" />, href: '/katalog' },
+        { label: 'Cari Dokumen', icon: <Search className="h-6 w-6" />, href: '/pencarian' },
         { label: 'Berita', icon: <Newspaper className="h-6 w-6" />, href: '/berita' },
         { label: 'Info', icon: <Info className="h-6 w-6" />, href: '/kedudukan-dan-alamat' },
     ];

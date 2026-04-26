@@ -116,7 +116,7 @@ function Hero({ banner }: { banner?: any }) {
             'Risalah Rapat':               '/risalah-rapat',
             'Artikel Bidang Hukum':        '/artikel-bidang-hukum',
             'Propemperda':                 '/propemperda',
-            'Katalog':                     '/katalog',
+            'Katalog':                     '/pencarian',
             'Putusan':                     '/putusan',
             'Kerja Sama Daerah':           '/kerja-sama-daerah',
         };

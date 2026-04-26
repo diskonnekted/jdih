@@ -31,7 +31,7 @@ export default function MobileHome({
         { 
             label: 'Cari Dokumen', 
             icon: <Search className="h-6 w-6" />, 
-            href: '/katalog', 
+            href: '/pencarian', 
             color: 'bg-teal-500',
             description: 'Database Hukum'
         },
@@ -88,7 +88,7 @@ export default function MobileHome({
                             </div>
                         </div>
                         <div className="flex items-center gap-4 mt-6">
-                            <Link href="/katalog" className="flex-1 bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl px-4 py-3 flex items-center gap-3 text-white/80 active:scale-95 transition-all">
+                            <Link href="/pencarian" className="flex-1 bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl px-4 py-3 flex items-center gap-3 text-white/80 active:scale-95 transition-all">
                                 <Search className="h-4 w-4" />
                                 <span className="text-xs font-bold uppercase tracking-widest">Cari Peraturan...</span>
                             </Link>

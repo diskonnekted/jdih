@@ -409,6 +409,54 @@ Route::get('/dokumen/{id}/unduh', function (int $id) {
 
 
 
+Route::get('/pencarian', function(\Illuminate\Http\Request $request) {
+    $query = \App\Models\LegalDocument::with('category');
+
+    $query->when($request->namaDokumen ?? $request->q, function($q, $val) {
+        $q->where('title', 'like', '%' . $val . '%');
+    });
+
+    $query->when($request->nomor, function($q, $val) {
+        $q->where('document_number', 'like', '%' . $val . '%');
+    });
+
+    $query->when($request->tahun, function($q, $val) {
+        $q->where('year', $val);
+    });
+
+    $query->when($request->status, function($q, $val) {
+        $q->where('status', $val);
+    });
+
+    $documents = $query->orderByRaw('COALESCE(published_at, created_at) DESC')
+        ->paginate(12)
+        ->withQueryString()
+        ->through(fn($doc) => [
+            'id' => $doc->id,
+            'number' => $doc->document_number,
+            'nomor' => $doc->document_number,
+            'title' => $doc->title,
+            'year' => $doc->year,
+            'date' => $doc->published_at ? $doc->published_at->format('Y-m-d') : $doc->created_at->format('Y-m-d'),
+            'status' => $doc->status,
+            'type' => $doc->category->name ?? 'Dokumen',
+            'slug' => $doc->category->slug ?? 'pencarian',
+        ]);
+
+    return Inertia::render('Hukum/DaftarDokumen', [
+        'kategori' => 'pencarian',
+        'title'    => 'Pencarian Dokumen',
+        'code'     => 'SEARCH',
+        'documents' => $documents,
+        'filters'   => [
+            'namaDokumen' => $request->namaDokumen ?? $request->q,
+            'nomor'       => $request->nomor,
+            'tahun'       => $request->tahun,
+            'status'      => $request->status,
+        ],
+    ]);
+});
+
 require __DIR__.'/auth.php';
 
 // ---------------------------------------------------------------
