@@ -105,10 +105,14 @@ export default function MobileHome({
                     </div>
                     <div className="flex gap-4 overflow-x-auto px-6 pb-4 no-scrollbar">
                         {infographics.map((item, i) => (
-                            <div key={i} className="min-w-[240px] aspect-[4/3] bg-white border border-slate-100 rounded-[2rem] overflow-hidden shadow-sm flex-shrink-0 relative">
-                                <img src={item.image} alt={item.title} className="h-full w-full object-cover" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-5">
-                                    <p className="text-white text-xs font-black uppercase tracking-tight leading-tight">{item.title}</p>
+                            <div key={i} className="min-w-[260px] aspect-[3/4] bg-slate-50 border border-slate-100 rounded-[2rem] overflow-hidden shadow-sm flex-shrink-0 relative">
+                                <img 
+                                    src={item.image} 
+                                    alt={item.title} 
+                                    className="h-full w-full object-contain p-2" 
+                                />
+                                <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/60 to-transparent">
+                                    <p className="text-white text-[10px] font-black uppercase tracking-tight leading-tight">{item.title}</p>
                                 </div>
                             </div>
                         ))}
