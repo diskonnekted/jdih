@@ -160,9 +160,12 @@ export default function Statistik({ dataJenis, dataTahun, dataPie, total, ikmSco
                                             paddingAngle={5}
                                             dataKey="value"
                                         >
-                                            {dataPie.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={entry.color} />
-                                            ))}
+                                            {dataPie.map((entry, index) => {
+                                                const COLORS = ['#0d9488', '#3b82f6', '#f59e0b', '#10b981', '#8b5cf6', '#ef4444'];
+                                                return (
+                                                    <Cell key={`cell-${index}`} fill={entry.color || COLORS[index % COLORS.length]} />
+                                                );
+                                            })}
                                         </Pie>
                                         <Tooltip formatter={(val: any) => [`${(val ?? 0).toLocaleString('id-ID')} dokumen`, '']} />
                                         <Legend 
