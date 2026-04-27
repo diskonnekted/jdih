@@ -83,6 +83,8 @@ Route::get('/', function () {
             'duration' => $v->duration,
         ]);
 
+    $totalViews = \App\Models\LegalDocument::sum('view_count');
+
     return Inertia::render('Welcome', [
         'canLogin'       => Route::has('login'),
         'canRegister'    => Route::has('register'),
@@ -92,6 +94,7 @@ Route::get('/', function () {
         'infographics'   => $infographics,
         'latestDocs'     => $latestDocs,
         'counts'         => $counts,
+        'totalViews'     => $totalViews,
         'videos'         => $videos,
         'banner'         => $activeBanner ? [
             'id' => $activeBanner->id,

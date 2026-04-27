@@ -682,6 +682,7 @@ export default function Welcome({
     infographics = [], 
     latestDocs = [], 
     counts = {},
+    totalViews = 0,
     videos = [] 
 }: PageProps & { 
     news?: any[], 
@@ -690,6 +691,7 @@ export default function Welcome({
     infographics?: any[], 
     latestDocs?: any[], 
     counts?: any,
+    totalViews?: number,
     videos?: any[]
 }) {
     const totalCount = Object.values(counts).reduce((a, b) => (a as number) + (b as number), 0) as number;
@@ -710,7 +712,7 @@ export default function Welcome({
         { label: 'Total Dokumen',    value: totalCount.toLocaleString('id-ID'), icon: FileText },
         { label: 'Jenis Peraturan',  value: Object.keys(counts).length.toString(),     icon: Scale },
         { label: 'Tahun Dokumen',    value: '40+',    icon: Calendar },
-        { label: 'Dilihat',          value: 'Tersedia', icon: Users },
+        { label: 'Total Dilihat',    value: totalViews.toLocaleString('id-ID'), icon: Users },
     ];
 
     const handleSearch = (values: any) => {
