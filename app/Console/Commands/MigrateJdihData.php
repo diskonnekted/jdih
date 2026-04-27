@@ -28,18 +28,19 @@ class MigrateJdihData extends Command
      * Mapping from old category singkatan/id to new category ID
      */
     protected $categoryMapping = [
-        'PERDA' => 1,
-        'PERBUP' => 2,
-        'KEPBUP' => 3,
-        'KepBUp' => 3,
-        'SURATEDARAN' => 4,
-        'RAPERDA' => 9,
-        'NASKAH' => 7,
-        'RANHAM' => 11,
-        'ARTIKELHUKUM' => 13,
-        'DOKUMENHUKUMLANGKA' => 29,
-        'perda' => 1,
-        'PerBup' => 2,
+        '1' => 1,  // Peraturan Daerah
+        '2' => 2,  // Peraturan Bupati
+        '6' => 3,  // Keputusan Bupati
+        '9' => 4,  // Surat Edaran
+        '10' => 9, // Raperda
+        '4' => 7,  // Naskah Akademik
+        '18' => 11, // RANHAM
+        '7' => 13, // Artikel Bidang Hukum
+        '22' => 29, // Dokumen Hukum Langka
+        '27' => 15, // Kerja Sama Daerah
+        '28' => 16, // Putusan
+        '24' => 14, // Propemperda
+        '37' => 12, // Risalah Rapat
     ];
 
     /**
@@ -177,8 +178,9 @@ class MigrateJdihData extends Command
     {
         $number = $values[10];
         $year = $values[19];
+        $oldCategoryId = $values[8];
         $typeShort = $values[9];
-        $categoryId = $this->categoryMapping[$typeShort] ?? 1;
+        $categoryId = $this->categoryMapping[$oldCategoryId] ?? 1;
 
         if (\App\Models\LegalDocument::where('document_number', $number)->where('year', $year)->where('category_id', $categoryId)->exists()) {
             return;
