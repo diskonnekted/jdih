@@ -165,34 +165,58 @@ export default function Putusan({ documents, filters: initialFilters }: Props) {
                                         const isPrev = link.label.includes('Previous');
                                         const isNext = link.label.includes('Next');
                                         
-                                        if (isPrev) return (
-                                            <Link 
-                                                key={i} 
-                                                href={link.url || '#'} 
-                                                className={`h-12 w-12 flex items-center justify-center bg-white border border-slate-200 rounded-xl transition-all ${!link.url ? 'opacity-30 cursor-not-allowed' : 'hover:border-[#0d9488] hover:text-[#0d9488] shadow-sm'}`}
-                                            >
-                                                <ChevronLeft className="h-5 w-5" />
-                                            </Link>
-                                        );
+                                        if (isPrev) {
+                                            return link.url ? (
+                                                <Link 
+                                                    key={i} 
+                                                    href={link.url} 
+                                                    className="h-12 w-12 flex items-center justify-center bg-white border border-slate-200 rounded-xl transition-all hover:border-[#0d9488] hover:text-[#0d9488] shadow-sm"
+                                                >
+                                                    <ChevronLeft className="h-5 w-5" />
+                                                </Link>
+                                            ) : (
+                                                <div 
+                                                    key={i} 
+                                                    className="h-12 w-12 flex items-center justify-center bg-slate-50 border border-slate-100 rounded-xl opacity-30 cursor-not-allowed"
+                                                >
+                                                    <ChevronLeft className="h-5 w-5 text-slate-300" />
+                                                </div>
+                                            );
+                                        }
                                         
-                                        if (isNext) return (
-                                            <Link 
-                                                key={i} 
-                                                href={link.url || '#'} 
-                                                className={`h-12 w-12 flex items-center justify-center bg-white border border-slate-200 rounded-xl transition-all ${!link.url ? 'opacity-30 cursor-not-allowed' : 'hover:border-[#0d9488] hover:text-[#0d9488] shadow-sm'}`}
-                                            >
-                                                <ChevronRight className="h-5 w-5" />
-                                            </Link>
-                                        );
+                                        if (isNext) {
+                                            return link.url ? (
+                                                <Link 
+                                                    key={i} 
+                                                    href={link.url} 
+                                                    className="h-12 w-12 flex items-center justify-center bg-white border border-slate-200 rounded-xl transition-all hover:border-[#0d9488] hover:text-[#0d9488] shadow-sm"
+                                                >
+                                                    <ChevronRight className="h-5 w-5" />
+                                                </Link>
+                                            ) : (
+                                                <div 
+                                                    key={i} 
+                                                    className="h-12 w-12 flex items-center justify-center bg-slate-50 border border-slate-100 rounded-xl opacity-30 cursor-not-allowed"
+                                                >
+                                                    <ChevronRight className="h-5 w-5 text-slate-300" />
+                                                </div>
+                                            );
+                                        }
 
-                                        return (
+                                        return link.url ? (
                                             <Link
                                                 key={i}
-                                                href={link.url || '#'}
+                                                href={link.url}
                                                 className={`h-12 px-5 flex items-center justify-center text-sm font-black transition-all rounded-xl border
                                                     ${link.active 
                                                         ? 'bg-[#0d9488] border-[#0d9488] text-white shadow-lg shadow-teal-900/20' 
                                                         : 'bg-white border-slate-200 text-slate-500 hover:border-[#0d9488] hover:text-[#0d9488] shadow-sm'}`}
+                                                dangerouslySetInnerHTML={{ __html: link.label }}
+                                            />
+                                        ) : (
+                                            <div
+                                                key={i}
+                                                className="h-12 px-5 flex items-center justify-center text-sm font-black rounded-xl border border-slate-100 text-slate-300 opacity-50 cursor-not-allowed bg-slate-50"
                                                 dangerouslySetInnerHTML={{ __html: link.label }}
                                             />
                                         );

@@ -95,16 +95,24 @@ export default function Berita({ news }: { news: any }) {
                     {news.links && news.links.length > 3 && (
                         <div className="flex items-center justify-center gap-1 mt-10">
                             {news.links.map((link: any, i: number) => (
-                                <Link 
-                                    key={i}
-                                    href={link.url}
-                                    dangerouslySetInnerHTML={{ __html: link.label }}
-                                    className={`h-10 px-4 flex items-center justify-center rounded text-sm font-medium transition-all ${
-                                        link.active 
-                                            ? 'bg-[#0d9488] text-white shadow-md' 
-                                            : 'bg-white border border-slate-200 text-slate-600 hover:border-[#0d9488] hover:text-[#0d9488]'
-                                    } ${!link.url ? 'opacity-30 cursor-not-allowed' : ''}`}
-                                />
+                                link.url ? (
+                                    <Link 
+                                        key={i}
+                                        href={link.url}
+                                        dangerouslySetInnerHTML={{ __html: link.label }}
+                                        className={`h-10 px-4 flex items-center justify-center rounded text-sm font-medium transition-all ${
+                                            link.active 
+                                                ? 'bg-[#0d9488] text-white shadow-md' 
+                                                : 'bg-white border border-slate-200 text-slate-600 hover:border-[#0d9488] hover:text-[#0d9488]'
+                                        }`}
+                                    />
+                                ) : (
+                                    <div 
+                                        key={i}
+                                        dangerouslySetInnerHTML={{ __html: link.label }}
+                                        className="h-10 px-4 flex items-center justify-center rounded text-sm font-medium border border-slate-100 text-slate-300 opacity-50 cursor-not-allowed"
+                                    />
+                                )
                             ))}
                         </div>
                     )}
