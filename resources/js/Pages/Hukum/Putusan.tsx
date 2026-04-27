@@ -75,10 +75,10 @@ export default function Putusan({ documents, filters: initialFilters }: Props) {
 
             <div className="bg-slate-50 min-h-screen">
                 <div className="max-w-7xl mx-auto px-6 py-10">
-                    <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
+                    <div className="flex flex-col lg:flex-row gap-8 items-start">
                         
-                        {/* Sidebar Filter */}
-                        <div className="lg:col-span-1 space-y-6 lg:sticky lg:top-24">
+                        {/* Sidebar Filter - Fixed width on LG */}
+                        <div className="w-full lg:w-1/4 space-y-6 lg:sticky lg:top-24">
                             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
                                 <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-6 flex items-center gap-2">
                                     <Filter className="h-4 w-4 text-[#0d9488]" /> Filter Putusan
@@ -93,8 +93,8 @@ export default function Putusan({ documents, filters: initialFilters }: Props) {
                             </div>
                         </div>
 
-                        {/* Main Content: Document List */}
-                        <div className="lg:col-span-3 space-y-6">
+                        {/* Main Content: Document List - Flexible width */}
+                        <div className="w-full lg:w-3/4 space-y-6">
                             {/* Stats */}
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
