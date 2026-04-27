@@ -57,6 +57,7 @@ class DummyDataSeeder extends Seeder
             ['name' => 'Kerja Sama Daerah',             'code' => 'KSD',     'slug' => 'kerja-sama-daerah',             'description' => 'Perjanjian Kerja Sama Antar Daerah'],
             ['name' => 'Dokumen Hukum Terjemahan',      'code' => 'TRA',     'slug' => 'dokumen-hukum-terjemahan',     'description' => 'Dokumen Hukum Terjemahan'],
             ['name' => 'Dokumen Hukum Langka',          'code' => 'RARE',    'slug' => 'dokumen-hukum-langka',         'description' => 'Dokumen Hukum Langka'],
+            ['name' => 'Putusan',                       'code' => 'PUT',     'slug' => 'putusan',                      'description' => 'Putusan Pengadilan'],
         ];
         foreach ($categories as $cat) {
             Category::firstOrCreate(['slug' => $cat['slug']], $cat);
