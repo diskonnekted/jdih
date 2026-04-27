@@ -351,7 +351,12 @@ Route::get('/berita',          function() {
         'news' => \App\Models\News::latest()->paginate(9)
     ]);
 });
-Route::get('/berita/{slug}',    function($slug) {
+
+// Legacy News Redirect
+Route::get('/artikel/detail/{slug}', function($slug) {
+    return redirect()->route('berita.detail', ['slug' => $slug]);
+});
+Route::get('/berita/{slug}', function($slug) {
     $post = \App\Models\News::where('slug', $slug)->firstOrFail();
     $related = \App\Models\News::where('id', '!=', $post->id)
         ->where('status', 'published')
@@ -363,7 +368,7 @@ Route::get('/berita/{slug}',    function($slug) {
         'post' => $post,
         'relatedNews' => $related
     ]);
-});
+})->name('berita.detail');
 Route::get('/galeri', function() {
     $items = \App\Models\GalleryItem::latest('date')
         ->get()
