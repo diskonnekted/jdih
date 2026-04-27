@@ -147,7 +147,11 @@ class MigrateJdihData extends Command
                 
                 switch ($table) {
                     case 'inventarisasi_hukum':
-                        if (count($values) >= 50) $this->migrateLegalDocument($values);
+                        if (count($values) >= 50) {
+                            $this->migrateLegalDocument($values);
+                        } else {
+                            $this->warn("Skipping row in inventarisasi_hukum: Column count is " . count($values) . ". Title: " . ($values[20] ?? 'N/A'));
+                        }
                         break;
                     case 'berita':
                         if (count($values) >= 13) $this->migrateNews($values);
