@@ -219,12 +219,29 @@ Route::get('/sop', function() {
 Route::get('/putusan', function(\Illuminate\Http\Request $request) {
     $query = \App\Models\LegalDecision::where('is_published', true);
     
+    $query->when($request->namaDokumen ?? $request->q, function($q, $val) {
+        $q->where('title', 'like', '%' . $val . '%');
+    });
+
+    $query->when($request->nomor, function($q, $val) {
+        $q->where('document_number', 'like', '%' . $val . '%');
+    });
+
+    $query->when($request->tahun, function($q, $val) {
+        $q->where('year', $val);
+    });
+
     $documents = $query->orderBy('year', 'desc')
         ->orderBy('document_number', 'desc')
         ->paginate(10)
+        ->withQueryString()
         ->through(fn($doc) => [
             'id' => $doc->id,
             'nomor' => $doc->document_number,
+            'title' => $doc->title,
+            'year' => $doc->year,
+            'court_type' => $doc->court_type,
+            'status' => $doc->status,
             'jenis' => $doc->court_type ?? 'Putusan',
             'tanggal' => $doc->created_at->format('Y-m-d'),
             'abstrak' => Str::limit(strip_tags($doc->content), 200) ?: 'Putusan pengadilan terkait perkara hukum di wilayah Kabupaten Banjarnegara.',
@@ -232,6 +249,7 @@ Route::get('/putusan', function(\Illuminate\Http\Request $request) {
 
     return Inertia::render('Hukum/Putusan', [
         'documents' => $documents,
+        'filters' => $request->all(),
     ]);
 });
 
