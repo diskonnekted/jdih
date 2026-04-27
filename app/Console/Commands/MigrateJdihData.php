@@ -176,11 +176,15 @@ class MigrateJdihData extends Command
 
     protected function migrateLegalDocument($values)
     {
-        $number = $values[10];
-        $year = $values[19];
-        $oldCategoryId = $values[8];
-        $typeShort = $values[9];
+        $number = $this->toValue($values[10]);
+        $year = $this->toValue($values[19]);
+        $oldCategoryId = trim($values[8]);
         $categoryId = $this->categoryMapping[$oldCategoryId] ?? 1;
+
+        // Special logging for troubleshooting Putusan (ID 28) and others
+        if (in_array($oldCategoryId, ['28', '27', '24'])) {
+            $this->info("Found Special Category in SQL (ID $oldCategoryId). Mapping to category ID: $categoryId. Title: " . substr($values[20], 0, 30));
+        }
 
         if (\App\Models\LegalDocument::where('document_number', $number)->where('year', $year)->where('category_id', $categoryId)->exists()) {
             return;
@@ -209,7 +213,7 @@ class MigrateJdihData extends Command
             'document_type' => 'Peraturan Perundang-undangan',
             'entity' => 'Pemerintah Kabupaten Banjarnegara',
             'teu' => $this->toValue($values[16] ?: 'Banjarnegara'),
-            'abbreviation' => $typeShort,
+            'abbreviation' => $this->toValue($values[9]),
             'status' => 'Berlaku',
             'abstract' => str_ends_with($values[21], '.pdf') ? null : $this->sanitize($values[21]),
             'abstract_file_path' => str_ends_with($values[21], '.pdf') ? "abstrak/" . $values[21] : null,
