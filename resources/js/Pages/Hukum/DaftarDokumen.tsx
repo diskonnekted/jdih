@@ -133,7 +133,7 @@ export default function DaftarDokumen({ kategori, title, code, documents, filter
                                                         {title} Nomor {doc.number} Tahun {doc.year}
                                                     </h3>
                                                     <span className="shrink-0 px-2.5 py-0.5 bg-blue-50 text-blue-500 text-[10px] font-black rounded uppercase">
-                                                        dokumen
+                                                        {doc.subject && doc.subject !== '-' ? doc.subject : 'dokumen'}
                                                     </span>
                                                 </div>
                                                 <p className="text-slate-500 text-sm font-medium leading-relaxed line-clamp-2">

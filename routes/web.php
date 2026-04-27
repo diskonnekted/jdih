@@ -413,7 +413,21 @@ Route::get('/pencarian', function(\Illuminate\Http\Request $request) {
     $query = \App\Models\LegalDocument::with('category');
 
     $query->when($request->namaDokumen ?? $request->q, function($q, $val) {
-        $q->where('title', 'like', '%' . $val . '%');
+        $keywords = explode(' ', $val);
+        foreach ($keywords as $keyword) {
+            if (empty($keyword)) continue;
+            $q->where(function($sq) use ($keyword) {
+                $sq->where('title', 'like', '%' . $keyword . '%')
+                   ->orWhere('document_number', 'like', '%' . $keyword . '%')
+                   ->orWhere('year', 'like', '%' . $keyword . '%')
+                   ->orWhere('subject', 'like', '%' . $keyword . '%')
+                   ->orWhere('abbreviation', 'like', '%' . $keyword . '%')
+                   ->orWhereHas('category', function($cq) use ($keyword) {
+                       $cq->where('name', 'like', '%' . $keyword . '%')
+                          ->orWhere('code', 'like', '%' . $keyword . '%');
+                   });
+            });
+        }
     });
 
     $query->when($request->nomor, function($q, $val) {
@@ -474,7 +488,17 @@ Route::get("/{category:slug}", function(string $slug, \Illuminate\Http\Request $
 
     // Apply filters
     $query->when($request->namaDokumen ?? $request->q, function($q, $val) {
-        $q->where('title', 'like', '%' . $val . '%');
+        $keywords = explode(' ', $val);
+        foreach ($keywords as $keyword) {
+            if (empty($keyword)) continue;
+            $q->where(function($sq) use ($keyword) {
+                $sq->where('title', 'like', '%' . $keyword . '%')
+                   ->orWhere('document_number', 'like', '%' . $keyword . '%')
+                   ->orWhere('year', 'like', '%' . $keyword . '%')
+                   ->orWhere('subject', 'like', '%' . $keyword . '%')
+                   ->orWhere('abbreviation', 'like', '%' . $keyword . '%');
+            });
+        }
     });
 
     $query->when($request->nomor, function($q, $val) {
@@ -500,6 +524,7 @@ Route::get("/{category:slug}", function(string $slug, \Illuminate\Http\Request $
             'year' => $doc->year,
             'date' => $doc->published_at ? $doc->published_at->format('Y-m-d') : $doc->created_at->format('Y-m-d'),
             'status' => $doc->status,
+            'subject' => $doc->subject,
         ]);
 
     return Inertia::render('Hukum/DaftarDokumen', [
