@@ -4,14 +4,20 @@ import PublicLayout from '@/Layouts/PublicLayout';
 import PageHeader from '@/Components/PageHeader';
 import { Newspaper, Calendar, Tag, ChevronLeft, ChevronRight, Search } from 'lucide-react';
 
-function fmtDate(d: string) {
-    return new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+function fmtDate(d: any) {
+    if (!d) return '-';
+    try {
+        return new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    } catch (e) {
+        return '-';
+    }
 }
 
 export default function Berita({ news }: { news: any }) {
+    const newsData = news?.data || [];
     const [search, setSearch] = useState('');
 
-    const artikelData = news.data.map((artikel: any) => ({
+    const artikelData = newsData.map((artikel: any) => ({
         id: artikel.id,
         slug: artikel.slug,
         judul: artikel.title,

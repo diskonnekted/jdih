@@ -4,15 +4,22 @@ import PublicLayout from '@/Layouts/PublicLayout';
 import PageHeader from '@/Components/PageHeader';
 import { Calendar, Tag, ArrowLeft, Share2, Newspaper } from 'lucide-react';
 
-function fmtDate(d: string) {
-    return new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+function fmtDate(d: any) {
+    if (!d) return '-';
+    try {
+        const date = new Date(d);
+        if (isNaN(date.getTime())) return '-';
+        return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    } catch (e) {
+        return '-';
+    }
 }
 
 export default function DetailBerita({ post, relatedNews = [] }: { post: any; relatedNews?: any[] }) {
-    if (!post) return null;
+    if (!post) return <PublicLayout><div className="p-20 text-center font-bold text-slate-400">Berita tidak ditemukan.</div></PublicLayout>;
 
     const artikel = {
-        judul: post.title,
+        judul: post.title || 'Tanpa Judul',
         tanggal: post.published_at || post.created_at,
         kategori: post.category || 'Berita',
         isi: post.content || '',
