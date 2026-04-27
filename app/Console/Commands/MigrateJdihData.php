@@ -209,36 +209,40 @@ class MigrateJdihData extends Command
             12 => 'Hukum Tata Negara',
         ];
 
-        \App\Models\LegalDocument::create([
-            'title' => $this->sanitize($values[20]) ?: 'Tanpa Judul',
-            'document_number' => $number,
-            'year' => $year,
-            'category_id' => $categoryId,
-            'document_type' => 'Peraturan Perundang-undangan',
-            'entity' => 'Pemerintah Kabupaten Banjarnegara',
-            'teu' => $this->toValue($values[16] ?: 'Banjarnegara'),
-            'abbreviation' => $this->toValue($values[9]),
-            'status' => 'Berlaku',
-            'abstract' => str_ends_with($values[21], '.pdf') ? null : $this->sanitize($values[21]),
-            'abstract_file_path' => str_ends_with($values[21], '.pdf') ? "abstrak/" . $values[21] : null,
-            'file_path' => $values[35] ? "produk_hukum/" . $values[35] : null,
-            'published_at' => $this->isValidDate($values[17]) ? $values[17] : null,
-            'promulgated_at' => $this->isValidDate($values[18]) ? $values[18] : null,
-            'place_of_enactment' => $this->toValue($values[25] ?: 'Banjarnegara'),
-            'source' => $this->toValue($values[26]),
-            'subject' => $this->toValue($values[36]),
-            'signer' => $this->toValue($values[14]),
-            'author' => $this->toValue($values[12] ?: 'Bagian Hukum'),
-            'publisher_place' => $this->toValue($values[25] ?: 'Banjarnegara'),
-            'judicial_review' => $this->toValue($values[15]),
-            'initiator' => $this->toValue($values[13]),
-            'legal_field' => $legalFields[(int)$values[29]] ?? '-',
-            'language' => (int)$values[28] === 1 ? 'Bahasa Indonesia' : '-',
-            'view_count' => (int) $values[45],
-            'download_count' => (int) $values[44],
-            'created_at' => $this->isValidDate($values[47]) ? $values[47] : now(),
-            'updated_at' => $this->isValidDate($values[48]) ? $values[48] : now(),
-        ]);
+        try {
+            \App\Models\LegalDocument::create([
+                'title' => $this->sanitize($values[20]) ?: 'Tanpa Judul',
+                'document_number' => $number,
+                'year' => $year,
+                'category_id' => $categoryId,
+                'document_type' => 'Peraturan Perundang-undangan',
+                'entity' => 'Pemerintah Kabupaten Banjarnegara',
+                'teu' => $this->toValue($values[16] ?: 'Banjarnegara'),
+                'abbreviation' => $this->toValue($values[9]),
+                'status' => 'Berlaku',
+                'abstract' => str_ends_with($values[21], '.pdf') ? null : $this->sanitize($values[21]),
+                'abstract_file_path' => str_ends_with($values[21], '.pdf') ? "abstrak/" . $values[21] : null,
+                'file_path' => $values[35] ? "produk_hukum/" . $values[35] : null,
+                'published_at' => $this->isValidDate($values[17]) ? $values[17] : null,
+                'promulgated_at' => $this->isValidDate($values[18]) ? $values[18] : null,
+                'place_of_enactment' => $this->toValue($values[25] ?: 'Banjarnegara'),
+                'source' => $this->toValue($values[26]),
+                'subject' => $this->toValue($values[36]),
+                'signer' => $this->toValue($values[14]),
+                'author' => $this->toValue($values[12] ?: 'Bagian Hukum'),
+                'publisher_place' => $this->toValue($values[25] ?: 'Banjarnegara'),
+                'judicial_review' => $this->toValue($values[15]),
+                'initiator' => $this->toValue($values[13]),
+                'legal_field' => $legalFields[(int)$values[29]] ?? '-',
+                'language' => (int)$values[28] === 1 ? 'Bahasa Indonesia' : '-',
+                'view_count' => (int) $values[45],
+                'download_count' => (int) $values[44],
+                'created_at' => $this->isValidDate($values[47]) ? $values[47] : now(),
+                'updated_at' => $this->isValidDate($values[48]) ? $values[48] : now(),
+            ]);
+        } catch (\Exception $e) {
+            $this->error("Failed to create LegalDocument ($number): " . $e->getMessage());
+        }
     }
 
     protected function migrateNews($values)
