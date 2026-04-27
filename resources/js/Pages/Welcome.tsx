@@ -706,6 +706,7 @@ export default function Welcome({
         { title: 'Monografi Hukum',    code: 'MONO',   icon: BookMarked,    count: counts['Monografi Hukum'] || 0,   href: '/naskah-akademik',           color: '#1e293b' },
         { title: 'Naskah Akademik',    code: 'NA',     icon: FileSearch,    count: counts['Naskah Akademik'] || 0,    href: '/naskah-akademik',           color: '#0d9488' },
         { title: 'Kerja Sama Daerah',  code: 'KSD',    icon: Handshake,     count: counts['Kerja Sama Daerah'] || 0,    href: '/kerja-sama-daerah',         color: '#1e293b' },
+        { title: 'Putusan Pengadilan', code: 'PUT',    icon: Gavel,         count: counts['Putusan'] || 0,              href: '/putusan',                   color: '#0d9488' },
     ];
 
     const STATS_DYNAMIC = [

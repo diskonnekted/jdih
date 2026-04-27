@@ -180,15 +180,23 @@ class MigrateJdihData extends Command
 
     protected function migrateLegalDocument($values)
     {
-        $number = $this->toValue($values[10]);
-        $year = $this->toValue($values[19]);
         $oldCategoryId = trim($values[8]);
+        
+        // Redirection for Putusan
+        if ($oldCategoryId == '28') {
+            $this->migrateLegalDecision($values);
+            return;
+        }
+
         $categoryId = $this->categoryMapping[$oldCategoryId] ?? 1;
 
-        // Special logging for troubleshooting Putusan (ID 28) and others
-        if (in_array($oldCategoryId, ['28', '27', '24'])) {
+        // Special logging for troubleshooting others
+        if (in_array($oldCategoryId, ['27', '24'])) {
             $this->info("Found Special Category in SQL (ID $oldCategoryId). Mapping to category ID: $categoryId. Title: " . substr($values[20], 0, 30));
         }
+
+        $number = $this->toValue($values[10]);
+        $year = $this->toValue($values[19]);
 
         if (\App\Models\LegalDocument::where('document_number', $number)->where('year', $year)->where('category_id', $categoryId)->exists()) {
             return;
@@ -242,6 +250,35 @@ class MigrateJdihData extends Command
             ]);
         } catch (\Exception $e) {
             $this->error("Failed to create LegalDocument ($number): " . $e->getMessage());
+        }
+    }
+
+    protected function migrateLegalDecision($values)
+    {
+        $number = $this->toValue($values[10]);
+        $year = $this->toValue($values[19]);
+
+        if (\App\Models\LegalDecision::where('document_number', $number)->where('year', $year)->exists()) {
+            return;
+        }
+
+        $this->info("Found Putusan in SQL (ID 28). Mapping to LegalDecision. Title: " . substr($values[20], 0, 30));
+
+        try {
+            \App\Models\LegalDecision::create([
+                'document_number' => $number,
+                'year' => (int)$year,
+                'title' => $this->sanitize($values[20]) ?: 'Putusan Tanpa Judul',
+                'court_type' => $this->toValue($values[16] ?: 'Pengadilan'),
+                'status' => $this->toValue($values[7] ?: 'Inkracht'),
+                'content' => $this->sanitize($values[21]),
+                'file_path' => $values[35] ? "produk_hukum/" . $values[35] : null,
+                'is_published' => true,
+                'created_at' => $this->isValidDate($values[47]) ? $values[47] : now(),
+                'updated_at' => $this->isValidDate($values[48]) ? $values[48] : now(),
+            ]);
+        } catch (\Exception $e) {
+            $this->error("Failed to create LegalDecision ($number): " . $e->getMessage());
         }
     }
 

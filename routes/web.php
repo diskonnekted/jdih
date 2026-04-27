@@ -65,7 +65,10 @@ Route::get('/', function () {
         ->groupBy('category_id')
         ->with('category')
         ->get()
-        ->mapWithKeys(fn($item) => [$item->category->name ?? 'unknown' => $item->total]);
+        ->mapWithKeys(fn($item) => [$item->category->name ?? 'unknown' => $item->total])
+        ->toArray();
+
+    $counts['Putusan'] = \App\Models\LegalDecision::count();
 
     $videos = \App\Models\VideoContent::latest()
         ->take(3)
@@ -214,17 +217,17 @@ Route::get('/sop', function() {
 // KHUSUS PUTUSAN & KERJASAMA
 // ---------------------------------------------------------------
 Route::get('/putusan', function(\Illuminate\Http\Request $request) {
-    $cat = \App\Models\Category::where('slug', 'putusan')->firstOrFail();
-    $query = \App\Models\LegalDocument::where('category_id', $cat->id);
+    $query = \App\Models\LegalDecision::where('is_published', true);
     
-    $documents = $query->latest('published_at')
+    $documents = $query->orderBy('year', 'desc')
+        ->orderBy('document_number', 'desc')
         ->paginate(10)
         ->through(fn($doc) => [
             'id' => $doc->id,
             'nomor' => $doc->document_number,
-            'jenis' => $doc->document_type ?? 'Putusan',
-            'tanggal' => $doc->published_at?->format('Y-m-d') ?? $doc->created_at->format('Y-m-d'),
-            'abstrak' => $doc->abstract ?? 'Putusan pengadilan terkait perkara hukum di wilayah Kabupaten Banjarnegara.',
+            'jenis' => $doc->court_type ?? 'Putusan',
+            'tanggal' => $doc->created_at->format('Y-m-d'),
+            'abstrak' => Str::limit(strip_tags($doc->content), 200) ?: 'Putusan pengadilan terkait perkara hukum di wilayah Kabupaten Banjarnegara.',
         ]);
 
     return Inertia::render('Hukum/Putusan', [
@@ -401,11 +404,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+Route::get("/putusan/{id}", function(int $id) {
+    $doc = \App\Models\LegalDecision::findOrFail($id);
+    return Inertia::render('Hukum/DetailPutusan', [
+        'document' => $doc
+    ]);
+});
 
-// ---------------------------------------------------------------
-// CATCH-ALL CATEGORY SLUG (MUST BE LAST)
-// ---------------------------------------------------------------
 Route::get("/{category:slug}", function(string $slug, \Illuminate\Http\Request $request) {
     $cat = \App\Models\Category::where('slug', $slug)->first();
     if (!$cat) abort(404);
