@@ -694,26 +694,27 @@ export default function Welcome({
     totalViews?: number,
     videos?: any[]
 }) {
-    const totalCount = Object.values(counts).reduce((a, b) => (a as number) + (b as number), 0) as number;
+    const countsData = counts || {};
+    const totalCount = Object.values(countsData).reduce((a, b) => (a as number) + (b as number), 0) as number;
     const activeModel = 'classic';
 
     const CATEGORIES_DYNAMIC = [
-        { title: 'Peraturan Daerah',   code: 'PERDA',  icon: Scale,         count: counts['Peraturan Daerah'] || 0, href: '/peraturan-daerah',          color: '#0d9488' },
-        { title: 'Peraturan Bupati',   code: 'PERBUP', icon: FileText,      count: counts['Peraturan Bupati'] || 0, href: '/peraturan-bupati',           color: '#1e293b' },
-        { title: 'Keputusan Bupati',   code: 'KEPBUP', icon: Gavel,         count: counts['Keputusan Bupati'] || 0, href: '/keputusan-bupati',           color: '#0d9488' },
-        { title: 'Surat Edaran',       code: 'SE',     icon: Megaphone,     count: counts['Surat Edaran'] || 0,   href: '/surat-edaran',              color: '#1e293b' },
-        { title: 'Instruksi Bupati',   code: 'INBUP',  icon: ClipboardList, count: counts['Instruksi Bupati'] || 0,   href: '/instruksi-bupati',          color: '#0d9488' },
-        { title: 'Monografi Hukum',    code: 'MONO',   icon: BookMarked,    count: counts['Monografi Hukum'] || 0,   href: '/naskah-akademik',           color: '#1e293b' },
-        { title: 'Naskah Akademik',    code: 'NA',     icon: FileSearch,    count: counts['Naskah Akademik'] || 0,    href: '/naskah-akademik',           color: '#0d9488' },
-        { title: 'Kerja Sama Daerah',  code: 'KSD',    icon: Handshake,     count: counts['Kerja Sama Daerah'] || 0,    href: '/kerja-sama-daerah',         color: '#1e293b' },
-        { title: 'Putusan Pengadilan', code: 'PUT',    icon: Gavel,         count: counts['Putusan'] || 0,              href: '/putusan',                   color: '#0d9488' },
+        { title: 'Peraturan Daerah',   code: 'PERDA',  icon: Scale,         count: countsData['Peraturan Daerah'] || 0, href: '/peraturan-daerah',          color: '#0d9488' },
+        { title: 'Peraturan Bupati',   code: 'PERBUP', icon: FileText,      count: countsData['Peraturan Bupati'] || 0, href: '/peraturan-bupati',           color: '#1e293b' },
+        { title: 'Keputusan Bupati',   code: 'KEPBUP', icon: Gavel,         count: countsData['Keputusan Bupati'] || 0, href: '/keputusan-bupati',           color: '#0d9488' },
+        { title: 'Surat Edaran',       code: 'SE',     icon: Megaphone,     count: countsData['Surat Edaran'] || 0,   href: '/surat-edaran',              color: '#1e293b' },
+        { title: 'Instruksi Bupati',   code: 'INBUP',  icon: ClipboardList, count: countsData['Instruksi Bupati'] || 0,   href: '/instruksi-bupati',          color: '#0d9488' },
+        { title: 'Monografi Hukum',    code: 'MONO',   icon: BookMarked,    count: countsData['Monografi Hukum'] || 0,   href: '/naskah-akademik',           color: '#1e293b' },
+        { title: 'Naskah Akademik',    code: 'NA',     icon: FileSearch,    count: countsData['Naskah Akademik'] || 0,    href: '/naskah-akademik',           color: '#0d9488' },
+        { title: 'Kerja Sama Daerah',  code: 'KSD',    icon: Handshake,     count: countsData['Kerja Sama Daerah'] || 0,    href: '/kerja-sama-daerah',         color: '#1e293b' },
+        { title: 'Putusan Pengadilan', code: 'PUT',    icon: Gavel,         count: countsData['Putusan'] || 0,              href: '/putusan',                   color: '#0d9488' },
     ];
 
     const STATS_DYNAMIC = [
-        { label: 'Total Dokumen',    value: totalCount.toLocaleString('id-ID'), icon: FileText },
-        { label: 'Jenis Peraturan',  value: Object.keys(counts).length.toString(),     icon: Scale },
+        { label: 'Total Dokumen',    value: (totalCount || 0).toLocaleString('id-ID'), icon: FileText },
+        { label: 'Jenis Peraturan',  value: Object.keys(countsData).length.toString(),     icon: Scale },
         { label: 'Tahun Dokumen',    value: '40+',    icon: Calendar },
-        { label: 'Total Dilihat',    value: totalViews.toLocaleString('id-ID'), icon: Users },
+        { label: 'Total Dilihat',    value: (totalViews || 0).toLocaleString('id-ID'), icon: Users },
     ];
 
     const handleSearch = (values: any) => {
