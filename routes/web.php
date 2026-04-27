@@ -46,9 +46,11 @@ Route::get('/', function () {
             'image' => '/storage/' . $item->image_path,
         ]);
 
-    $latestLegalDocs = \App\Models\LegalDocument::with('category')
-        ->orderByRaw('COALESCE(published_at, created_at) DESC')
-        ->take(5)
+    $latestDocs = \App\Models\LegalDocument::with('category')
+        ->orderBy('year', 'desc')
+        ->orderByRaw('CAST(document_number AS UNSIGNED) DESC')
+        ->orderBy('document_number', 'desc')
+        ->limit(5)
         ->get()
         ->map(fn($doc) => [
             'id' => $doc->id,
@@ -88,7 +90,7 @@ Route::get('/', function () {
         'phpVersion'     => PHP_VERSION,
         'news'           => $latestNews,
         'infographics'   => $infographics,
-        'latestDocs'     => $latestLegalDocs,
+        'latestDocs'     => $latestDocs,
         'counts'         => $counts,
         'videos'         => $videos,
         'banner'         => $activeBanner ? [
@@ -442,7 +444,9 @@ Route::get('/pencarian', function(\Illuminate\Http\Request $request) {
         $q->where('status', $val);
     });
 
-    $documents = $query->orderByRaw('COALESCE(published_at, created_at) DESC')
+    $documents = $query->orderBy('year', 'desc')
+        ->orderByRaw('CAST(document_number AS UNSIGNED) DESC')
+        ->orderBy('document_number', 'desc')
         ->paginate(12)
         ->withQueryString()
         ->through(fn($doc) => [
@@ -513,7 +517,9 @@ Route::get("/{category:slug}", function(string $slug, \Illuminate\Http\Request $
         $q->where('status', $val);
     });
 
-    $documents = $query->orderByRaw('COALESCE(published_at, created_at) DESC')
+    $documents = $query->orderBy('year', 'desc')
+        ->orderByRaw('CAST(document_number AS UNSIGNED) DESC')
+        ->orderBy('document_number', 'desc')
         ->paginate(10)
         ->withQueryString()
         ->through(fn($doc) => [
