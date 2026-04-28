@@ -497,7 +497,12 @@ Route::get("/{category:slug}", function(string $slug, \Illuminate\Http\Request $
 });
 
 Route::get("/{category:slug}/{id}", function(string $slug, int $id) {
-    $doc = \App\Models\LegalDocument::with('category')->findOrFail($id);
+    $doc = \App\Models\LegalDocument::with([
+        'category', 
+        'comments' => fn($q) => $q->where('is_approved', true)->latest(), 
+        'relatedDocuments.category', 
+        'referencedByDocuments.category'
+    ])->findOrFail($id);
     $doc->increment('view_count');
     return Inertia::render('Hukum/DetailDokumen', [
         'document' => $doc,

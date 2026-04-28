@@ -43,6 +43,15 @@ class LegalDocument extends Model
         'download_count',
     ];
 
+    protected $appends = [
+        'file',
+        'abstract_file',
+        'download_url',
+        'subject_text',
+        'related',
+        'referenced_by',
+    ];
+
     protected $casts = [
         'published_at' => 'datetime',
         'promulgated_at' => 'datetime',
@@ -85,5 +94,77 @@ class LegalDocument extends Model
     public function comments()
     {
         return $this->hasMany(Comment::class);
+    }
+
+    /**
+     * Accessor for full file URL.
+     */
+    public function getFileAttribute()
+    {
+        return $this->file_path ? \Illuminate\Support\Facades\Storage::disk('public')->url($this->file_path) : null;
+    }
+
+    /**
+     * Accessor for full abstract file URL.
+     */
+    public function getAbstractFileAttribute()
+    {
+        return $this->abstract_file_path ? \Illuminate\Support\Facades\Storage::disk('public')->url($this->abstract_file_path) : null;
+    }
+
+    /**
+     * Accessor for download URL.
+     */
+    public function getDownloadUrlAttribute()
+    {
+        return $this->file;
+    }
+
+    /**
+     * Accessor for subject text.
+     */
+    public function getSubjectTextAttribute()
+    {
+        if (!$this->subject) return '-';
+        if (is_array($this->subject)) return implode(' - ', $this->subject);
+        
+        $decoded = json_decode($this->subject, true);
+        if (is_array($decoded)) return implode(' - ', $decoded);
+        
+        return $this->subject;
+    }
+
+    /**
+     * Accessor for related documents in frontend format.
+     */
+    public function getRelatedAttribute()
+    {
+        if (!$this->relationLoaded('relatedDocuments')) return [];
+        
+        return $this->relatedDocuments->map(fn($doc) => [
+            'id' => $doc->id,
+            'slug' => $doc->category->slug ?? 'katalog',
+            'type' => $doc->category->name ?? 'Dokumen',
+            'number' => $doc->document_number,
+            'year' => $doc->year,
+            'title' => $doc->title,
+        ]);
+    }
+
+    /**
+     * Accessor for documents that reference this one.
+     */
+    public function getReferencedByAttribute()
+    {
+        if (!$this->relationLoaded('referencedByDocuments')) return [];
+        
+        return $this->referencedByDocuments->map(fn($doc) => [
+            'id' => $doc->id,
+            'slug' => $doc->category->slug ?? 'katalog',
+            'type' => $doc->category->name ?? 'Dokumen',
+            'number' => $doc->document_number,
+            'year' => $doc->year,
+            'title' => $doc->title,
+        ]);
     }
 }
