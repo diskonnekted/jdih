@@ -286,9 +286,16 @@ export default function DetailDokumen({ document, category }: DocumentDetailProp
                                                 <div className="bg-slate-50 rounded-3xl p-10 border-2 border-dashed border-slate-200 max-w-2xl mx-auto">
                                                     <FileText className="h-16 w-16 text-slate-300 mx-auto mb-6" />
                                                     <h4 className="text-slate-900 font-black text-xl mb-4">Abstrak Dokumen</h4>
-                                                    <p className="text-slate-500 text-sm leading-relaxed whitespace-pre-line mb-8">
-                                                        {document.abstract || "Abstrak untuk dokumen ini belum tersedia atau sedang dalam proses digitalisasi."}
-                                                    </p>
+                                                    {document.abstract ? (
+                                                        <div 
+                                                            className="text-slate-500 text-sm leading-relaxed mb-8 prose prose-slate max-w-none text-justify"
+                                                            dangerouslySetInnerHTML={{ __html: document.abstract }}
+                                                        />
+                                                    ) : (
+                                                        <p className="text-slate-500 text-sm leading-relaxed whitespace-pre-line mb-8">
+                                                            Abstrak untuk dokumen ini belum tersedia atau sedang dalam proses digitalisasi.
+                                                        </p>
+                                                    )}
                                                 </div>
                                             </div>
                                         )}
