@@ -1,8 +1,7 @@
 <?php
 /**
- * JDIH Banjarnegara - Production Deployment Utility
+ * JDIH Banjarnegara - Production Deployment Utility (Updated)
  * This script synchronizes file structures and populates missing abstract data.
- * Run this on the server after 'git pull' and 'composer install'.
  */
 
 require __DIR__ . '/vendor/autoload.php';
@@ -37,7 +36,7 @@ if (is_dir($publicPath)) {
                     if (!file_exists($dst . '/' . $file)) {
                         rename($src . '/' . $file, $dst . '/' . $file);
                     } else {
-                        unlink($src . '/' . $file); // Already exists in dest
+                        @unlink($src . '/' . $file);
                     }
                 }
             }
@@ -49,43 +48,59 @@ if (is_dir($publicPath)) {
     echo "Done.\n\n";
 }
 
-// STEP 2: Migrate database paths to year-based structure
-echo "2. Migrating database paths to year-based structure...\n";
+// STEP 2: Migrate database paths and move abstracts to dedicated folder
+echo "2. Migrating database paths and organizing abstracts...\n";
 $docs = LegalDocument::all();
 $movedCount = 0;
 foreach ($docs as $doc) {
-    $fields = ['file_path', 'abstract_file_path'];
-    foreach ($fields as $field) {
-        $currentPath = $doc->$field;
-        if (!$currentPath) continue;
-
-        $filename = basename($currentPath);
+    // Handle main file
+    if ($doc->file_path) {
+        $filename = basename($doc->file_path);
         $year = $doc->year ?: date('Y');
         $correctPath = "produk_hukum/{$year}/{$filename}";
-
-        if ($currentPath === $correctPath) continue;
-
-        $sourcePath = null;
-        if (Storage::disk('public')->exists($currentPath)) {
-            $sourcePath = Storage::disk('public')->path($currentPath);
-        }
-
-        if ($sourcePath) {
-            Storage::disk('public')->makeDirectory("produk_hukum/{$year}");
-            $destPath = Storage::disk('public')->path($correctPath);
-            if ($sourcePath !== $destPath) {
-                if (!File::exists($destPath)) File::move($sourcePath, $destPath);
+        
+        if ($doc->file_path !== $correctPath) {
+            $sourcePath = storage_path('app/public/' . $doc->file_path);
+            $destPath = storage_path('app/public/' . $correctPath);
+            if (file_exists($sourcePath)) {
+                if (!is_dir(dirname($destPath))) mkdir(dirname($destPath), 0755, true);
+                if ($sourcePath !== $destPath && !file_exists($destPath)) rename($sourcePath, $destPath);
+                $doc->file_path = $correctPath;
+                $doc->save();
+                $movedCount++;
             }
-            $doc->$field = $correctPath;
-            $doc->save();
-            $movedCount++;
+        }
+    }
+    
+    // Handle abstract file
+    if ($doc->abstract_file_path) {
+        $filename = basename($doc->abstract_file_path);
+        $year = $doc->year ?: date('Y');
+        $correctPath = "abstrak/{$year}/{$filename}";
+        
+        if ($doc->abstract_file_path !== $correctPath) {
+            $sourcePath = storage_path('app/public/' . $doc->abstract_file_path);
+            $destPath = storage_path('app/public/' . $correctPath);
+            
+            if (file_exists($sourcePath)) {
+                if (!is_dir(dirname($destPath))) mkdir(dirname($destPath), 0755, true);
+                if ($sourcePath !== $destPath && !file_exists($destPath)) rename($sourcePath, $destPath);
+                $doc->abstract_file_path = $correctPath;
+                $doc->save();
+                $movedCount++;
+            } else if (file_exists($destPath)) {
+                // File already at destination
+                $doc->abstract_file_path = $correctPath;
+                $doc->save();
+                $movedCount++;
+            }
         }
     }
 }
 echo "Migrated $movedCount records.\n\n";
 
-// STEP 3: Populate abstracts from PDF
-echo "3. Populating abstracts from PDF files...\n";
+// STEP 3: Populate text abstracts from PDF
+echo "3. Populating text abstracts from PDF files...\n";
 $parser = new Parser();
 $abstractDocs = LegalDocument::where(function($q) {
     $q->whereNull('abstract')->orWhere('abstract', '');
@@ -106,10 +121,10 @@ foreach ($abstractDocs as $doc) {
         } catch (\Exception $e) {}
     }
 }
-echo "Populated $absCount abstracts from PDFs.\n\n";
+echo "Populated $absCount text abstracts.\n\n";
 
-// STEP 4: Generate missing abstracts
-echo "4. Generating fallback abstracts for remaining documents...\n";
+// STEP 4: Generate fallback abstracts
+echo "4. Generating fallback abstracts...\n";
 $missingDocs = LegalDocument::where(function($q) {
     $q->whereNull('abstract')->orWhere('abstract', '');
 })->with('category')->get();
@@ -120,11 +135,9 @@ foreach ($missingDocs as $doc) {
     $num = $doc->document_number ?: '-';
     $year = $doc->year ?: '-';
     
-    if (stripos($catName, 'Kerja Sama') !== false || stripos($catName, 'PKS') !== false) {
-        $text = "Dokumen ini merupakan {$catName} tentang {$doc->title}.";
-    } else {
-        $text = "Dokumen ini merupakan {$catName} Kabupaten Banjarnegara Nomor {$num} Tahun {$year} tentang {$doc->title}.";
-    }
+    $text = (stripos($catName, 'Kerja Sama') !== false || stripos($catName, 'PKS') !== false)
+        ? "Dokumen ini merupakan {$catName} tentang {$doc->title}."
+        : "Dokumen ini merupakan {$catName} Kabupaten Banjarnegara Nomor {$num} Tahun {$year} tentang {$doc->title}.";
     
     $doc->abstract = "<div><p>{$text}</p></div>";
     $doc->save();
