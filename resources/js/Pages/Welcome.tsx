@@ -468,7 +468,7 @@ function CTA({ variant = 'classic' }: { variant?: 'classic' | 'modern' }) {
                     <a href="tel:02865912218" className={`px-8 py-3.5 bg-white font-bold rounded hover:bg-slate-100 transition-colors flex items-center justify-center gap-2`} style={{ color: themeColor }}>
                         <Phone className="h-5 w-5" /> Hubungi Kami
                     </a>
-                    <a href="mailto:hukum@banjarnegarakab.go.id" className={`px-8 py-3.5 bg-[#1e293b] text-white font-bold rounded hover:bg-slate-900 transition-colors flex items-center justify-center gap-2`}>
+                    <a href="mailto:jdihbanjarnegara@gmail.com" className={`px-8 py-3.5 bg-[#1e293b] text-white font-bold rounded hover:bg-slate-900 transition-colors flex items-center justify-center gap-2`}>
                         <Mail className="h-5 w-5" /> Kirim Email
                     </a>
                 </div>
@@ -617,13 +617,13 @@ function InfografisSection({ items, variant = 'classic' }: { items: any[], varia
                     {items.map((item) => (
                         <div key={item.id} 
                             onClick={() => setSelectedImg(item.image)}
-                            className={`group relative aspect-square bg-slate-100 rounded-2xl overflow-hidden border border-slate-200 transition-all cursor-zoom-in ${variant === 'modern' ? 'hover:border-[#003399] hover:shadow-xl' : 'hover:border-[#0d9488] hover:shadow-md'}`}>
+                            className={`group relative aspect-[3/4] bg-slate-100 rounded-2xl overflow-hidden border border-slate-200 transition-all cursor-zoom-in ${variant === 'modern' ? 'hover:border-[#003399] hover:shadow-xl' : 'hover:border-[#0d9488] hover:shadow-md'}`}>
                             <img
                                 src={item.image}
                                 alt={item.title}
                                 width={400}
-                                height={400}
-                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                height={600}
+                                className="w-full h-full object-top object-cover group-hover:scale-105 transition-transform duration-700"
                                 loading="lazy"
                             />
                             
@@ -647,21 +647,21 @@ function InfografisSection({ items, variant = 'classic' }: { items: any[], varia
             {/* Lightbox Modal */}
             {selectedImg && (
                 <div 
-                    className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-300"
+                    className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-md flex items-start justify-center overflow-y-auto p-4 sm:p-8 cursor-zoom-out animate-in fade-in duration-300"
                     onClick={() => setSelectedImg(null)}
                 >
                     <button 
-                        className="absolute top-6 right-6 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors z-10"
+                        className="fixed top-6 right-6 p-3 bg-white/10 hover:bg-[#0d9488] rounded-full text-white transition-all z-[10000] border border-white/20 shadow-xl"
                         onClick={(e) => { e.stopPropagation(); setSelectedImg(null); }}
                     >
-                        <X className="h-8 w-8" />
+                        <X className="h-6 w-6" />
                     </button>
                     
-                    <div className="relative max-w-5xl w-full h-full flex items-center justify-center p-4">
+                    <div className="relative w-full max-w-4xl mx-auto my-auto py-8">
                         <img 
                             src={selectedImg} 
                             alt="Infografis Full" 
-                            className="max-w-full max-h-full object-contain shadow-2xl rounded-lg animate-in zoom-in-95 duration-300"
+                            className="w-full h-auto max-w-full rounded-xl shadow-2xl animate-in zoom-in-95 duration-500 ring-1 ring-white/10"
                             onClick={(e) => e.stopPropagation()}
                         />
                     </div>

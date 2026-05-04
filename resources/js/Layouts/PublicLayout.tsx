@@ -165,10 +165,10 @@ function Navbar({ user, variant = 'classic' }: { user?: any; variant?: 'classic'
                     <div className="flex items-center gap-4">
                         <span className="hidden sm:block">Bagian Hukum Sekretariat Daerah Kabupaten Banjarnegara</span>
                         <span className="opacity-40">•</span>
-                        <span>Senin – Jumat, 07.30 – 15.30 WIB</span>
+                        <span>Senin – Jumat, 08.00 – 11.00 WIB</span>
                     </div>
                     <div className="flex items-center gap-6">
-                        <span className="hidden md:block">hukum@banjarnegarakab.go.id</span>
+                        <span className="hidden md:block">jdihbanjarnegara@gmail.com</span>
                         <div className="flex items-center gap-4">
                             <Link href="#" className="hover:text-teal-200 transition-colors">Aksesibilitas</Link>
                         </div>
@@ -180,7 +180,7 @@ function Navbar({ user, variant = 'classic' }: { user?: any; variant?: 'classic'
             <div className="max-w-screen-2xl mx-auto px-10 h-16 flex items-center justify-between gap-x-32">
                 {/* Logo & Brand */}
                 <Link href="/" className="flex items-center gap-3 shrink-0 group" aria-label="Beranda JDIH Banjarnegara">
-                    <img src="/images/logo-jdih.webp" alt="Logo JDIH Banjarnegara" width={180} height={48} className="h-12 w-auto object-contain group-hover:scale-105 transition-transform" />
+                    <img src="/logo_jdih.png" alt="Logo JDIH Banjarnegara" width={180} height={48} className="h-12 w-auto object-contain group-hover:scale-105 transition-transform" />
                 </Link>
 
                 {/* Desktop Menu */}
@@ -324,6 +324,7 @@ function Footer() {
     ];
 
     const OPD_LINKS = [
+        ['JDIH Prov. Jawa Tengah', 'https://jdih.jatengprov.go.id/'],
         ['Sekretariat Daerah', 'https://setda.banjarnegarakab.go.id'],
         ['DPRD', 'https://dprd.banjarnegarakab.go.id'],
         ['Inspektorat', 'https://inspektorat.banjarnegarakab.go.id'],
@@ -342,7 +343,7 @@ function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10 pb-10 border-b border-slate-700">
                     <div className="md:col-span-2">
                         <Link href="/" className="inline-block mb-4" aria-label="Beranda JDIH">
-                            <img src="/images/logo-jdih.webp" alt="Logo JDIH Banjarnegara" width={200} height={56} className="h-14 w-auto object-contain" />
+                            <img src="/logo_jdih.png" alt="Logo JDIH Banjarnegara" width={200} height={56} className="h-14 w-auto object-contain" />
                         </Link>
                         <p className="text-sm leading-relaxed mb-5 max-w-sm">
                             Jaringan Dokumentasi dan Informasi Hukum Kabupaten Banjarnegara – wadah pendayagunaan bersama atas dokumen hukum secara tertib, terpadu dan berkesinambungan.
@@ -358,8 +359,22 @@ function Footer() {
                             </div>
                             <div className="flex items-center gap-2">
                                 <Mail className="h-4 w-4 text-[#0d9488] shrink-0" />
-                                <span>hukum@banjarnegarakab.go.id</span>
+                                <span>jdihbanjarnegara@gmail.com</span>
                             </div>
+                        </div>
+
+                        {/* Map Section */}
+                        <div className="mt-6 max-w-sm rounded-xl overflow-hidden border border-slate-700 shadow-2xl group transition-all hover:border-[#0d9488]/50">
+                            <iframe
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3956.624220178036!2d109.69379512548414!3d-7.395934914095323!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7aa91649242607%3A0x7cf16e25160c9389!2sSekretariat%20Daerah%20Kabupaten%20Banjarnegara!5e0!3m2!1sid!2sid!4v1777905689780!5m2!1sid!2sid"
+                                width="100%"
+                                height="150"
+                                style={{ border: 0 }}
+                                allowFullScreen={false}
+                                loading="lazy"
+                                referrerPolicy="no-referrer-when-downgrade"
+                                className="filter grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"
+                            ></iframe>
                         </div>
                     </div>
                     <div>

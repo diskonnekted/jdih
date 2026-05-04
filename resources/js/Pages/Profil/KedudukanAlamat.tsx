@@ -13,10 +13,10 @@ export default function KedudukanAlamat({ item }: { item?: any }) {
         { icon: MapPin, label: 'Alamat', value: 'Lantai 2, Jalan A. Yani Nomor 16 Banjarnegara 591187, Jawa Tengah, Indonesia' },
         { icon: Phone, label: 'Telepon', value: '(0286) 591218', href: 'tel:0286591218' },
         { icon: PrinterIcon, label: 'Fax', value: '(0286) 591187' },
-        { icon: Mail, label: 'Email', value: 'jdih@banjarnegarakab.go.id', href: 'mailto:jdih@banjarnegarakab.go.id' },
+        { icon: Mail, label: 'Email', value: 'jdihbanjarnegara@gmail.com', href: 'mailto:jdihbanjarnegara@gmail.com' },
     ];
 
-    const MAPS_EMBED_DEFAULT = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3955.19!2d109.6939!3d-7.3898!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a67d3a8b85a4d%3A0xfed7d3a5c4e5a6b7!2sJl.%20A.%20Yani%20No.16%2C%20Krandegan%2C%20Banjarnegara!5e0!3m2!1sid!2sid!4v1715000000000!5m2!1sid!2sid';
+    const MAPS_EMBED_DEFAULT = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3956.624220178036!2d109.69379512548414!3d-7.395934914095323!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7aa91649242607%3A0x7cf16e25160c9389!2sSekretariat%20Daerah%20Kabupaten%20Banjarnegara!5e0!3m2!1sid!2sid!4v1777905689780!5m2!1sid!2sid';
 
     return (
         <PublicLayout>
@@ -69,12 +69,8 @@ export default function KedudukanAlamat({ item }: { item?: any }) {
                                 <p className="text-[#0d9488] font-bold text-sm mb-3">🕐 Jam Layanan</p>
                                 <div className="space-y-1.5 text-sm text-slate-600">
                                     <div className="flex justify-between">
-                                        <span>Senin – Kamis</span>
-                                        <span className="font-semibold text-[#1e293b]">07.30 – 16.00 WIB</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span>Jumat</span>
-                                        <span className="font-semibold text-[#1e293b]">07.30 – 11.00 WIB</span>
+                                        <span>Senin – Jumat</span>
+                                        <span className="font-semibold text-[#1e293b]">08.00 – 11.00 WIB</span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span>Sabtu – Minggu</span>

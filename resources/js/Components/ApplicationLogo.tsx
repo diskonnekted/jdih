@@ -4,7 +4,7 @@ export default function ApplicationLogo(props: ImgHTMLAttributes<HTMLImageElemen
     return (
         <img 
             {...props} 
-            src="/images/logo-jdih.png" 
+            src="/logo_jdih.png" 
             alt="Logo JDIH Banjarnegara" 
             className={`h-20 w-auto object-contain ${props.className || ''}`} 
         />
