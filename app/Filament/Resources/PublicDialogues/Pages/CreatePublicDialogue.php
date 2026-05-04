@@ -8,4 +8,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreatePublicDialogue extends CreateRecord
 {
     protected static string $resource = PublicDialogueResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }
