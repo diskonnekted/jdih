@@ -284,6 +284,11 @@ Route::get('/bankum', fn() => redirect('/bantuan-hukum'));
 Route::get('/produk-hukum-desa',       [ProdukHukumDesaController::class, 'index']);
 Route::get('/api/produk-hukum-desa',   [ProdukHukumDesaController::class, 'proxy']);
 
+// Dialog Publik & Aspirasi
+Route::get('/dialog-publik', [\App\Http\Controllers\PublicDialogueController::class, 'index'])->name('dialog-publik.index');
+Route::get('/dialog-publik/{slug}', [\App\Http\Controllers\PublicDialogueController::class, 'show'])->name('dialog-publik.show');
+Route::post('/dialog-publik/{id}/respond', [\App\Http\Controllers\PublicDialogueController::class, 'storeResponse'])->name('dialog-publik.respond');
+
 Route::post('/ai/ask', [AiAssistantController::class, 'ask'])->name('ai.ask');
 Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
 Route::post('/community-satisfaction', [\App\Http\Controllers\CommunitySatisfactionController::class, 'store'])->name('ikm.store');

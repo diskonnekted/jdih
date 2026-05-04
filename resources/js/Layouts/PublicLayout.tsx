@@ -131,6 +131,7 @@ const NAV_ITEMS = [
     {
         label: 'Layanan Hukum',
         children: [
+            { label: 'Dialog Publik', href: '/dialog-publik' },
             { label: 'Bantuan Hukum', href: '/bantuan-hukum' },
             { label: 'Konsultasi Hukum', href: '/konsultasi-hukum' },
             { label: 'Jaringan Kerja Sama', href: '/kerja-sama-daerah' },
