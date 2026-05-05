@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class LegalDocument extends Model
 {
+    use LogsActivity;
+
     protected $fillable = [
         'title',
         'document_number',

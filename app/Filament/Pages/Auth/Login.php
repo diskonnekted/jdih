@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\App;
 use Filament\Notifications\Notification;
 use Illuminate\Validation\ValidationException;
+use App\Models\ActivityLog;
 
 class Login extends BaseLogin
 {
@@ -108,6 +109,11 @@ class Login extends BaseLogin
             'email'    => $data['email'],
             'password' => $data['password'],
         ];
+    }
+
+    protected function afterLogin(): void
+    {
+        ActivityLog::log('login', null, 'Login berhasil ke admin panel');
     }
 }
 

@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
+    use LogsActivity;
+
     protected $fillable = ['name', 'slug', 'code', 'description'];
 
     /**
