@@ -40,8 +40,8 @@ class AdminPanelProvider extends PanelProvider
             ->defaultThemeMode(ThemeMode::System)
             ->font('Outfit')
             ->brandName('JDIH Banjarnegara')
-            ->brandLogo(asset('images/logo-jdih.png'))
-            ->brandLogoHeight('2.5rem')
+            ->brandLogo(asset('logo_jdih.png'))
+            ->brandLogoHeight('3rem')
             ->favicon(asset('favicon.png'))
             ->maxContentWidth(\Filament\Support\Enums\Width::Full)
             // Urutan grup navigasi sidebar
