@@ -6,8 +6,8 @@
  * 
  * Run: php scratch/fix_missing_files.php
  */
-require __DIR__ . '/../vendor/autoload.php';
-$app = require __DIR__ . '/../bootstrap/app.php';
+require __DIR__ . '/vendor/autoload.php';
+$app = require __DIR__ . '/bootstrap/app.php';
 $app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 
 $allDocs = \App\Models\LegalDocument::whereNotNull('file_path')->where('file_path','!=','')->get();
