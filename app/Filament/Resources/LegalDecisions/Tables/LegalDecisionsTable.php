@@ -2,9 +2,11 @@
 
 namespace App\Filament\Resources\LegalDecisions\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
 use Filament\Tables\Table;
 
 class LegalDecisionsTable
@@ -77,6 +79,33 @@ class LegalDecisionsTable
                     ->options(fn () => \App\Models\LegalDecision::distinct()->pluck('year', 'year')->toArray()),
             ], layout: \Filament\Tables\Enums\FiltersLayout::AboveContent)
             ->filtersFormColumns(4)
+            ->headerActions([
+                Action::make('print')
+                    ->label('Print Daftar')
+                    ->color('warning')
+                    ->icon('heroicon-m-printer')
+                    ->form([
+                        Select::make('per_page')
+                            ->label('Jumlah baris per halaman')
+                            ->options([25 => '25 baris', 50 => '50 baris', 100 => '100 baris', 200 => '200 baris', 500 => 'Semua (maks 500)'])
+                            ->default(50)
+                            ->required(),
+                        Select::make('page')
+                            ->label('Halaman ke-')
+                            ->options(collect(range(1, 30))->mapWithKeys(fn ($p) => [$p => "Halaman {$p}"])->toArray())
+                            ->default(1)
+                            ->required()
+                            ->helperText('1 halaman = jumlah baris yang dipilih di atas.'),
+                    ])
+                    ->action(function (array $data) {
+                        $url = route('admin.print.legal-decisions', [
+                            'per_page' => $data['per_page'],
+                            'page'     => $data['page'],
+                        ]);
+                        redirect()->away($url);
+                    })
+                    ->modalSubmitActionLabel('Buka Halaman Print ↗'),
+            ])
             ->recordActions([
                 \Filament\Actions\DeleteAction::make()->label('Hapus')->color('danger')->icon('heroicon-m-trash')->button(),
                 \Filament\Actions\EditAction::make()->label('Edit')->color('success')->icon('heroicon-m-pencil')->button(),

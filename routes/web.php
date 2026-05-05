@@ -121,7 +121,75 @@ Route::get('/', function () {
 });
 
 // ---------------------------------------------------------------
-// KATALOG & SEARCH
+// PRINT ROUTES (Admin only — hanya untuk user yang login)
+// ---------------------------------------------------------------
+Route::middleware(['auth'])->prefix('admin-print')->group(function () {
+
+    // Print Produk Hukum
+    Route::get('/legal-documents', function (\Illuminate\Http\Request $request) {
+        $perPage = max(1, min(500, (int) ($request->per_page ?? 50)));
+        $page    = max(1, (int) ($request->page ?? 1));
+
+        $query = \App\Models\LegalDocument::with('category');
+
+        if ($request->title)         $query->where('title', 'like', "%{$request->title}%");
+        if ($request->document_number) $query->where('document_number', 'like', "%{$request->document_number}%");
+        if ($request->year)          $query->where('year', $request->year);
+        if ($request->category_id)   $query->where('category_id', $request->category_id);
+        if ($request->status)        $query->where('status', $request->status);
+        if ($request->has_file)      $query->whereNotNull('file_path')->where('file_path', '!=', '');
+
+        $total      = $query->count();
+        $totalPages = (int) ceil($total / $perPage);
+        $offset     = ($page - 1) * $perPage;
+        $documents  = $query->orderBy('year', 'desc')->orderBy('document_number', 'desc')
+                            ->offset($offset)->limit($perPage)->get();
+
+        $activeFilters = array_filter([
+            'Judul'    => $request->title,
+            'Nomor'    => $request->document_number,
+            'Tahun'    => $request->year,
+            'Status'   => $request->status,
+            'Ada File' => $request->has_file ? 'Ya' : null,
+        ]);
+
+        return view('print.legal-documents', compact('documents', 'total', 'page', 'totalPages', 'offset', 'activeFilters'));
+    })->name('admin.print.legal-documents');
+
+    // Print Kategori
+    Route::get('/categories', function () {
+        $categories = \App\Models\Category::withCount('legalDocuments')->orderBy('name')->get();
+        return view('print.categories', compact('categories'));
+    })->name('admin.print.categories');
+
+    // Print Putusan Hukum
+    Route::get('/legal-decisions', function (\Illuminate\Http\Request $request) {
+        $perPage = max(1, min(500, (int) ($request->per_page ?? 50)));
+        $page    = max(1, (int) ($request->page ?? 1));
+
+        $query = \App\Models\LegalDecision::query();
+
+        if ($request->title)           $query->where('title', 'like', "%{$request->title}%");
+        if ($request->document_number) $query->where('document_number', 'like', "%{$request->document_number}%");
+        if ($request->year)            $query->where('year', $request->year);
+
+        $total      = $query->count();
+        $totalPages = (int) ceil($total / $perPage);
+        $offset     = ($page - 1) * $perPage;
+        $decisions  = $query->orderBy('year', 'desc')->offset($offset)->limit($perPage)->get();
+
+        $activeFilters = array_filter([
+            'Judul' => $request->title,
+            'Nomor' => $request->document_number,
+            'Tahun' => $request->year,
+        ]);
+
+        return view('print.legal-decisions', compact('decisions', 'total', 'page', 'totalPages', 'offset', 'activeFilters'));
+    })->name('admin.print.legal-decisions');
+
+});
+
+
 // ---------------------------------------------------------------
 Route::get('/katalog', function(\Illuminate\Http\Request $request) {
     $query = \App\Models\LegalDocument::with('category');

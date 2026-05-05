@@ -3,12 +3,13 @@
 namespace App\Filament\Resources\LegalDocuments\Tables;
 
 use App\Models\LegalDocument;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Actions\Action;
+use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Storage;
@@ -124,6 +125,34 @@ class LegalDocumentsTable
                     ]),
             ], layout: \Filament\Tables\Enums\FiltersLayout::AboveContent)
             ->filtersFormColumns(4)
+            ->headerActions([
+                Action::make('print')
+                    ->label('Print Daftar')
+                    ->color('warning')
+                    ->icon('heroicon-m-printer')
+                    ->form([
+                        Select::make('per_page')
+                            ->label('Jumlah baris per halaman')
+                            ->options([25 => '25 baris', 50 => '50 baris', 100 => '100 baris', 200 => '200 baris', 500 => 'Semua (maks 500)'])
+                            ->default(50)
+                            ->required(),
+                        Select::make('page')
+                            ->label('Halaman ke-')
+                            ->options(collect(range(1, 30))->mapWithKeys(fn ($p) => [$p => "Halaman {$p}"])->toArray())
+                            ->default(1)
+                            ->required()
+                            ->helperText('1 halaman = jumlah baris yang dipilih di atas.'),
+                    ])
+                    ->action(function (array $data) {
+                        $url = route('admin.print.legal-documents', [
+                            'per_page' => $data['per_page'],
+                            'page'     => $data['page'],
+                        ]);
+                        // Redirect via JS: tidak bisa openUrlInNewTab dari action, gunakan redirect
+                        redirect()->away($url);
+                    })
+                    ->modalSubmitActionLabel('Buka Halaman Print ↗'),
+            ])
             ->recordActions([
                 DeleteAction::make()
                     ->before(function (LegalDocument $record) {

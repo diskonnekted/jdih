@@ -67,10 +67,11 @@ class CategoriesTable
             ->filtersFormColumns(2)
             ->headerActions([
                 Action::make('print')
-                    ->label('Print')
+                    ->label('Print Daftar')
                     ->color('warning')
                     ->icon('heroicon-m-printer')
-                    ->action(fn () => null),
+                    ->url(fn () => route('admin.print.categories'))
+                    ->openUrlInNewTab(),
             ])
             ->recordActions([
                 DeleteAction::make()
