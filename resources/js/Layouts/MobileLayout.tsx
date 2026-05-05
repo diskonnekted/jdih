@@ -14,16 +14,15 @@ export default function MobileLayout({ children }: Props) {
     const { url } = usePage();
 
     const tabs = [
-        { label: 'Home', icon: <Home className="h-6 w-6" />, href: '/' },
-        { label: 'Cari Dokumen', icon: <Search className="h-6 w-6" />, href: '/pencarian' },
-        { label: 'Berita', icon: <Newspaper className="h-6 w-6" />, href: '/berita' },
-        { label: 'Info', icon: <Info className="h-6 w-6" />, href: '/kedudukan-dan-alamat' },
+        { label: 'Home',      icon: <Home className="h-6 w-6" />,      href: '/mobile' },
+        { label: 'Cari',      icon: <Search className="h-6 w-6" />,    href: '/mobile/pencarian' },
+        { label: 'Berita',    icon: <Newspaper className="h-6 w-6" />, href: '/mobile/berita' },
+        { label: 'Info',      icon: <Info className="h-6 w-6" />,      href: '/mobile/info' },
     ];
 
     const isActive = (href: string) => {
-        if (href === '/' && url === '/') return true;
-        if (href !== '/' && url.startsWith(href)) return true;
-        return false;
+        if (href === '/mobile') return url === '/mobile' || url === '/mobile/';
+        return url.startsWith(href);
     };
 
     return (

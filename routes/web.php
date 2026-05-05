@@ -542,6 +542,92 @@ Route::get("/putusan/{id}", function(int $id) {
     ]);
 });
 
+// ---------------------------------------------------------------
+// MOBILE APP ROUTES
+// ---------------------------------------------------------------
+Route::prefix('mobile')->group(function () {
+
+    // Landing Mobile
+    Route::get('/', function () {
+        $latestNews = \Illuminate\Support\Facades\Cache::remember('home.news', 300, function () {
+            return \App\Models\News::where('status', 'published')
+                ->orderBy('published_at', 'desc')->take(4)->get()
+                ->map(fn($a) => [
+                    'id'        => $a->id,
+                    'slug'      => $a->slug,
+                    'title'     => $a->title,
+                    'date'      => $a->published_at?->format('d M Y'),
+                    'thumbnail' => $a->image ? (\Illuminate\Support\Str::startsWith($a->image, 'images/') ? '/'.$a->image : '/storage/'.$a->image) : null,
+                ]);
+        });
+        $latestDocs = \Illuminate\Support\Facades\Cache::remember('home.latest_docs', 300, function () {
+            return \App\Models\LegalDocument::with('category')->orderBy('year','desc')
+                ->orderByRaw('CAST(document_number AS UNSIGNED) DESC')->limit(5)->get()
+                ->map(fn($d) => ['id'=>$d->id,'type'=>$d->category->name??'PERATURAN','code'=>$d->category->code??'DOC','number'=>$d->document_number,'year'=>$d->year,'title'=>$d->title,'slug'=>$d->category->slug??'katalog']);
+        });
+        $counts = \Illuminate\Support\Facades\Cache::remember('home.counts', 600, function () {
+            $c = \App\Models\LegalDocument::select('category_id',\Illuminate\Support\Facades\DB::raw('count(*) as total'))->groupBy('category_id')->with('category')->get()->mapWithKeys(fn($i)=>[$i->category->name??'unknown'=>$i->total])->toArray();
+            $c['Putusan'] = \App\Models\LegalDecision::count();
+            return $c;
+        });
+        $videos = \Illuminate\Support\Facades\Cache::remember('home.videos', 600, fn() =>
+            \App\Models\VideoContent::latest()->take(3)->get()->map(fn($v)=>['id'=>$v->id,'title'=>$v->title,'href'=>$v->video_url,'image'=>$v->thumbnail_path?'/storage/'.$v->thumbnail_path:null])
+        );
+        return Inertia::render('Mobile/Home', [
+            'latestNews'   => $latestNews,
+            'latestDocs'   => $latestDocs,
+            'videos'       => $videos,
+            'infographics' => [],
+            'relatedLinks' => [],
+            'stats'        => ['total'=>array_sum($counts),'perda'=>$counts['Peraturan Daerah']??0,'perbup'=>$counts['Peraturan Bupati']??0],
+        ]);
+    })->name('mobile.home');
+
+    // Pencarian Dokumen
+    Route::get('/pencarian', function (\Illuminate\Http\Request $request) {
+        $categories = \App\Models\Category::orderBy('name')->get()->map(fn($c)=>['id'=>$c->id,'name'=>$c->name,'slug'=>$c->slug,'code'=>$c->code??'']);
+        $query = \App\Models\LegalDocument::with('category');
+        if ($request->q) {
+            foreach (explode(' ', $request->q) as $kw) {
+                if (!$kw) continue;
+                $query->where(fn($q)=>$q->where('title','like',"%$kw%")->orWhere('document_number','like',"%$kw%")->orWhere('subject','like',"%$kw%"));
+            }
+        }
+        if ($request->kategori) { $cat=\App\Models\Category::where('slug',$request->kategori)->first(); if($cat) $query->where('category_id',$cat->id); }
+        if ($request->tahun)    $query->where('year',$request->tahun);
+        $documents = $query->orderBy('year','desc')->orderByRaw('CAST(document_number AS UNSIGNED) DESC')
+            ->paginate(10)->withQueryString()
+            ->through(fn($d)=>['id'=>$d->id,'type'=>$d->category->name??'Dokumen','code'=>$d->category->code??'DOC','slug'=>$d->category->slug??'katalog','number'=>$d->document_number,'year'=>$d->year,'title'=>$d->title,'status'=>$d->status,'has_file'=>!empty($d->file_path)]);
+        $years = \App\Models\LegalDocument::selectRaw('year')->distinct()->orderBy('year','desc')->pluck('year');
+        return Inertia::render('Mobile/Pencarian', ['documents'=>$documents,'categories'=>$categories,'years'=>$years,'filters'=>['q'=>$request->q,'kategori'=>$request->kategori,'tahun'=>$request->tahun]]);
+    })->name('mobile.pencarian');
+
+    // Detail Dokumen
+    Route::get('/dokumen/{id}', function (int $id) {
+        $doc = \App\Models\LegalDocument::with('category')->findOrFail($id);
+        $doc->increment('view_count');
+        return Inertia::render('Mobile/DetailDokumen', ['document'=>[
+            'id'=>$doc->id,'title'=>$doc->title,'number'=>$doc->document_number,'year'=>$doc->year,
+            'type'=>$doc->category->name??'Dokumen','code'=>$doc->category->code??'DOC','slug'=>$doc->category->slug??'katalog',
+            'status'=>$doc->status,'date'=>$doc->published_at?$doc->published_at->format('d M Y'):null,
+            'subject'=>$doc->subject,'abstract'=>Str::limit(strip_tags($doc->abstract??$doc->content??''),500),
+            'has_file'=>!empty($doc->file_path),'view_count'=>$doc->view_count,'download_count'=>$doc->download_count,
+        ]]);
+    })->whereNumber('id')->name('mobile.dokumen');
+
+    // Berita
+    Route::get('/berita', function (\Illuminate\Http\Request $request) {
+        $news = \App\Models\News::where('status','published')
+            ->when($request->q,fn($q,$v)=>$q->where('title','like',"%$v%"))
+            ->orderBy('published_at','desc')->paginate(12)->withQueryString()
+            ->through(fn($a)=>['id'=>$a->id,'slug'=>$a->slug,'title'=>$a->title,'date'=>$a->published_at?$a->published_at->format('d M Y'):null,'category'=>$a->category??'Berita','thumbnail'=>$a->image?(Str::startsWith($a->image,'images/')?'/'.$a->image:'/storage/'.$a->image):null,'excerpt'=>Str::limit(strip_tags($a->content??''),100)]);
+        return Inertia::render('Mobile/Berita', ['news'=>$news,'filters'=>['q'=>$request->q]]);
+    })->name('mobile.berita');
+
+    // Info JDIH
+    Route::get('/info', fn() => Inertia::render('Mobile/InfoJdih'))->name('mobile.info');
+});
+
 Route::get("/{category:slug}", function(string $slug, \Illuminate\Http\Request $request) {
     $cat = \App\Models\Category::where('slug', $slug)->first();
     if (!$cat) abort(404);

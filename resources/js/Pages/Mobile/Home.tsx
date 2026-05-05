@@ -28,35 +28,12 @@ export default function MobileHome({
     stats 
 }: Props) {
     const menus = [
-        { 
-            label: 'Cari Dokumen', 
-            icon: <Search className="h-6 w-6" />, 
-            href: '/pencarian', 
-            color: 'bg-teal-500',
-            description: 'Database Hukum'
-        },
-        { 
-            label: 'Inovasi Desa', 
-            icon: <Building2 className="h-6 w-6" />, 
-            href: '/produk-hukum-desa', 
-            color: 'bg-teal-600',
-            description: 'Produk Hukum Desa'
-        },
-        { 
-            label: 'Berita Terbaru', 
-            icon: <Newspaper className="h-6 w-6" />, 
-            href: '/berita', 
-            color: 'bg-teal-700',
-            description: 'Kabar Banjarnegara'
-        },
-        { 
-            label: 'Informasi JDIH', 
-            icon: <Info className="h-6 w-6" />, 
-            href: '/kedudukan-dan-alamat', 
-            color: 'bg-slate-700',
-            description: 'Profil & Alamat'
-        },
+        { label: 'Cari Dokumen',  icon: <Search className="h-6 w-6" />,   href: '/mobile/pencarian',     color: 'bg-teal-500',  description: 'Database Hukum' },
+        { label: 'Inovasi Desa',  icon: <Building2 className="h-6 w-6" />, href: '/produk-hukum-desa',    color: 'bg-teal-600',  description: 'Produk Hukum Desa' },
+        { label: 'Berita Terbaru',icon: <Newspaper className="h-6 w-6" />, href: '/mobile/berita',        color: 'bg-teal-700',  description: 'Kabar Banjarnegara' },
+        { label: 'Informasi JDIH',icon: <Info className="h-6 w-6" />,      href: '/mobile/info',          color: 'bg-slate-700', description: 'Profil & Alamat' },
     ];
+
 
     return (
         <MobileLayout>
