@@ -143,16 +143,19 @@ class LegalDocumentInfolist
                         TextEntry::make('abstract')
                             ->label('Abstrak')
                             ->placeholder('Abstrak belum tersedia.')
+                            ->html()
                             ->columnSpanFull(),
 
                         TextEntry::make('related_regulations_text')
                             ->label('Peraturan Terkait')
                             ->placeholder('-')
+                            ->html()
                             ->columnSpanFull(),
 
                         TextEntry::make('implementing_regulations')
                             ->label('Peraturan Pelaksana')
                             ->placeholder('-')
+                            ->html()
                             ->columnSpanFull(),
                     ])
                     ->collapsible(),
