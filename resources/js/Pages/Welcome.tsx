@@ -624,13 +624,20 @@ export default function Welcome({
             'Kerja Sama Daerah':           '/kerja-sama-daerah',
         };
         const query = values.query || values.namaDokumen || '';
-        const type = values.type || values.jenisDokumen || '';
-        const base = JENIS_SLUG[type] ?? '/peraturan-daerah';
+        const type  = values.type  || values.jenisDokumen || '';
+
+        // ⚡ Universal search: jika tidak ada jenis dokumen terpilih,
+        // arahkan ke /katalog agar mencari di semua kategori.
+        // Jika jenis terpilih, gunakan halaman kategori spesifik.
+        const base = type
+            ? (JENIS_SLUG[type] ?? '/katalog')
+            : (query ? '/katalog' : '/peraturan-daerah');
+
         const params = new URLSearchParams();
-        if (query) params.set('namaDokumen', query);
-        if (values.nomor)       params.set('nomor', values.nomor);
-        if (values.tahun || values.year) params.set('tahun', values.tahun || values.year);
-        if (values.status)      params.set('status', values.status);
+        if (query)                           params.set('namaDokumen', query);
+        if (values.nomor)                    params.set('nomor', values.nomor);
+        if (values.tahun || values.year)     params.set('tahun', values.tahun || values.year);
+        if (values.status)                   params.set('status', values.status);
         window.location.href = base + (params.toString() ? '?' + params.toString() : '');
     };
 
