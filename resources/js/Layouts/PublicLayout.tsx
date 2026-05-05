@@ -171,7 +171,14 @@ function Navbar({ user, variant = 'classic' }: { user?: any; variant?: 'classic'
                     <div className="flex items-center gap-6">
                         <span className="hidden md:block">jdihbanjarnegara@gmail.com</span>
                         <div className="flex items-center gap-4">
-                            <Link href="#" className="hover:text-teal-200 transition-colors">Aksesibilitas</Link>
+                            <button 
+                                onClick={() => window.dispatchEvent(new CustomEvent('toggle-accessibility'))}
+                                className="hover:text-teal-200 transition-colors flex items-center gap-1 cursor-pointer"
+                                aria-label="Aktifkan Fitur Aksesibilitas (Pembaca Suara)"
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3 w-3" aria-hidden="true"><path d="M12 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/><path d="M19 9a7 7 0 1 1-14 0"/><path d="M12 16v6"/><path d="M8 21h8"/></svg>
+                                Aksesibilitas
+                            </button>
                         </div>
                     </div>
                 </div>

@@ -33,6 +33,13 @@ export default function AccessibilityWidget() {
         return () => document.removeEventListener('mouseup', handleMouseUp);
     }, [isEnabled]);
 
+    // Dengarkan event dari tombol Aksesibilitas di topbar
+    useEffect(() => {
+        const handler = () => setIsEnabled(prev => !prev);
+        window.addEventListener('toggle-accessibility', handler);
+        return () => window.removeEventListener('toggle-accessibility', handler);
+    }, []);
+
     return (
         <>
             {/* ACCESSIBILITY / TTS TOGGLE BUTTON (LEFT) */}

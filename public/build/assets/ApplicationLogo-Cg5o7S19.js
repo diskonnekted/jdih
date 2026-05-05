@@ -1,0 +1,1 @@
+import{j as o}from"./app-DclGjETo.js";function n(a){return o.jsx("img",{...a,src:"/logo_jdih.png",alt:"Logo JDIH Banjarnegara",className:`h-20 w-auto object-contain ${a.className||""}`})}export{n as A};
