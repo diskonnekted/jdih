@@ -26,9 +26,9 @@ class SecurityHeaders
             $csp .= "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://cdn.jsdelivr.net https://cdn.ayroui.com https://www.youtube.com https://s.ytimg.com; ";
             $csp .= "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.bunny.net https://cdn.jsdelivr.net https://cdn.ayroui.com; ";
             $csp .= "font-src 'self' data: https://fonts.gstatic.com https://fonts.bunny.net https://cdn.jsdelivr.net https://cdn.ayroui.com; ";
-            $csp .= "img-src 'self' data: https://jdih.banjarnegarakab.go.id https://www.googletagmanager.com https://i.ytimg.com; ";
-            $csp .= "connect-src 'self' https://www.google-analytics.com; ";
-            $csp .= "frame-src 'self' https://www.youtube.com https://vt.tiktok.com; ";
+            $csp .= "img-src 'self' data: blob: https://jdih.banjarnegarakab.go.id https://www.googletagmanager.com https://i.ytimg.com https://maps.gstatic.com https://maps.googleapis.com; "; 
+            $csp .= "connect-src 'self' https://www.google-analytics.com; "; 
+            $csp .= "frame-src 'self' https://www.youtube.com https://vt.tiktok.com https://www.google.com https://maps.google.com; "; 
 
             $response->headers->set('Content-Security-Policy', $csp);
             $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
