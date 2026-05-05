@@ -23,3 +23,24 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
+
+# ---------------------------------------------------------------
+# SECURITY HARDENING — Sembunyikan informasi server
+# ---------------------------------------------------------------
+<IfModule mod_headers.c>
+    # Sembunyikan versi PHP dan server
+    Header always unset X-Powered-By
+    Header unset X-Powered-By
+
+    # Cegah clickjacking
+    Header always set X-Frame-Options "SAMEORIGIN"
+
+    # Cegah MIME sniffing
+    Header always set X-Content-Type-Options "nosniff"
+
+    # XSS Protection
+    Header always set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# Sembunyikan versi Apache di error pages
+ServerSignature Off
