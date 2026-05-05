@@ -40,7 +40,7 @@ class AdminPanelProvider extends PanelProvider
             ->defaultThemeMode(ThemeMode::Dark)
             ->font('Outfit')
             ->brandName('JDIH Banjarnegara')
-            ->brandLogo(asset('logo_jdih.png'))
+            ->brandLogo(asset('logo_jdih.webp'))
             ->brandLogoHeight('3rem')
             ->favicon(asset('favicon.png'))
             ->maxContentWidth(\Filament\Support\Enums\Width::Full)
