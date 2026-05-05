@@ -37,7 +37,7 @@ class AdminPanelProvider extends PanelProvider
                 'danger' => Color::Rose,
             ])
             ->darkMode(true)
-            ->defaultThemeMode(ThemeMode::System)
+            ->defaultThemeMode(ThemeMode::Dark)
             ->font('Outfit')
             ->brandName('JDIH Banjarnegara')
             ->brandLogo(asset('logo_jdih.png'))
