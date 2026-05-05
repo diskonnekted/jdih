@@ -40,10 +40,28 @@ class AdminPanelProvider extends PanelProvider
             ->defaultThemeMode(ThemeMode::System)
             ->font('Outfit')
             ->brandName('JDIH Banjarnegara')
-            ->brandLogo(asset('images/logo-jdih.png'))
+            ->brandLogo(asset('images/logo-jdih.webp'))  // fix: file adalah .webp bukan .png
             ->brandLogoHeight('2.5rem')
             ->favicon(asset('favicon.png'))
             ->maxContentWidth(\Filament\Support\Enums\Width::Full)
+            // Urutan grup navigasi sidebar
+            ->navigationGroups([
+                \Filament\Navigation\NavigationGroup::make('Produk Hukum')
+                    ->icon('heroicon-o-scale')
+                    ->collapsed(false),
+                \Filament\Navigation\NavigationGroup::make('Profil JDIH')
+                    ->icon('heroicon-o-building-office')
+                    ->collapsed(false),
+                \Filament\Navigation\NavigationGroup::make('Berita & Media')
+                    ->icon('heroicon-o-newspaper')
+                    ->collapsed(false),
+                \Filament\Navigation\NavigationGroup::make('Layanan & Interaksi')
+                    ->icon('heroicon-o-chat-bubble-left-right')
+                    ->collapsed(true),
+                \Filament\Navigation\NavigationGroup::make('Data Master')
+                    ->icon('heroicon-o-circle-stack')
+                    ->collapsed(true),
+            ])
             ->renderHook(
                 'panels::auth.login.before',
                 fn (): string => \Illuminate\Support\Facades\Blade::render('

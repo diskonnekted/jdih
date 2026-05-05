@@ -21,7 +21,7 @@ class KedudukanAlamatResource extends Resource
 
     protected static \BackedEnum|string|null $navigationIcon = Heroicon::OutlinedDocumentText;
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Profil Instansi';
+    protected static \UnitEnum|string|null $navigationGroup = 'Profil JDIH';
 
     protected static ?int $navigationSort = 6;
 

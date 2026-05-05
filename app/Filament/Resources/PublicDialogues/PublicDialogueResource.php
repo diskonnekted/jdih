@@ -22,7 +22,7 @@ class PublicDialogueResource extends Resource
 
     protected static ?string $navigationLabel = 'Topik Dialog Publik';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Layanan Hukum';
+    protected static \UnitEnum|string|null $navigationGroup = 'Layanan & Interaksi';
 
     protected static ?int $navigationSort = 1;
 

@@ -26,7 +26,7 @@ class LegalDecisionResource extends Resource
 
     protected static \UnitEnum|string|null $navigationGroup = 'Produk Hukum';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
 
 
 protected static ?string $recordTitleAttribute = 'title';

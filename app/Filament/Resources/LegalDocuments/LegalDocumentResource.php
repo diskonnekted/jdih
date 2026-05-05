@@ -27,6 +27,7 @@ class LegalDocumentResource extends Resource
     protected static \UnitEnum|string|null $navigationGroup = 'Produk Hukum';
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-scale';
     protected static ?string $navigationLabel = 'Produk Hukum';
+    protected static ?int $navigationSort = 1;
 
     
 
