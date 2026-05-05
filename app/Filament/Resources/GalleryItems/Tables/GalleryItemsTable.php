@@ -18,7 +18,9 @@ class GalleryItemsTable
                     ->sortable(),
                 \Filament\Tables\Columns\ImageColumn::make('image_path')
                     ->label('Gambar')
-                    ->square(),
+                    ->disk('public')
+                    ->height(60)
+                    ->width(90),
                 \Filament\Tables\Columns\TextColumn::make('title')
                     ->label('Judul Foto')
                     ->wrap()

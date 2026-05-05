@@ -18,7 +18,10 @@ class NewsTable
                     ->sortable(),
                 \Filament\Tables\Columns\ImageColumn::make('image')
                     ->label('Thumbnail')
-                    ->square(),
+                    ->disk('public')
+                    ->height(60)
+                    ->width(90)
+                    ->defaultImageUrl(asset('images/logo-jdih.webp')),
                 \Filament\Tables\Columns\TextColumn::make('title')
                     ->label('Judul Berita')
                     ->wrap()

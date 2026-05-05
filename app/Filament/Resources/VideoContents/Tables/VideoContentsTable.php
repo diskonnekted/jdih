@@ -20,8 +20,9 @@ class VideoContentsTable
                     ->rowIndex(),
                 ImageColumn::make('thumbnail_path')
                     ->label('Cover')
-                    ->disk('static_images')
-                    ->circular(),
+                    ->disk('public')
+                    ->height(60)
+                    ->width(90),
                 TextColumn::make('title')
                     ->label('Judul Video')
                     ->searchable()

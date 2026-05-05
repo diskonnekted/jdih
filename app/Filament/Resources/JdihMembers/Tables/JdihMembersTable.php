@@ -36,6 +36,7 @@ class JdihMembersTable
                     ->toggleable(isToggledHiddenByDefault: true),
                 ImageColumn::make('photo_path')
                     ->label('Foto')
+                    ->disk('public')
                     ->circular()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
