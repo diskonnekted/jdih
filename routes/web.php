@@ -320,14 +320,26 @@ Route::post('/community-satisfaction', [\App\Http\Controllers\CommunitySatisfact
 // ---------------------------------------------------------------
 Route::get('/statistik', function () {
     $categories = \App\Models\Category::withCount('legalDocuments')->get();
-    
+
     $dataJenis = $categories->map(fn($cat) => [
-        'name' => $cat->name,
-        'short' => $cat->code,
+        'name'   => $cat->name,
+        'short'  => $cat->code,
         'jumlah' => $cat->legal_documents_count,
-        'href' => "/{$cat->slug}",
-        'color' => '#0d9488'
+        'href'   => "/{$cat->slug}",
+        'color'  => '#0d9488'
     ]);
+
+    // ⚡ Putusan disimpan di tabel terpisah (legal_decisions), tambahkan manual
+    $putusanCount = \App\Models\LegalDecision::count();
+    if ($putusanCount > 0) {
+        $dataJenis->push([
+            'name'   => 'Putusan Pengadilan',
+            'short'  => 'PUT',
+            'jumlah' => $putusanCount,
+            'href'   => '/putusan',
+            'color'  => '#0d9488'
+        ]);
+    }
 
     $dataTahun = \App\Models\LegalDocument::selectRaw('year, count(*) as jumlah')
         ->groupBy('year')
@@ -339,10 +351,10 @@ Route::get('/statistik', function () {
 
     $dataPie = $dataJenis->sortByDesc('jumlah')->take(4)->values();
     $othersCount = $dataJenis->sortByDesc('jumlah')->slice(4)->sum('jumlah');
-    
+
     if ($othersCount > 0) {
         $dataPie->push([
-            'name' => 'Lainnya',
+            'name'  => 'Lainnya',
             'value' => $othersCount,
             'color' => '#94a3b8'
         ]);
@@ -350,28 +362,29 @@ Route::get('/statistik', function () {
 
     $ikm = \App\Models\CommunitySatisfaction::all();
     $ikmScore = 0;
-    if($ikm->count() > 0) {
+    if ($ikm->count() > 0) {
         $total = 0; $count = 0;
-        foreach($ikm as $r) {
-            foreach(['u1','u2','u3','u4','u5','u6','u7','u8','u9'] as $u) {
-                if($r->$u) { $total += $r->$u; $count++; }
+        foreach ($ikm as $r) {
+            foreach (['u1','u2','u3','u4','u5','u6','u7','u8','u9'] as $u) {
+                if ($r->$u) { $total += $r->$u; $count++; }
             }
         }
-        $ikmScore = $count > 0 ? round(($total/$count) * 25, 2) : 0;
+        $ikmScore = $count > 0 ? round(($total / $count) * 25, 2) : 0;
     }
 
     return Inertia::render('Statistik', [
-        'dataJenis' => $dataJenis,
+        'dataJenis' => $dataJenis->values(),
         'dataTahun' => $dataTahun,
-        'dataPie' => $dataPie->map(fn($item) => [
-            'name' => $item['name'],
+        'dataPie'   => $dataPie->map(fn($item) => [
+            'name'  => $item['name'],
             'value' => $item['jumlah'] ?? $item['value'],
             'color' => $item['color']
         ]),
-        'total' => $dataJenis->sum('jumlah'),
+        'total'    => $dataJenis->sum('jumlah'),
         'ikmScore' => $ikmScore
     ]);
 });
+
 
 Route::get('/berita',          function() {
     return Inertia::render('Informasi/Berita', [
