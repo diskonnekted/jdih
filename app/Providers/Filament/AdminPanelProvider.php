@@ -47,19 +47,14 @@ class AdminPanelProvider extends PanelProvider
             // Urutan grup navigasi sidebar
             ->navigationGroups([
                 \Filament\Navigation\NavigationGroup::make('Produk Hukum')
-                    ->icon('heroicon-o-scale')
                     ->collapsed(false),
                 \Filament\Navigation\NavigationGroup::make('Profil JDIH')
-                    ->icon('heroicon-o-building-office')
                     ->collapsed(false),
                 \Filament\Navigation\NavigationGroup::make('Berita & Media')
-                    ->icon('heroicon-o-newspaper')
                     ->collapsed(false),
                 \Filament\Navigation\NavigationGroup::make('Layanan & Interaksi')
-                    ->icon('heroicon-o-chat-bubble-left-right')
                     ->collapsed(true),
                 \Filament\Navigation\NavigationGroup::make('Data Master')
-                    ->icon('heroicon-o-circle-stack')
                     ->collapsed(true),
             ])
             ->renderHook(
