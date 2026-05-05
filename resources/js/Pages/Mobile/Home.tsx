@@ -65,7 +65,7 @@ export default function MobileHome({
                             </div>
                         </div>
                         <div className="flex items-center gap-4 mt-6">
-                            <Link href="/pencarian" className="flex-1 bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl px-4 py-3 flex items-center gap-3 text-white/80 active:scale-95 transition-all">
+                            <Link href="/mobile/pencarian" className="flex-1 bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl px-4 py-3 flex items-center gap-3 text-white/80 active:scale-95 transition-all">
                                 <Search className="h-4 w-4" />
                                 <span className="text-xs font-bold uppercase tracking-widest">Cari Peraturan...</span>
                             </Link>
@@ -109,13 +109,13 @@ export default function MobileHome({
             <div className="px-6 pt-10">
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Produk Terkini</h3>
-                    <Link href="/peraturan-daerah" className="text-[10px] font-black text-[#0d9488] uppercase tracking-widest flex items-center gap-1">
+                    <Link href="/mobile/pencarian" className="text-[10px] font-black text-[#0d9488] uppercase tracking-widest flex items-center gap-1">
                         Lihat Semua <ArrowRight className="h-3 w-3" />
                     </Link>
                 </div>
                 <div className="space-y-3">
                     {latestDocs.slice(0, 4).map((doc, i) => (
-                        <Link key={i} href={doc.href || `/peraturan-daerah/${doc.id}`} 
+                        <Link key={i} href={`/mobile/dokumen/${doc.id}`} 
                             className="block p-4 bg-white border border-slate-100 rounded-3xl shadow-sm active:scale-98 transition-all">
                             <div className="flex items-center gap-2 mb-2">
                                 <span className="text-[8px] font-black px-2 py-0.5 rounded bg-teal-500 text-white uppercase tracking-widest">{doc.type || 'DOKUMEN'}</span>
@@ -156,7 +156,7 @@ export default function MobileHome({
             <div className="px-6 pt-10 pb-10">
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Warta JDIH</h3>
-                    <Link href="/berita" className="text-[10px] font-black text-[#0d9488] uppercase tracking-widest flex items-center gap-1">
+                    <Link href="/mobile/berita" className="text-[10px] font-black text-[#0d9488] uppercase tracking-widest flex items-center gap-1">
                         Baca Berita <ArrowRight className="h-3 w-3" />
                     </Link>
                 </div>
@@ -165,7 +165,7 @@ export default function MobileHome({
                     {latestNews.length > 0 ? latestNews.slice(0, 3).map((news, i) => (
                         <Link 
                             key={i} 
-                            href={`/berita/${news.id}`}
+                            href={`/berita/${news.slug || news.id}`}
                             className="flex gap-4 p-4 bg-white border border-slate-100 rounded-3xl shadow-sm active:scale-98 transition-all"
                         >
                             <div className="h-20 w-20 rounded-2xl bg-slate-100 overflow-hidden shrink-0">
