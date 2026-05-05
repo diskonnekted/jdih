@@ -59,8 +59,30 @@ export default function DaftarDokumen({ kategori, title, code, documents, filter
 
     function handleSearch(values: SearchValues) {
         setFilters(values);
-        router.get(`/${kategori}`, values, {
-            preserveState: true,
+
+        const JENIS_SLUG: Record<string, string> = {
+            'Peraturan Daerah':            'peraturan-daerah',
+            'Peraturan Bupati':            'peraturan-bupati',
+            'Keputusan Bupati':            'keputusan-bupati',
+            'Instruksi Bupati':            'instruksi-bupati',
+            'Keputusan Sekretaris Daerah': 'keputusan-sekretaris-daerah',
+            'Surat Edaran':                'surat-edaran',
+            'Naskah Akademik':             'naskah-akademik',
+            'Raperda':                     'raperda',
+            'Analisis & Evaluasi Hukum':   'analisis-evaluasi-hukum',
+            'RANHAM':                      'ranham',
+            'Risalah Rapat':               'risalah-rapat',
+            'Artikel Bidang Hukum':        'artikel-bidang-hukum',
+            'Propemperda':                 'propemperda',
+            'Katalog':                     'pencarian',
+            'Putusan':                     'putusan',
+            'Kerja Sama Daerah':           'kerja-sama-daerah',
+        };
+
+        const targetKategori = JENIS_SLUG[values.jenisDokumen] || kategori;
+
+        router.get(`/${targetKategori}`, values, {
+            preserveState: targetKategori === kategori,
             replace: true,
         });
     }
@@ -93,7 +115,6 @@ export default function DaftarDokumen({ kategori, title, code, documents, filter
                                     mode="compact"
                                     initialValues={filters}
                                     onSearch={handleSearch}
-                                    hideJenis={true}
                                     jenisDokumenDefault={title}
                                 />
                             </div>

@@ -30,9 +30,10 @@ import {
 interface DocumentDetailProps {
     document: any;
     category: any;
+    popular?: any[];
 }
 
-export default function DetailDokumen({ document, category }: DocumentDetailProps) {
+export default function DetailDokumen({ document, category, popular = [] }: DocumentDetailProps) {
     const [activeTab, setActiveTab] = useState('detail');
     const [isChatOpen, setIsChatOpen] = useState(false);
     const [chatMessages, setChatMessages] = useState<{role: 'user'|'ai', text: string}[]>([]);
@@ -506,20 +507,28 @@ export default function DetailDokumen({ document, category }: DocumentDetailProp
                                 </div>
                             </div>
 
-                            {/* Popular Documents (Placeholder) */}
+                            {/* Popular Documents */}
                             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                                 <div className="px-6 py-4 border-b border-slate-100">
                                     <h4 className="text-slate-900 font-black text-sm uppercase tracking-widest">Dokumen Terpopuler</h4>
                                 </div>
                                 <div className="divide-y divide-slate-50">
-                                    {[1, 2, 3].map((i) => (
-                                        <div key={i} className="p-4 hover:bg-slate-50 transition-colors cursor-pointer group">
-                                            <p className="text-[10px] font-bold text-[#0d9488] uppercase mb-1">PERDA No. {i} Tahun 2024</p>
+                                    {popular.length > 0 ? popular.map((p) => (
+                                        <Link 
+                                            key={p.id} 
+                                            href={`/${p.slug}/${p.id}`}
+                                            className="block p-4 hover:bg-slate-50 transition-colors group"
+                                        >
+                                            <p className="text-[10px] font-bold text-[#0d9488] uppercase mb-1">{p.type} NO. {p.number} TAHUN {p.year}</p>
                                             <p className="text-xs font-bold text-slate-700 group-hover:text-[#0d9488] line-clamp-2 leading-relaxed">
-                                                Pajak Daerah dan Retribusi Daerah Kabupaten Banjarnegara
+                                                {p.title}
                                             </p>
+                                        </Link>
+                                    )) : (
+                                        <div className="p-6 text-center text-slate-400 text-xs italic">
+                                            Belum ada data populer.
                                         </div>
-                                    ))}
+                                    )}
                                 </div>
                             </div>
                         </div>

@@ -15,75 +15,90 @@ use Inertia\Inertia;
 // HOME
 // ---------------------------------------------------------------
 Route::get('/', function () {
-    $latestNews = \App\Models\News::where('status', 'published')
-        ->orderBy('published_at', 'desc')
-        ->take(4)
-        ->get()
-        ->map(function ($article) {
-            return [
-                'id'       => $article->id,
-                'slug'     => $article->slug,
-                'title'    => $article->title,
-                'date'     => $article->published_at ? $article->published_at->format('Y-m-d') : null,
-                'category' => $article->category ?? 'Berita',
-                'image'    => $article->image 
-                    ? (Str::startsWith($article->image, 'images/') ? '/' . $article->image : '/storage/' . $article->image)
-                    : '/images/hero.webp',
-            ];
-        });
+    // ⚡ Cache semua query berat — TTL 5 menit untuk konten dinamis, 10 menit untuk statistik
+    $latestNews = \Illuminate\Support\Facades\Cache::remember('home.news', 300, function () {
+        return \App\Models\News::where('status', 'published')
+            ->orderBy('published_at', 'desc')
+            ->take(4)
+            ->get()
+            ->map(function ($article) {
+                return [
+                    'id'       => $article->id,
+                    'slug'     => $article->slug,
+                    'title'    => $article->title,
+                    'date'     => $article->published_at ? $article->published_at->format('Y-m-d') : null,
+                    'category' => $article->category ?? 'Berita',
+                    'image'    => $article->image
+                        ? (Str::startsWith($article->image, 'images/') ? '/' . $article->image : '/storage/' . $article->image)
+                        : '/images/hero.webp',
+                ];
+            });
+    });
 
-    $activeBanner = \App\Models\Banner::where('is_active', true)->latest()->first();
+    $activeBanner = \Illuminate\Support\Facades\Cache::remember('home.banner', 600, function () {
+        return \App\Models\Banner::where('is_active', true)->latest()->first();
+    });
 
-    $infographics = \App\Models\Infographic::where('is_active', true)
-        ->orderBy('sort_order', 'asc')
-        ->get()
-        ->map(fn($item) => [
-            'id' => $item->id,
-            'title' => $item->title,
-            'image' => '/storage/' . $item->image_path,
-        ]);
+    $infographics = \Illuminate\Support\Facades\Cache::remember('home.infographics', 600, function () {
+        return \App\Models\Infographic::where('is_active', true)
+            ->orderBy('sort_order', 'asc')
+            ->get()
+            ->map(fn($item) => [
+                'id'    => $item->id,
+                'title' => $item->title,
+                'image' => '/storage/' . $item->image_path,
+            ]);
+    });
 
-    $latestDocs = \App\Models\LegalDocument::with('category')
-        ->orderBy('year', 'desc')
-        ->orderByRaw('CAST(document_number AS UNSIGNED) DESC')
-        ->orderBy('document_number', 'desc')
-        ->limit(5)
-        ->get()
-        ->map(fn($doc) => [
-            'id' => $doc->id,
-            'type' => $doc->category->name ?? 'PERATURAN',
-            'code' => $doc->category->code ?? 'DOC',
-            'number' => $doc->document_number,
-            'year' => $doc->year,
-            'title' => $doc->title,
-            'date' => $doc->published_at ? $doc->published_at->format('Y-m-d') : null,
-            'subject' => $doc->subject ? (is_array($doc->subject) ? $doc->subject[0] : (json_decode($doc->subject)[0] ?? 'Umum')) : 'Umum',
-            'slug' => Str::slug($doc->category->name ?? 'peraturan'),
-        ]);
+    $latestDocs = \Illuminate\Support\Facades\Cache::remember('home.latest_docs', 300, function () {
+        return \App\Models\LegalDocument::with('category')
+            ->orderBy('year', 'desc')
+            ->orderByRaw('CAST(document_number AS UNSIGNED) DESC')
+            ->orderBy('document_number', 'desc')
+            ->limit(5)
+            ->get()
+            ->map(fn($doc) => [
+                'id'      => $doc->id,
+                'type'    => $doc->category->name ?? 'PERATURAN',
+                'code'    => $doc->category->code ?? 'DOC',
+                'number'  => $doc->document_number,
+                'year'    => $doc->year,
+                'title'   => $doc->title,
+                'date'    => $doc->published_at ? $doc->published_at->format('Y-m-d') : null,
+                'subject' => $doc->subject ? (is_array($doc->subject) ? $doc->subject[0] : (json_decode($doc->subject)[0] ?? 'Umum')) : 'Umum',
+                'slug'    => Str::slug($doc->category->name ?? 'peraturan'),
+            ]);
+    });
 
-    $counts = \App\Models\LegalDocument::select('category_id', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
-        ->groupBy('category_id')
-        ->with('category')
-        ->get()
-        ->mapWithKeys(fn($item) => [$item->category->name ?? 'unknown' => $item->total])
-        ->toArray();
+    $counts = \Illuminate\Support\Facades\Cache::remember('home.counts', 600, function () {
+        $c = \App\Models\LegalDocument::select('category_id', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
+            ->groupBy('category_id')
+            ->with('category')
+            ->get()
+            ->mapWithKeys(fn($item) => [$item->category->name ?? 'unknown' => $item->total])
+            ->toArray();
+        $c['Putusan'] = \App\Models\LegalDecision::count();
+        return $c;
+    });
 
-    $counts['Putusan'] = \App\Models\LegalDecision::count();
+    $videos = \Illuminate\Support\Facades\Cache::remember('home.videos', 600, function () {
+        return \App\Models\VideoContent::latest()
+            ->take(3)
+            ->get()
+            ->map(fn($v) => [
+                'id'             => $v->id,
+                'title'          => $v->title,
+                'video_url'      => $v->video_url,
+                'thumbnail_path' => $v->thumbnail_path,
+                'platform'       => $v->platform,
+                'year'           => $v->year,
+                'duration'       => $v->duration,
+            ]);
+    });
 
-    $videos = \App\Models\VideoContent::latest()
-        ->take(3)
-        ->get()
-        ->map(fn($v) => [
-            'id' => $v->id,
-            'title' => $v->title,
-            'video_url' => $v->video_url,
-            'thumbnail_path' => $v->thumbnail_path,
-            'platform' => $v->platform,
-            'year' => $v->year,
-            'duration' => $v->duration,
-        ]);
-
-    $totalViews = \App\Models\LegalDocument::sum('view_count');
+    $totalViews = \Illuminate\Support\Facades\Cache::remember('home.total_views', 300, function () {
+        return \App\Models\LegalDocument::sum('view_count');
+    });
 
     return Inertia::render('Welcome', [
         'canLogin'       => Route::has('login'),
@@ -97,10 +112,10 @@ Route::get('/', function () {
         'totalViews'     => $totalViews,
         'videos'         => $videos,
         'banner'         => $activeBanner ? [
-            'id' => $activeBanner->id,
+            'id'    => $activeBanner->id,
             'title' => $activeBanner->title,
             'image' => '/storage/' . $activeBanner->image_path,
-            'url' => $activeBanner->url,
+            'url'   => $activeBanner->url,
         ] : null,
     ]);
 });
@@ -197,7 +212,14 @@ Route::get('/tupoksi-bag-hukum', function() {
     ]);
 });
 Route::get('/anggota-jdih', function() {
-    $members = \App\Models\JdihMember::orderBy('sort_order')->get();
+    $members = \App\Models\JdihMember::orderBy('sort_order')->orderBy('id')->get()
+        ->map(fn($m) => [
+            'id'       => $m->id,
+            'nama'     => $m->name,
+            'url'      => $m->url,
+            'kategori' => $m->category ?? 'Perangkat Daerah',
+            'position' => $m->position,
+        ]);
     return Inertia::render('Profil/AnggotaJdih', [
         'members' => $members
     ]);
@@ -508,9 +530,26 @@ Route::get("/{category:slug}/{id}", function(string $slug, int $id) {
         'relatedDocuments.category', 
         'referencedByDocuments.category'
     ])->findOrFail($id);
+    
     $doc->increment('view_count');
+    
+    $popular = \App\Models\LegalDocument::with('category')
+        ->orderBy('view_count', 'desc')
+        ->take(5)
+        ->get()
+        ->map(fn($p) => [
+            'id' => $p->id,
+            'slug' => $p->category->slug ?? 'katalog',
+            'type' => $p->category->name ?? 'Dokumen',
+            'number' => $p->document_number,
+            'year' => $p->year,
+            'title' => $p->title,
+        ]);
+
     return Inertia::render('Hukum/DetailDokumen', [
         'document' => $doc,
-        'kategori' => $slug
+        'kategori' => $slug,
+        'popular'  => $popular
     ]);
-});
+})->whereNumber('id');
+

@@ -4,13 +4,35 @@ import PublicLayout from '@/Layouts/PublicLayout';
 import PageHeader from '@/Components/PageHeader';
 import { Target, ListChecks, CheckCircle2 } from 'lucide-react';
 
+// Helper: normalise Filament Repeater items [{value:"..."}, ...] -> string[]
+function normaliseList(raw: any): string[] {
+    if (!raw) return [];
+    if (!Array.isArray(raw)) return [];
+    return raw.map((item: any) =>
+        typeof item === 'string' ? item : (item?.value ?? String(item))
+    ).filter(Boolean);
+}
+
+const DEFAULT_TUGAS_POKOK =
+    'Bagian Hukum mempunyai tugas melaksanakan pengkoordinasian perumusan kebijakan daerah, pengkoordinasian pelaksanaan tugas Perangkat Daerah, pemantauan dan evaluasi pelaksanaan kebijakan daerah di bidang perundang-undangan, bantuan hukum, serta dokumentasi dan informasi.';
+
+const DEFAULT_FUNGSI = [
+    'Pengkoordinasian penyusunan kebijakan daerah di bidang perundang-undangan, bantuan hukum, serta dokumentasi dan informasi.',
+    'Pengkoordinasian pelaksanaan tugas Perangkat Daerah di bidang perundang-undangan, bantuan hukum, serta dokumentasi dan informasi.',
+    'Pemantauan dan evaluasi pelaksanaan kebijakan daerah terkait bidang hukum.',
+    'Pelaksanaan fungsi kedinasan lain yang diberikan oleh Asisten Pemerintahan dan Kesejahteraan Rakyat yang berkaitan dengan tugasnya.',
+];
+
 export default function Tupoksi({ item }: { item?: any }) {
-    const FUNGSI = [
-        'Pengkoordinasian penyusunan kebijakan daerah di bidang perundang-undangan, bantuan hukum, serta dokumentasi dan informasi.',
-        'Pengkoordinasian pelaksanaan tugas Perangkat Daerah di bidang perundang-undangan, bantuan hukum, serta dokumentasi dan informasi.',
-        'Pemantauan dan evaluasi pelaksanaan kebijakan daerah terkait bidang hukum.',
-        'Pelaksanaan fungsi kedinasan lain yang diberikan oleh Asisten Pemerintahan dan Kesejahteraan Rakyat yang berkaitan dengan tugasnya.',
-    ];
+    const data = (item?.content && typeof item.content === 'object') ? item.content : {};
+
+    const tugasPokok: string = (typeof data.tugas_pokok === 'string' && data.tugas_pokok)
+        ? data.tugas_pokok
+        : DEFAULT_TUGAS_POKOK;
+
+    const fungsi: string[] = normaliseList(data.fungsi).length > 0
+        ? normaliseList(data.fungsi)
+        : DEFAULT_FUNGSI;
 
     return (
         <PublicLayout>
@@ -24,13 +46,6 @@ export default function Tupoksi({ item }: { item?: any }) {
 
             <section className="py-12 px-6 bg-slate-50">
                 <div className="max-w-4xl mx-auto space-y-8">
-                    {/* Intro from Database */}
-                    {item && (
-                        <div className="profile-card-wrapper mb-8">
-                            <div className="profile-content-premium" dangerouslySetInnerHTML={{ __html: item.content }} />
-                        </div>
-                    )}
-
                     {/* ── TUGAS POKOK ── */}
                     <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
                         <div className="bg-[#0d9488] px-6 py-5 flex items-center gap-4">
@@ -43,11 +58,7 @@ export default function Tupoksi({ item }: { item?: any }) {
                             </div>
                         </div>
                         <div className="px-6 py-6">
-                            <p className="text-slate-700 leading-relaxed text-[15px]">
-                                Bagian Hukum mempunyai tugas melaksanakan pengkoordinasian perumusan kebijakan daerah, 
-                                pengkoordinasian pelaksanaan tugas Perangkat Daerah, pemantauan dan evaluasi pelaksanaan 
-                                kebijakan daerah di bidang perundang-undangan, bantuan hukum, serta dokumentasi dan informasi.
-                            </p>
+                            <p className="text-slate-700 leading-relaxed text-[15px]">{tugasPokok}</p>
                         </div>
                     </div>
 
@@ -63,8 +74,8 @@ export default function Tupoksi({ item }: { item?: any }) {
                             </div>
                         </div>
                         <div className="p-0">
-                            {FUNGSI.map((txt, i) => (
-                                <div key={i} className={`flex items-start gap-4 px-6 py-5 ${i !== FUNGSI.length - 1 ? 'border-b border-slate-100' : ''}`}>
+                            {fungsi.map((txt, i) => (
+                                <div key={i} className={`flex items-start gap-4 px-6 py-5 ${i !== fungsi.length - 1 ? 'border-b border-slate-100' : ''}`}>
                                     <div className="mt-1">
                                         <CheckCircle2 className="h-5 w-5 text-[#0d9488]" />
                                     </div>

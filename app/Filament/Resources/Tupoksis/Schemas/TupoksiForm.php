@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\Tupoksis\Schemas;
 
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Repeater;
 use Filament\Schemas\Schema;
 
 class TupoksiForm
@@ -12,12 +12,25 @@ class TupoksiForm
     {
         return $schema
             ->components([
-                TextInput::make('title')
+                Textarea::make('content.tugas_pokok')
+                    ->label('Tugas Pokok')
+                    ->rows(4)
                     ->required()
-                    ->maxLength(255),
-                RichEditor::make('content')
-                    ->required()
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->helperText('Uraian tugas pokok Bagian Hukum.'),
+
+                Repeater::make('content.fungsi')
+                    ->label('Fungsi Utama')
+                    ->schema([
+                        Textarea::make('value')
+                            ->label('Uraian Fungsi')
+                            ->rows(2)
+                            ->required(),
+                    ])
+                    ->addActionLabel('+ Tambah Fungsi')
+                    ->reorderable()
+                    ->columnSpanFull()
+                    ->helperText('Tambahkan setiap fungsi utama secara terpisah.'),
             ]);
     }
 }

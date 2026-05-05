@@ -101,7 +101,14 @@ class LegalDocument extends Model
      */
     public function getFileAttribute()
     {
-        return $this->file_path ? \Illuminate\Support\Facades\Storage::disk('public')->url($this->file_path) : null;
+        if (!$this->file_path) return null;
+        
+        // Safety check: only return URL if file actually exists on disk
+        if (!\Illuminate\Support\Facades\Storage::disk('public')->exists($this->file_path)) {
+            return null;
+        }
+
+        return \Illuminate\Support\Facades\Storage::disk('public')->url($this->file_path);
     }
 
     /**
@@ -109,7 +116,14 @@ class LegalDocument extends Model
      */
     public function getAbstractFileAttribute()
     {
-        return $this->abstract_file_path ? \Illuminate\Support\Facades\Storage::disk('public')->url($this->abstract_file_path) : null;
+        if (!$this->abstract_file_path) return null;
+
+        // Safety check
+        if (!\Illuminate\Support\Facades\Storage::disk('public')->exists($this->abstract_file_path)) {
+            return null;
+        }
+
+        return \Illuminate\Support\Facades\Storage::disk('public')->url($this->abstract_file_path);
     }
 
     /**

@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense, lazy } from 'react';
 import { Link } from '@inertiajs/react';
 import PageHeader from '@/Components/PageHeader';
-import IKMSurveyModal from '@/Components/IKMSurveyModal';
 import AccessibilityWidget from '@/Components/AccessibilityWidget';
+
+// ⚡ Lazy load: modal IKM tidak perlu diparse di setiap halaman saat load awal
+const IKMSurveyModal = lazy(() => import('@/Components/IKMSurveyModal'));
 import {
     ChevronDown, Menu, X, Phone, Mail, MapPin,
     ExternalLink, Building2, Globe, Shield, Landmark, BookOpen, Users,
@@ -112,8 +114,6 @@ const NAV_ITEMS = [
             },
             { label: 'RANHAM', href: '/ranham' },
             { label: 'Risalah Rapat', href: '/risalah-rapat' },
-            { label: 'Monografi Hukum', href: '/monografi-hukum' },
-            { label: 'Buku Hukum', href: '/buku-hukum' },
         ]
     },
     { label: 'Artikel Hukum', href: '/artikel-bidang-hukum' },
@@ -430,7 +430,9 @@ export default function PublicLayout({ children, user }: PublicLayoutProps) {
                 </div>
             </div>
             <Footer />
-            <IKMSurveyModal />
+            <Suspense fallback={null}>
+                <IKMSurveyModal />
+            </Suspense>
             <AccessibilityWidget />
         </div>
     );

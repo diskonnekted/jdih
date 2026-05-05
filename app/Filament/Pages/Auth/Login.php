@@ -6,6 +6,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Auth\Pages\Login as BaseLogin;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\App;
 use Filament\Notifications\Notification;
 use Illuminate\Validation\ValidationException;
 
@@ -15,8 +16,8 @@ class Login extends BaseLogin
     {
         parent::mount();
 
-        // Generate captcha on mount
-        if (!Session::has('captcha_answer')) {
+        // Skip captcha di environment lokal
+        if (!App::isLocal() && !Session::has('captcha_answer')) {
             $this->generateCaptcha();
         }
     }
@@ -29,6 +30,15 @@ class Login extends BaseLogin
 
     public function form(Schema $schema): Schema
     {
+        // Di lokal: hanya tampilkan email & password tanpa captcha
+        if (App::isLocal()) {
+            return $schema->components([
+                $this->getEmailFormComponent(),
+                $this->getPasswordFormComponent(),
+                $this->getRememberFormComponent(),
+            ]);
+        }
+
         if (!Session::has('captcha_question')) {
             $this->generateCaptcha();
         }
@@ -50,19 +60,20 @@ class Login extends BaseLogin
 
     protected function getCredentialsFromFormData(array $data): array
     {
-        // Validate captcha before proceeding to authentication
-        if ((int)$data['captcha'] !== (int)Session::get('captcha_answer')) {
-            // Regenerate captcha for next attempt
-            $this->generateCaptcha();
-            
-            throw ValidationException::withMessages([
-                'data.captcha' => 'Jawaban captcha salah. Silakan coba lagi.',
-            ]);
+        // Bypass validasi captcha di lokal
+        if (!App::isLocal()) {
+            if ((int)($data['captcha'] ?? -1) !== (int)Session::get('captcha_answer')) {
+                $this->generateCaptcha();
+                throw ValidationException::withMessages([
+                    'data.captcha' => 'Jawaban captcha salah. Silakan coba lagi.',
+                ]);
+            }
         }
 
         return [
-            'email' => $data['email'],
+            'email'    => $data['email'],
             'password' => $data['password'],
         ];
     }
 }
+

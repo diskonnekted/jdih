@@ -7,4 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class ProfileItem extends Model
 {
     protected $fillable = ['title', 'slug', 'content', 'image_path', 'sort_order'];
+
+    protected $casts = [
+        'content' => 'array',
+    ];
 }
+
