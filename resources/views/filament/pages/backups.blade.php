@@ -1,65 +1,58 @@
 <x-filament-panels::page>
-    <div class="space-y-4">
+    <div style="display:flex; flex-direction:column; gap:1rem;">
 
         {{-- Header Info --}}
-        <div class="fi-section rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 p-6">
-            <div class="flex items-start gap-4">
-                <div class="flex-shrink-0 p-3 bg-primary-50 dark:bg-primary-900/20 rounded-lg">
-                    <x-heroicon-o-circle-stack class="w-8 h-8 text-primary-600 dark:text-primary-400" />
-                </div>
-                <div>
-                    <h2 class="text-base font-semibold text-gray-950 dark:text-white">Backup & Snapshot Database</h2>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                        Backup otomatis berjalan setiap hari pukul 02:00 WIB dan disimpan selama 30 hari.
-                        File backup disimpan di <code class="text-xs bg-gray-100 dark:bg-gray-800 px-1 rounded">storage/app/backups/</code>
-                    </p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                        Total backup tersimpan: <strong class="text-gray-900 dark:text-white">{{ count($backups) }}</strong> file
-                    </p>
-                </div>
+        <div style="background:var(--fi-bg); border:1px solid color-mix(in srgb,currentColor 10%,transparent); border-radius:.75rem; padding:1.5rem; display:flex; gap:1rem; align-items:flex-start;">
+            <div style="font-size:2rem; flex-shrink:0;">🗄️</div>
+            <div>
+                <h2 style="font-size:1rem; font-weight:600; margin:0 0 .25rem;">Backup & Snapshot Database</h2>
+                <p style="font-size:.875rem; color:var(--fi-color-gray-500); margin:0 0 .25rem;">
+                    Backup otomatis berjalan setiap hari pukul <strong>02:00 WIB</strong> dan disimpan selama <strong>30 hari</strong>.
+                    File tersimpan di <code style="font-size:.75rem; background:rgba(0,0,0,.1); padding:.1rem .3rem; border-radius:.25rem;">storage/app/backups/</code>
+                </p>
+                <p style="font-size:.875rem; color:var(--fi-color-gray-500); margin:0;">
+                    Total backup: <strong>{{ count($backups) }}</strong> file
+                </p>
             </div>
         </div>
 
         {{-- Backup List --}}
         @if(count($backups) === 0)
-            <div class="fi-section rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 p-8 text-center">
-                <x-heroicon-o-inbox class="w-12 h-12 mx-auto text-gray-300 dark:text-gray-600 mb-3" />
-                <p class="text-gray-500 dark:text-gray-400">Belum ada backup. Klik <strong>Buat Backup Sekarang</strong> untuk membuat snapshot pertama.</p>
+            <div style="background:var(--fi-bg); border:1px solid color-mix(in srgb,currentColor 10%,transparent); border-radius:.75rem; padding:3rem; text-align:center;">
+                <div style="font-size:3rem; margin-bottom:.75rem;">📭</div>
+                <p style="color:var(--fi-color-gray-500); margin:0;">
+                    Belum ada backup. Klik <strong>Buat Backup Sekarang</strong> untuk membuat snapshot pertama.
+                </p>
             </div>
         @else
-            <div class="fi-section rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 overflow-hidden">
-                <table class="w-full text-sm">
-                    <thead class="bg-gray-50 dark:bg-gray-800">
-                        <tr>
-                            <th class="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">Nama File</th>
-                            <th class="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">Ukuran</th>
-                            <th class="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">Dibuat</th>
-                            <th class="px-4 py-3 text-right font-medium text-gray-600 dark:text-gray-400">Aksi</th>
+            <div style="background:var(--fi-bg); border:1px solid color-mix(in srgb,currentColor 10%,transparent); border-radius:.75rem; overflow:hidden;">
+                <table style="width:100%; border-collapse:collapse; font-size:.875rem;">
+                    <thead>
+                        <tr style="background:rgba(0,0,0,.05);">
+                            <th style="padding:.75rem 1rem; text-align:left; font-weight:500; color:var(--fi-color-gray-500);">📄 Nama File</th>
+                            <th style="padding:.75rem 1rem; text-align:left; font-weight:500; color:var(--fi-color-gray-500);">Ukuran</th>
+                            <th style="padding:.75rem 1rem; text-align:left; font-weight:500; color:var(--fi-color-gray-500);">Dibuat</th>
+                            <th style="padding:.75rem 1rem; text-align:right; font-weight:500; color:var(--fi-color-gray-500);">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
-                        @foreach($backups as $backup)
-                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
-                                <td class="px-4 py-3">
-                                    <div class="flex items-center gap-2">
-                                        <x-heroicon-o-document-arrow-down class="w-4 h-4 text-gray-400 flex-shrink-0" />
-                                        <span class="font-mono text-xs text-gray-700 dark:text-gray-300">{{ $backup['name'] }}</span>
-                                    </div>
-                                </td>
-                                <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ $backup['size'] }}</td>
-                                <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ $backup['created'] }}</td>
-                                <td class="px-4 py-3 text-right">
-                                    <div class="flex items-center justify-end gap-2">
-                                        <a wire:click="downloadBackup('{{ $backup['name'] }}')"
-                                           class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-lg bg-primary-50 text-primary-700 hover:bg-primary-100 dark:bg-primary-900/20 dark:text-primary-400 cursor-pointer transition">
-                                            <x-heroicon-m-arrow-down-tray class="w-3.5 h-3.5" />
-                                            Unduh
-                                        </a>
-                                        <button wire:click="deleteBackup('{{ $backup['name'] }}')"
-                                                wire:confirm="Hapus backup {{ $backup['name'] }}?"
-                                                class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-lg bg-danger-50 text-danger-700 hover:bg-danger-100 dark:bg-danger-900/20 dark:text-danger-400 transition">
-                                            <x-heroicon-m-trash class="w-3.5 h-3.5" />
-                                            Hapus
+                    <tbody>
+                        @foreach($backups as $i => $backup)
+                            <tr style="border-top:1px solid color-mix(in srgb,currentColor 8%,transparent);">
+                                <td style="padding:.75rem 1rem; font-family:monospace; font-size:.75rem;">{{ $backup['name'] }}</td>
+                                <td style="padding:.75rem 1rem; color:var(--fi-color-gray-500);">{{ $backup['size'] }}</td>
+                                <td style="padding:.75rem 1rem; color:var(--fi-color-gray-500);">{{ $backup['created'] }}</td>
+                                <td style="padding:.75rem 1rem; text-align:right;">
+                                    <div style="display:flex; gap:.5rem; justify-content:flex-end;">
+                                        <button
+                                            wire:click="downloadBackup('{{ $backup['name'] }}')"
+                                            style="display:inline-flex; align-items:center; gap:.25rem; padding:.375rem .75rem; font-size:.75rem; font-weight:500; border-radius:.5rem; background:rgba(16,185,129,.1); color:#059669; border:none; cursor:pointer;">
+                                            ⬇ Unduh
+                                        </button>
+                                        <button
+                                            wire:click="deleteBackup('{{ $backup['name'] }}')"
+                                            wire:confirm="Hapus backup {{ $backup['name'] }}?"
+                                            style="display:inline-flex; align-items:center; gap:.25rem; padding:.375rem .75rem; font-size:.75rem; font-weight:500; border-radius:.5rem; background:rgba(239,68,68,.1); color:#dc2626; border:none; cursor:pointer;">
+                                            🗑 Hapus
                                         </button>
                                     </div>
                                 </td>
@@ -70,17 +63,17 @@
             </div>
         @endif
 
-        {{-- SOP Info --}}
-        <div class="fi-section rounded-xl bg-amber-50 dark:bg-amber-900/10 ring-1 ring-amber-200 dark:ring-amber-800 p-5">
-            <h3 class="text-sm font-semibold text-amber-800 dark:text-amber-400 mb-2 flex items-center gap-2">
-                <x-heroicon-o-clock class="w-4 h-4" /> Jadwal Backup Otomatis
-            </h3>
-            <ul class="text-sm text-amber-700 dark:text-amber-300 space-y-1 list-disc list-inside">
-                <li>Backup harian: setiap hari pukul <strong>02:00 WIB</strong></li>
-                <li>Retensi: <strong>30 hari</strong> (backup lebih lama dihapus otomatis)</li>
+        {{-- SOP Cron Job --}}
+        <div style="background:rgba(245,158,11,.08); border:1px solid rgba(245,158,11,.3); border-radius:.75rem; padding:1.25rem;">
+            <h3 style="font-size:.875rem; font-weight:600; color:#b45309; margin:0 0 .5rem; display:flex; align-items:center; gap:.5rem;">⏰ Jadwal Backup Otomatis</h3>
+            <ul style="font-size:.875rem; color:#92400e; margin:0; padding-left:1.25rem; line-height:1.75;">
+                <li>Backup harian setiap pukul <strong>02:00 WIB</strong></li>
+                <li>Retensi: <strong>30 hari</strong> (lebih lama dihapus otomatis)</li>
                 <li>Format: <strong>SQL terkompresi (.gz)</strong></li>
-                <li>Untuk mengaktifkan jadwal otomatis, tambahkan cron job di server:<br>
-                    <code class="text-xs bg-amber-100 dark:bg-amber-900 px-2 py-1 rounded mt-1 inline-block">* * * * * php /path/to/artisan schedule:run >> /dev/null 2>&1</code>
+                <li>Aktifkan scheduler — tambah ke <strong>crontab</strong> server:<br>
+                    <code style="display:inline-block; margin-top:.25rem; font-size:.75rem; background:rgba(0,0,0,.1); padding:.25rem .5rem; border-radius:.25rem; font-family:monospace;">
+                        * * * * * php /home/rapidnet-jdih/htdocs/jdih.rapidnet.id/artisan schedule:run >> /dev/null 2>&1
+                    </code>
                 </li>
             </ul>
         </div>
