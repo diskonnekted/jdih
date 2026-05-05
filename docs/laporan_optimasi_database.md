@@ -1,11 +1,11 @@
-# LAPORAN OPTIMASI DATABASE
+﻿# LAPORAN OPTIMASI DATABASE
 ## Portal JDIH Kabupaten Banjarnegara
-### Migrasi & Penguatan Sistem Basis Data — 2026
+### Migrasi & Penguatan Sistem Basis Data 2026
 
 ---
 
 > **Kepada Yth.:** Kepala Bagian Hukum Setda Kab. Banjarnegara
-> **Dari:** Tim Exadata — Divisi App, Clasnet Group
+> **Dari:** Tim Exadata Divisi App, Clasnet Group
 > **Tanggal:** 5 Mei 2026 | **No. Dok:** EXD/JDIH/DB/2026/003
 
 ---
@@ -28,14 +28,14 @@ Sistem database lama menggunakan engine **MySQL MyISAM** yang memiliki keterbata
 
 | Fitur | MyISAM (Lama) | InnoDB (Baru) |
 |-------|:---:|:---:|
-| Transaksi ACID | ❌ | ✅ |
-| Foreign Key | ❌ | ✅ |
-| Row-level Locking | ❌ (table-lock) | ✅ |
-| Crash Recovery | ❌ Risiko korupsi | ✅ Otomatis |
-| Full-text Search | ✅ | ✅ |
-| Performa Read | ⚡ Cepat | ✅ Setara |
-| Performa Write | ❌ Lambat (lock) | ✅ Lebih baik |
-| Integritas Data | ❌ Tidak terjamin | ✅ Terjamin |
+| Transaksi ACID | | |
+| Foreign Key | | |
+| Row-level Locking | (table-lock) | |
+| Crash Recovery | Risiko korupsi | Otomatis |
+| Full-text Search | | |
+| Performa Read | Cepat | Setara |
+| Performa Write | Lambat (lock) | Lebih baik |
+| Integritas Data | Tidak terjamin | Terjamin |
 
 ### 2.2 Dampak Perubahan Engine
 
@@ -73,17 +73,17 @@ flowchart TD
 | `categories` | Jenis produk hukum | 30 |
 | `legal_documents` | Produk hukum utama | 1.515 |
 | `legal_decisions` | Putusan pengadilan | 5 |
-| `legal_document_relations` | Relasi antar dokumen | — |
+| `legal_document_relations` | Relasi antar dokumen | |
 | `news` | Berita & artikel | 48 |
 | `users` | Admin pengelola | 1 |
-| `activity_logs` | Audit trail admin | — |
-| `comments` | Komentar dokumen | — |
-| `surveys` | Survei kepuasan | — |
-| `public_dialogues` | Dialog publik | — |
-| `gallery_items` | Galeri foto | — |
-| `banners` | Banner beranda | — |
-| `infographics` | Infografis | — |
-| `video_contents` | Konten video | — |
+| `activity_logs` | Audit trail admin | |
+| `comments` | Komentar dokumen | |
+| `surveys` | Survei kepuasan | |
+| `public_dialogues` | Dialog publik | |
+| `gallery_items` | Galeri foto | |
+| `banners` | Banner beranda | |
+| `infographics` | Infografis | |
+| `video_contents` | Konten video | |
 
 ---
 
@@ -185,8 +185,8 @@ flowchart TD
 |---------|--------|
 | **Frekuensi** | Harian 02:00 WIB (otomatis via cron) |
 | **Format** | `.sql.gz` (terkompresi gzip level 9) |
-| **Retensi** | 30 hari (lebih lama → hapus otomatis) |
-| **Pemicu manual** | Admin → menu *Sistem → Backup Database* |
+| **Retensi** | 30 hari (lebih lama hapus otomatis) |
+| **Pemicu manual** | Admin menu *Sistem Backup Database* |
 | **Verifikasi** | Ukuran file > 100 KB (validasi konten) |
 | **Log** | Tercatat di `activity_logs` setiap backup |
 
@@ -201,7 +201,7 @@ gunzip backup_jdih_20260505_020000_harian.sql.gz
 mysql -u [username] -p [database_name] < backup_jdih_20260505_020000_harian.sql
 
 # 4. Verifikasi
-mysql -u [username] -p -e "SELECT COUNT(*) FROM legal_documents;" [database_name]
+mysql -u [username] -p -e"SELECT COUNT(*) FROM legal_documents;" [database_name]
 ```
 
 ---
@@ -211,9 +211,7 @@ mysql -u [username] -p -e "SELECT COUNT(*) FROM legal_documents;" [database_name
 ### 7.1 Status Dokumen Hukum
 
 ```mermaid
-pie title Status File PDF (1.515 Dokumen)
-    "File PDF Tersedia (1.429)" : 1429
-    "Menunggu Digitalisasi (86)" : 86
+pie title Status File PDF (1.515 Dokumen)"File PDF Tersedia (1.429)" : 1429"Menunggu Digitalisasi (86)" : 86
 ```
 
 ### 7.2 Audit Trail dengan Activity Log
@@ -235,12 +233,12 @@ flowchart TD
 
 | Prioritas | Item | Target |
 |-----------|------|--------|
-| 🔴 Segera | Aktifkan cron job di server | 1 hari |
-| 🔴 Segera | Upload ulang 86 dokumen digitalisasi | 30 hari |
-| 🟡 Sedang | Sinkronisasi backup ke Google Drive/S3 | 1 bulan |
-| 🟡 Sedang | Implementasi database connection pooling | 3 bulan |
-| 🟢 Rendah | Analisis slow query log berkala | Berkelanjutan |
-| 🟢 Rendah | Pertimbangkan read replica untuk beban tinggi | 6 bulan |
+| Segera | Aktifkan cron job di server | 1 hari |
+| Segera | Upload ulang 86 dokumen digitalisasi | 30 hari |
+| Sedang | Sinkronisasi backup ke Google Drive/S3 | 1 bulan |
+| Sedang | Implementasi database connection pooling | 3 bulan |
+| Rendah | Analisis slow query log berkala | Berkelanjutan |
+| Rendah | Pertimbangkan read replica untuk beban tinggi | 6 bulan |
 
 ---
 
@@ -253,8 +251,8 @@ Migrasi dan optimasi database Portal JDIH Banjarnegara dari MyISAM ke InnoDB tel
 | Disusun Oleh | Diverifikasi Oleh |
 |:---:|:---:|
 | **Tim Exadata** | **Kepala Bagian Hukum** |
-| Divisi App — Clasnet Group | Setda Kab. Banjarnegara |
+| Divisi App Clasnet Group | Setda Kab. Banjarnegara |
 | *(Tanda Tangan)* | *(Tanda Tangan & Cap Dinas)* |
 
 ---
-*© 2026 Clasnet Group / Exadata Divisi App — Dokumen Resmi*
+* 2026 Clasnet Group / Exadata Divisi App Dokumen Resmi*

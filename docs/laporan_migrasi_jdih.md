@@ -1,13 +1,13 @@
-# LAPORAN RESMI MIGRASI SISTEM
+﻿# LAPORAN RESMI MIGRASI SISTEM
 ## Portal Jaringan Dokumentasi dan Informasi Hukum (JDIH)
-### Kabupaten Banjarnegara — Tahun Anggaran 2026
+### Kabupaten Banjarnegara Tahun Anggaran 2026
 
 ---
 
 > **Kepada Yth.:** Kepala Bagian Hukum Sekretariat Daerah Kabupaten Banjarnegara
-> **Dari:** Tim Exadata — Divisi App, Clasnet Group
+> **Dari:** Tim Exadata Divisi App, Clasnet Group
 > **Tanggal:** 5 Mei 2026 | **No. Dok:** EXD/JDIH/MIG/2026/001
-> **Sifat:** Resmi — Internal Pemerintah
+> **Sifat:** Resmi Internal Pemerintah
 
 ---
 
@@ -27,26 +27,26 @@ Portal JDIH Kabupaten Banjarnegara telah berhasil dimigrasikan dari sistem lama 
 
 ```mermaid
 flowchart TD
-    A["🗄️ Sistem Lama\nPHP Native + MyISAM"] -->|Migrasi & Refaktorisasi| B["🚀 Sistem Baru\nLaravel 11 + InnoDB"]
-    B --> C["🔒 Keamanan ↑"]
-    B --> D["⚡ Performa ↑"]
-    B --> E["📱 Aksesibilitas ↑"]
-    B --> F["🔗 Integrasi JDIHN ↑"]
+    A["Sistem Lama\nPHP Native + MyISAM"] -->|Migrasi & Refaktorisasi| B["Sistem Baru\nLaravel 11 + InnoDB"]
+    B --> C["Keamanan"]
+    B --> D["Performa"]
+    B --> E["Aksesibilitas"]
+    B --> F["Integrasi JDIHN"]
 ```
 
 ### 2.2 Arsitektur Teknis Sistem Baru
 
 ```mermaid
 graph TD
-    User["👤 Pengguna / Browser"] --> Nginx["🌐 Nginx + TLS 1.3\n+ CSP Headers\n+ HSTS"]
-    Nginx --> Laravel["⚙️ Laravel 11\nApplication Layer"]
-    Laravel --> Frontend["🖥️ Inertia.js + React\nFrontend"]
-    Laravel --> Admin["🛡️ Filament v3\nAdmin Panel"]
-    Laravel --> API["🔌 RESTful API\nJWT Auth"]
-    Laravel --> DB["🗄️ MySQL InnoDB\nACID Compliant"]
-    Laravel --> Storage["📁 Storage\nPDF, Gambar, Video"]
-    Admin --> LogAktivitas["📋 Audit Log\nSemua Aktivitas Admin"]
-    Admin --> Backup["💾 Backup Database\nHarian 02:00 WIB"]
+    User["Pengguna / Browser"] --> Nginx["Nginx + TLS 1.3\n+ CSP Headers\n+ HSTS"]
+    Nginx --> Laravel["Laravel 11\nApplication Layer"]
+    Laravel --> Frontend["Inertia.js + React\nFrontend"]
+    Laravel --> Admin["Filament v3\nAdmin Panel"]
+    Laravel --> API["RESTful API\nJWT Auth"]
+    Laravel --> DB["MySQL InnoDB\nACID Compliant"]
+    Laravel --> Storage["Storage\nPDF, Gambar, Video"]
+    Admin --> LogAktivitas["Audit Log\nSemua Aktivitas Admin"]
+    Admin --> Backup["Backup Database\nHarian 02:00 WIB"]
 ```
 
 ---
@@ -55,17 +55,17 @@ graph TD
 
 | Aspek | Sistem Lama | Sistem Baru | Status |
 |-------|-------------|-------------|--------|
-| **Framework** | PHP Native + Metronic 8 | Laravel 11 + React + Filament v3 | ✅ |
-| **Database Engine** | MySQL MyISAM | MySQL InnoDB (ACID) | ✅ |
-| **Keamanan XSS** | Terdeteksi payload aktif | CSP + ORM + Sanitasi | ✅ |
-| **Captcha Login** | Statis (selalu 5+5=10) | Acak, kadaluarsa 5 menit | ✅ |
-| **Header Server** | X-Powered-By terekspos | Disembunyikan (2 layer) | ✅ |
-| **Tampilan** | Statis, berat | Responsif, mobile-first | ✅ |
-| **Manajemen File** | Path manual absolut | Storage terstruktur | ✅ |
-| **API Integrasi** | Tidak ada | RESTful API + JWT | ✅ |
-| **Audit Log** | Tidak ada | Log semua aktivitas admin | ✅ |
-| **Backup Database** | Manual/tidak terjadwal | Otomatis harian + UI admin | ✅ |
-| **Ukuran Logo** | 226 KB PNG | 29 KB WebP (hemat 87%) | ✅ |
+| **Framework** | PHP Native + Metronic 8 | Laravel 11 + React + Filament v3 | |
+| **Database Engine** | MySQL MyISAM | MySQL InnoDB (ACID) | |
+| **Keamanan XSS** | Terdeteksi payload aktif | CSP + ORM + Sanitasi | |
+| **Captcha Login** | Statis (selalu 5+5=10) | Acak, kadaluarsa 5 menit | |
+| **Header Server** | X-Powered-By terekspos | Disembunyikan (2 layer) | |
+| **Tampilan** | Statis, berat | Responsif, mobile-first | |
+| **Manajemen File** | Path manual absolut | Storage terstruktur | |
+| **API Integrasi** | Tidak ada | RESTful API + JWT | |
+| **Audit Log** | Tidak ada | Log semua aktivitas admin | |
+| **Backup Database** | Manual/tidak terjadwal | Otomatis harian + UI admin | |
+| **Ukuran Logo** | 226 KB PNG | 29 KB WebP (hemat 87%) | |
 
 ---
 
@@ -79,7 +79,7 @@ graph TD
 | File PDF tersedia | **1.429 (94,3%)** |
 | Dalam proses digitalisasi | 86 dokumen |
 | Kategori/Jenis | 30 kategori |
-| Rentang Tahun | 1913 — 2026 |
+| Rentang Tahun | 1913 2026 |
 | Putusan Hukum | 5 putusan |
 | Berita & Artikel | 48 berita |
 
@@ -87,11 +87,11 @@ graph TD
 
 ```mermaid
 flowchart TD
-    A["📂 Database Lama\nMyISAM"] --> B["🔍 Audit & Sanitasi XSS\n1.247 entri dibersihkan"]
-    B --> C["🔄 Konversi Schema\nMyISAM → InnoDB"]
-    C --> D["🗂️ Rekonsiliasi File Path\n225 lokal + 75 server diperbaiki"]
-    D --> E["✅ Validasi Integritas\nChecksum MD5/SHA-256"]
-    E --> F["🚀 Database Baru\nInnoDB + Backup Otomatis"]
+    A["Database Lama\nMyISAM"] --> B["Audit & Sanitasi XSS\n1.247 entri dibersihkan"]
+    B --> C["Konversi Schema\nMyISAM InnoDB"]
+    C --> D["Rekonsiliasi File Path\n225 lokal + 75 server diperbaiki"]
+    D --> E["Validasi Integritas\nChecksum MD5/SHA-256"]
+    E --> F["Database Baru\nInnoDB + Backup Otomatis"]
 ```
 
 ---
@@ -100,15 +100,15 @@ flowchart TD
 
 | No | Fitur | Status |
 |----|-------|--------|
-| 1 | **Asisten AI 24/7** (Groq API) | ✅ Aktif |
-| 2 | **Dialog Publik** (aspirasi warga) | ✅ Aktif |
-| 3 | **Konsultasi Hukum Online** | ✅ Aktif |
-| 4 | **Integrasi API Desa** (real-time) | ✅ Aktif |
-| 5 | **Pencarian Universal** | ✅ Aktif |
-| 6 | **Dashboard Statistik** | ✅ Aktif |
-| 7 | **Print Laporan Admin** | ✅ Aktif |
-| 8 | **Audit Log Aktivitas Admin** | ✅ Baru |
-| 9 | **Backup Database + UI Admin** | ✅ Baru |
+| 1 | **Asisten AI 24/7** (Groq API) | Aktif |
+| 2 | **Dialog Publik** (aspirasi warga) | Aktif |
+| 3 | **Konsultasi Hukum Online** | Aktif |
+| 4 | **Integrasi API Desa** (real-time) | Aktif |
+| 5 | **Pencarian Universal** | Aktif |
+| 6 | **Dashboard Statistik** | Aktif |
+| 7 | **Print Laporan Admin** | Aktif |
+| 8 | **Audit Log Aktivitas Admin** | Baru |
+| 9 | **Backup Database + UI Admin** | Baru |
 
 ---
 
@@ -117,18 +117,18 @@ flowchart TD
 ```mermaid
 gantt
     title Roadmap Tindak Lanjut JDIH 2026
-    dateFormat  YYYY-MM-DD
+    dateFormat YYYY-MM-DD
     section Segera (0-30 hari)
-    Upload ulang 86 dokumen    :a1, 2026-05-06, 30d
-    Aktifkan cron job backup   :a2, 2026-05-06, 7d
-    Bimtek operator admin      :a3, 2026-05-10, 20d
+    Upload ulang 86 dokumen :a1, 2026-05-06, 30d
+    Aktifkan cron job backup :a2, 2026-05-06, 7d
+    Bimtek operator admin :a3, 2026-05-10, 20d
     section Menengah (1-6 bulan)
-    Upload abstrak PDF Perda   :b1, 2026-06-01, 60d
-    Validasi status dokumen    :b2, 2026-06-15, 45d
+    Upload abstrak PDF Perda :b1, 2026-06-01, 60d
+    Validasi status dokumen :b2, 2026-06-15, 45d
     section Strategis (>6 bulan)
-    Aplikasi Mobile JDIH       :c1, 2026-12-01, 90d
+    Aplikasi Mobile JDIH :c1, 2026-12-01, 90d
     Integrasi Digital Signature:c2, 2026-12-01, 60d
-    OCR dokumen scan lama      :c3, 2027-01-01, 90d
+    OCR dokumen scan lama :c3, 2027-01-01, 90d
 ```
 
 ---
@@ -142,8 +142,8 @@ Proses migrasi Portal JDIH Kabupaten Banjarnegara Tahun Anggaran 2026 telah dila
 | Disusun Oleh | Diverifikasi Oleh |
 |:---:|:---:|
 | **Tim Exadata** | **Kepala Bagian Hukum** |
-| Divisi App — Clasnet Group | Setda Kab. Banjarnegara |
+| Divisi App Clasnet Group | Setda Kab. Banjarnegara |
 | *(Tanda Tangan)* | *(Tanda Tangan & Cap Dinas)* |
 
 ---
-*© 2026 Clasnet Group / Exadata Divisi App — Dokumen Resmi*
+* 2026 Clasnet Group / Exadata Divisi App Dokumen Resmi*
