@@ -573,11 +573,19 @@ Route::prefix('mobile')->group(function () {
         $videos = \Illuminate\Support\Facades\Cache::remember('home.videos', 600, fn() =>
             \App\Models\VideoContent::latest()->take(3)->get()->map(fn($v)=>['id'=>$v->id,'title'=>$v->title,'href'=>$v->video_url,'image'=>$v->thumbnail_path?'/storage/'.$v->thumbnail_path:null])
         );
+        $infographics = \Illuminate\Support\Facades\Cache::remember('home.infographics', 600, function () {
+            return \App\Models\Infographic::latest()->take(5)->get()
+                ->map(fn($i) => [
+                    'id'    => $i->id,
+                    'title' => $i->title,
+                    'image' => $i->image_path ? (\Illuminate\Support\Str::startsWith($i->image_path, 'infographics/') ? '/storage/'.$i->image_path : $i->image_path) : null,
+                ]);
+        });
         return Inertia::render('Mobile/Home', [
             'latestNews'   => $latestNews,
             'latestDocs'   => $latestDocs,
             'videos'       => $videos,
-            'infographics' => [],
+            'infographics' => $infographics,
             'relatedLinks' => [],
             'stats'        => ['total'=>array_sum($counts),'perda'=>$counts['Peraturan Daerah']??0,'perbup'=>$counts['Peraturan Bupati']??0],
         ]);
