@@ -179,34 +179,33 @@ function Hero({ banners = [] }: { banners?: any[] }) {
                                 transition={{ duration: 0.5 }}
                             >
                                 <div className="inline-block bg-[#0d9488] text-white text-xs font-bold px-4 py-1.5 rounded mb-6 tracking-widest uppercase">
-                                    Jaringan Dokumentasi &amp; Informasi Hukum
+                                    {displayBanners[currentIndex].subtitle || 'Jaringan Dokumentasi & Informasi Hukum'}
                                 </div>
-                                <h1 className="text-4xl md:text-5xl font-bold text-white mb-5 leading-tight">
-                                    {displayBanners[currentIndex].title.includes('Banjarnegara') 
-                                        ? displayBanners[currentIndex].title 
-                                        : <>Portal Produk Hukum<br /><span className="text-[#0d9488]">Kabupaten Banjarnegara</span></>
-                                    }
+                                <h1 className="text-4xl md:text-5xl font-bold text-white mb-5 leading-tight whitespace-pre-line">
+                                    {displayBanners[currentIndex].title || <>Portal Produk Hukum<br /><span className="text-[#0d9488]">Kabupaten Banjarnegara</span></>}
                                 </h1>
                                 <p className="text-slate-300 text-base leading-relaxed mb-8 max-w-md">
-                                    Akses mudah ke database Peraturan Daerah, Peraturan Bupati, Keputusan Bupati, dan produk hukum lainnya secara transparan dan terkini.
+                                    {displayBanners[currentIndex].description || 'Akses mudah ke database Peraturan Daerah, Peraturan Bupati, Keputusan Bupati, dan produk hukum lainnya secara transparan dan terkini.'}
                                 </p>
                             </motion.div>
                         </AnimatePresence>
 
                         {/* Mini stats */}
-                        <div className="grid grid-cols-2 gap-4">
-                            {STATS.map((s) => (
-                                <div key={s.label} className="flex items-center gap-3">
-                                    <div className="h-10 w-10 bg-[#0d9488]/20 rounded-lg flex items-center justify-center shrink-0">
-                                        <s.icon className="h-5 w-5 text-[#0d9488]" />
+                        {displayBanners[currentIndex].show_stats !== false && (
+                            <div className="grid grid-cols-2 gap-4">
+                                {STATS_DYNAMIC.map((s) => (
+                                    <div key={s.label} className="flex items-center gap-3">
+                                        <div className="h-10 w-10 bg-[#0d9488]/20 rounded-lg flex items-center justify-center shrink-0">
+                                            <s.icon className="h-5 w-5 text-[#0d9488]" />
+                                        </div>
+                                        <div>
+                                            <div className="text-xl font-bold text-white leading-none">{s.value}</div>
+                                            <div className="text-xs text-slate-400">{s.label}</div>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <div className="text-xl font-bold text-white leading-none">{s.value}</div>
-                                        <div className="text-xs text-slate-400">{s.label}</div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     {/* ── RIGHT: Search Form Panel ── */}

@@ -82,8 +82,11 @@ Route::get('/', function () {
         return \App\Models\Banner::where('is_active', true)->orderBy('sort_order', 'asc')->get()->map(fn($b) => [
             'id' => $b->id,
             'title' => $b->title,
+            'subtitle' => $b->subtitle,
+            'description' => $b->description,
             'image' => '/storage/' . $b->image_path,
-            'url' => $b->url
+            'url' => $b->url,
+            'show_stats' => $b->show_stats
         ]);
     });
 
