@@ -157,6 +157,26 @@ Route::get('/', function () {
         ->orderBy('created_at', 'desc')
         ->get();
 
+    // Deteksi Mobile secara sederhana via User-Agent
+    $userAgent = request()->header('User-Agent', '');
+    $isMobile = preg_match('/Mobile|Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i', $userAgent);
+
+    if ($isMobile) {
+        return Inertia::render('Mobile/Home', [
+            'latestNews'      => $latestNews,
+            'infographics'    => $infographics,
+            'latestDocs'      => $latestDocs,
+            'videos'          => $videos,
+            'banners'         => $banners,
+            'publicDialogues' => $publicDialogues,
+            'stats' => [
+                'total' => $totalViews,
+                'perda' => $counts['Peraturan Daerah'] ?? 0,
+                'perbup' => $counts['Peraturan Bupati'] ?? 0,
+            ]
+        ]);
+    }
+
     return Inertia::render('Welcome', [
         'canLogin'       => Route::has('login'),
         'canRegister'    => Route::has('register'),
