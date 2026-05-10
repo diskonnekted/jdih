@@ -148,7 +148,7 @@ function Hero({ banner }: { banner?: any }) {
                             <span className="text-[#0d9488]">Kabupaten Banjarnegara</span>
                         </h1>
                         <p className="text-slate-300 text-base leading-relaxed mb-8 max-w-md">
-                            Akses mudah ke database peraturan daerah, keputusan bupati, dan produk hukum lainnya secara transparan dan terkini.
+                            Akses mudah ke database Peraturan Daerah, Peraturan Bupati, Keputusan Bupati, dan produk hukum lainnya secara transparan dan terkini.
                         </p>
 
                         {/* Mini stats */}
@@ -684,7 +684,7 @@ export default function Welcome({
                                 <span className="text-[#0d9488]">Kabupaten Banjarnegara</span>
                             </h1>
                             <p className="text-slate-300 text-base leading-relaxed mb-8 max-w-md">
-                                Akses mudah ke database peraturan daerah, keputusan bupati, dan produk hukum lainnya secara transparan dan terkini.
+                                Akses mudah ke database Peraturan Daerah, Peraturan Bupati, Keputusan Bupati, dan produk hukum lainnya secara transparan dan terkini.
                             </p>
                             <div className="grid grid-cols-2 gap-4">
                                 {STATS_DYNAMIC.map((s) => (
