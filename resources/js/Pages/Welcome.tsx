@@ -99,7 +99,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 /* ------------------------------------------------------------------ */
 /* HERO  –  Slider with dynamic banners                               */
 /* ------------------------------------------------------------------ */
-function Hero({ banners = [] }: { banners?: any[] }) {
+function Hero({ banners = [], stats = [] }: { banners?: any[], stats?: any[] }) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isHovered, setIsHovered] = useState(false);
 
@@ -107,7 +107,10 @@ function Hero({ banners = [] }: { banners?: any[] }) {
     const displayBanners = banners.length > 0 ? banners : [{
         image: '/images/hero.webp',
         title: 'Jaringan Dokumentasi & Informasi Hukum',
-        url: null
+        url: null,
+        subtitle: 'Portal Resmi',
+        description: 'Akses mudah ke database Peraturan Daerah, Peraturan Bupati, Keputusan Bupati, dan produk hukum lainnya secara transparan dan terkini.',
+        show_stats: true
     }];
 
     useEffect(() => {
@@ -193,7 +196,7 @@ function Hero({ banners = [] }: { banners?: any[] }) {
                         {/* Mini stats */}
                         {displayBanners[currentIndex].show_stats !== false && (
                             <div className="grid grid-cols-2 gap-4">
-                                {STATS_DYNAMIC.map((s) => (
+                                {stats.map((s: any) => (
                                     <div key={s.label} className="flex items-center gap-3">
                                         <div className="h-10 w-10 bg-[#0d9488]/20 rounded-lg flex items-center justify-center shrink-0">
                                             <s.icon className="h-5 w-5 text-[#0d9488]" />
@@ -726,7 +729,7 @@ export default function Welcome({
                 <link rel="preload" as="image" href={banners[0]?.image || '/images/hero.webp'} fetchPriority="high" />
             </Head>
             
-            <Hero banners={banners} />
+            <Hero banners={banners} stats={STATS_DYNAMIC} />
 
             {/* Category Grid */}
             <section className="py-16 bg-slate-50">
