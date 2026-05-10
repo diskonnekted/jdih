@@ -3,10 +3,11 @@
 namespace App\Filament\Resources\Banners\Schemas;
 
 use Filament\Schemas\Schema;
-
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Textarea;
+use Filament\Schemas\Components\Grid;
 
 class BannerForm
 {
@@ -25,7 +26,7 @@ class BannerForm
                     ->required()
                     ->maxLength(255),
 
-                \Filament\Forms\Components\Textarea::make('description')
+                Textarea::make('description')
                     ->label('Deskripsi')
                     ->placeholder('Akses mudah ke database Peraturan Daerah...')
                     ->rows(3),
@@ -46,7 +47,7 @@ class BannerForm
                     ->url()
                     ->maxLength(255),
 
-                \Filament\Forms\Components\Grid::make(3)
+                Grid::make(3)
                     ->schema([
                         TextInput::make('sort_order')
                             ->label('Urutan Slider')

@@ -6,6 +6,9 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\ToggleColumn;
 
 class BannersTable
 {
@@ -13,23 +16,21 @@ class BannersTable
     {
         return $table
             ->columns([
-                \Filament\Tables\Columns\TextColumn::make('id')
+                TextColumn::make('id')
                     ->label('No')
                     ->sortable(),
-                \Filament\Tables\Columns\ImageColumn::make('image_path')
+                ImageColumn::make('image_path')
                     ->label('Gambar')
                     ->square()
                     ->disk('public'),
-                \Filament\Tables\Columns\TextColumn::make('title')
+                TextColumn::make('title')
                     ->label('Judul Banner')
                     ->wrap()
                     ->searchable(),
-                \Filament\Tables\Columns\TextInputColumn::make('sort_order')
+                TextColumn::make('sort_order')
                     ->label('Urutan')
-                    ->type('number')
-                    ->rules(['required', 'numeric'])
                     ->sortable(),
-                \Filament\Tables\Columns\ToggleColumn::make('is_active')
+                ToggleColumn::make('is_active')
                     ->label('Status Aktif'),
             ])
             ->filters([
