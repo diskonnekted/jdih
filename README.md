@@ -11,28 +11,25 @@ Portal Jaringan Dokumentasi dan Informasi Hukum (JDIH) Kabupaten Banjarnegara ya
 
 ## ✨ Fitur Unggulan Terbaru
 
-### 💎 Premium Profile Content
-- **Smart Dynamic System**: Menggabungkan konten teks dinamis dari database dengan elemen visual premium (grafis, peta, dan tabel) secara otomatis.
-- **Enhanced Pages**:
-  - **Visi & Misi**: Tampilan kutipan visi yang elegan.
-  - **Tugas & Fungsi**: Visualisasi tupoksi dengan ikonografi modern.
-  - **Kedudukan & Alamat**: Integrasi Google Maps dinamis dan informasi kontak interaktif.
-  - **Struktur Organisasi**: 3-tier diagram organisasi yang interaktif.
-  - **SOP**: Galeri alur kerja yang jernih untuk standar pelayanan.
+### 🎪 Dynamic Hero Slider
+- **Manajemen Slider Penuh**: Admin dapat menambah, mengurutkan, dan mengatur konten teks (Subtitle, Headline, Deskripsi) pada setiap slide Hero.
+- **Quote Optimized**: Slider didesain untuk menampilkan kutipan hukum dengan ikonografi yang elegan.
+- **Smart Toggle**: Opsi untuk menampilkan atau menyembunyikan statistik pada tiap banner secara mandiri.
 
-### 🎥 Management Video & Media
-- **Custom Covers**: Admin dapat mengunggah thumbnail kustom untuk setiap video media sosial (TikTok/Instagram/Youtube).
-- **Auto Metadata**: Penambahan informasi platform, durasi, dan tahun pada setiap konten video.
-- **Static Storage Path**: Penggunaan direktori `public/images/covers` untuk akses aset yang lebih cepat dan kompatibilitas server maksimal.
+### 🗳️ Forum Konsultasi Publik & Aspirasi
+- **Partisipasi Aktif**: Pengunjung dapat memberikan masukan langsung melalui form di halaman depan.
+- **Komentar Draft Produk Hukum**: Terintegrasi dengan sistem "Dialog Publik" untuk menampung feedback masyarakat terhadap rancangan peraturan sebelum disahkan.
+- **Admin Integration**: Semua aspirasi terekam secara sistematis di panel admin untuk ditindaklanjuti.
 
-### 🖥️ Desktop Portal (Dual Experience)
-- **Classic Mode**: Tampilan korporat yang bersih dan formal dengan navigasi dropdown yang presisi.
-- **Modern Mode**: Tampilan futuristik dengan searching yang lebih dinamis.
-- **Pencarian Lanjut**: Filter berdasarkan jenis dokumen, nomor, tahun, dan subjek.
+### 📊 Visualisasi Data & Statistik
+- **Grafik Interaktif**: Implementasi Chart berbasis database untuk tren produk hukum per tahun dan distribusi jenis dokumen.
+- **Mobile Optimized Charts**: Tampilan statistik khusus yang responsif dan ringan untuk perangkat seluler.
+- **Rekap IKM**: Fitur cetak laporan dan unduh data Indeks Kepuasan Masyarakat (IKM) dalam format CSV dan PDF.
 
-### 📱 Mobile PWA Experience
-- **Native-Look**: Antarmuka khusus mobile dengan *Bottom Navigation* ala aplikasi Android/iOS.
-- **PWA Integration**: Mendukung fitur "Add to Home Screen" untuk akses instan langsung dari ponsel.
+### ⚡ Optimasi & Branding
+- **Logo Optimization**: Migrasi aset logo ke format **WebP** yang memangkas ukuran file hingga 87% untuk loading yang lebih instan.
+- **Modern Loader**: Animasi transisi halaman yang premium dengan logo pulsing dan spinning ring.
+- **Unified Branding**: Penggunaan `jdih-black.png` untuk latar terang (Header/Cetak) dan `logo_jdih.webp` untuk latar gelap (Footer/Hero).
 
 ---
 
@@ -41,38 +38,37 @@ Portal Jaringan Dokumentasi dan Informasi Hukum (JDIH) Kabupaten Banjarnegara ya
 - **Backend**: Laravel 11
 - **Admin Panel**: Filament v3 (Professional Dashboard)
 - **Frontend**: React.js with Inertia.js
-- **Styling**: Vanilla CSS with Tailwind CSS Utilities
+- **Styling**: Tailwind CSS & Framer Motion
 - **Iconography**: Lucide React
-- **Database**: MySQL / MariaDB
+- **Chart Library**: Recharts (Lazy-loaded)
 
 ---
 
 ## 🚢 Prosedur Deployment (Rapidnet Server)
 
-Aplikasi ini menggunakan sistem **Local Build** untuk memudahkan deployment di server yang tidak memiliki `npm`:
+Aplikasi ini menggunakan sistem **Local Build** untuk memudahkan deployment:
 
 1. **Build Aset di Lokal**:
    ```bash
    npm run build
    git add .
-   git commit -m "build: finalized assets"
+   git commit -m "feat: finalized latest features"
    git push origin main
    ```
 
 2. **Update di Server (SSH)**:
    ```bash
    git pull origin main
-   php artisan migrate --force
+   composer install --no-dev
+   php artisan migrate
    php artisan storage:link
    php artisan optimize:clear
    ```
 
-3. **Penting**: Pastikan `APP_URL` di `.env` server menggunakan `https://` yang sesuai dengan domain utama.
-
 ---
 
 ## 📄 Lisensi
-Hak Cipta © 2024 JDIH Kabupaten Banjarnegara. Seluruh hak cipta dilindungi undang-undang.
+Hak Cipta © 2026 JDIH Kabupaten Banjarnegara. Seluruh hak cipta dilindungi undang-undang.
 
 ---
-*Created with ❤️ by Antigravity AI Assistant.*
+*Created with ❤️ by Gemini CLI Assistant.*
