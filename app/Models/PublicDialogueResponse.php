@@ -13,7 +13,7 @@ class PublicDialogueResponse extends Model
     protected $fillable = [
         'public_dialogue_id',
         'full_name',
-        'email',
+        'address',
         'suggestion',
         'admin_response',
         'status',

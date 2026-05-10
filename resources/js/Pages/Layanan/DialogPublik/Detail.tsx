@@ -28,7 +28,7 @@ function fmtDate(d: any) {
 export default function Detail({ dialogue }: { dialogue: any }) {
     const { data, setData, post, processing, errors, reset, recentlySuccessful } = useForm({
         full_name: '',
-        email: '',
+        address: '',
         suggestion: '',
     });
 
@@ -41,7 +41,7 @@ export default function Detail({ dialogue }: { dialogue: any }) {
     };
 
     const pdfUrl = dialogue.file_path 
-        ? (dialogue.file_path.startsWith('http') ? dialogue.file_path : `/storage/${dialogue.file_path}`) 
+        ? (dialogue.file_path.startsWith('http') ? dialogue.file_path : `/storage/${dialogue.file_path}?t=${new Date().getTime()}`) 
         : null;
 
     return (
@@ -203,16 +203,16 @@ export default function Detail({ dialogue }: { dialogue: any }) {
                                                 </div>
 
                                                 <div>
-                                                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2 tracking-widest">Alamat Email</label>
+                                                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2 tracking-widest">Alamat</label>
                                                     <input 
-                                                        type="email" 
-                                                        value={data.email}
-                                                        onChange={e => setData('email', e.target.value)}
+                                                        type="text" 
+                                                        value={data.address}
+                                                        onChange={e => setData('address', e.target.value)}
                                                         className="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:ring-2 focus:ring-[#0d9488]/50 focus:border-[#0d9488] outline-none transition-all"
-                                                        placeholder="nama@email.com"
+                                                        placeholder="Masukkan alamat Anda"
                                                         required
                                                     />
-                                                    {errors.email && <p className="text-red-400 text-[10px] mt-1">{errors.email}</p>}
+                                                    {errors.address && <p className="text-red-400 text-[10px] mt-1">{errors.address}</p>}
                                                 </div>
 
                                                 <div>
