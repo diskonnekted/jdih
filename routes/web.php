@@ -157,6 +157,21 @@ Route::get('/', function () {
         ->orderBy('created_at', 'desc')
         ->get();
 
+    // Data untuk grafik mini di home
+    $categories = \App\Models\Category::withCount('legalDocuments')->get();
+    $dataJenisMini = $categories->map(fn($cat) => [
+        'name'   => $cat->code ?? $cat->name,
+        'jumlah' => $cat->legal_documents_count,
+    ])->sortByDesc('jumlah')->take(8)->values();
+
+    $dataTahunMini = \App\Models\LegalDocument::selectRaw('year, count(*) as jumlah')
+        ->groupBy('year')
+        ->orderBy('year', 'desc')
+        ->limit(7)
+        ->get()
+        ->reverse()
+        ->values();
+
     // Deteksi Mobile lebih komprehensif
     $userAgent = request()->header('User-Agent', '');
     $isMobile = preg_match('/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i', $userAgent) 
@@ -177,6 +192,8 @@ Route::get('/', function () {
             'videos'          => $videos,
             'banners'         => $banners,
             'publicDialogues' => $publicDialogues,
+            'dataJenisMini'   => $dataJenisMini,
+            'dataTahunMini'   => $dataTahunMini,
             'relatedLinks'    => [
                 ['label' => 'Pemkab Banjarnegara', 'href' => 'http://banjarnegarakab.go.id', 'image' => '/images/pemerintah kab .webp'],
                 ['label' => 'Kemendagri RI', 'href' => 'http://www.kemendagri.go.id', 'image' => '/images/kemendagri.webp'],
@@ -203,6 +220,8 @@ Route::get('/', function () {
         'videos'         => $videos,
         'banners'        => $banners,
         'publicDialogues'=> $publicDialogues,
+        'dataJenisMini'  => $dataJenisMini,
+        'dataTahunMini'  => $dataTahunMini,
     ]);
 });
 
@@ -517,25 +536,43 @@ Route::get('/statistik', function () {
     $ikm = \App\Models\CommunitySatisfaction::all();
     $ikmScore = 0;
     if ($ikm->count() > 0) {
-        $total = 0; $count = 0;
+        $totalIkm = 0; $countIkm = 0;
         foreach ($ikm as $r) {
             foreach (['u1','u2','u3','u4','u5','u6','u7','u8','u9'] as $u) {
-                if ($r->$u) { $total += $r->$u; $count++; }
+                if ($r->$u) { $totalIkm += $r->$u; $countIkm++; }
             }
         }
-        $ikmScore = $count > 0 ? round(($total / $count) * 25, 2) : 0;
+        $ikmScore = $countIkm > 0 ? round(($totalIkm / $countIkm) * 25, 2) : 0;
+    }
+
+    $processedDataJenis = $dataJenis->values();
+    $processedDataPie = $dataPie->map(fn($item) => [
+        'name'  => $item['name'],
+        'value' => $item['jumlah'] ?? $item['value'],
+        'color' => $item['color']
+    ]);
+    $totalCount = $dataJenis->sum('jumlah');
+
+    // Deteksi Mobile
+    $userAgent = request()->header('User-Agent', '');
+    $isMobile = preg_match('/Mobile|Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i', $userAgent) || request()->query('mode') === 'mobile';
+
+    if ($isMobile) {
+        return Inertia::render('Mobile/Statistik', [
+            'dataJenis' => $processedDataJenis,
+            'dataTahun' => $dataTahun,
+            'dataPie'   => $processedDataPie,
+            'total'     => $totalCount,
+            'ikmScore'  => $ikmScore
+        ]);
     }
 
     return Inertia::render('Statistik', [
-        'dataJenis' => $dataJenis->values(),
+        'dataJenis' => $processedDataJenis,
         'dataTahun' => $dataTahun,
-        'dataPie'   => $dataPie->map(fn($item) => [
-            'name'  => $item['name'],
-            'value' => $item['jumlah'] ?? $item['value'],
-            'color' => $item['color']
-        ]),
-        'total'    => $dataJenis->sum('jumlah'),
-        'ikmScore' => $ikmScore
+        'dataPie'   => $processedDataPie,
+        'total'     => $totalCount,
+        'ikmScore'  => $ikmScore
     ]);
 });
 

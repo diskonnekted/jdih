@@ -42,11 +42,16 @@ function CustomTip({ active, payload, label, themeColor }: any) {
 
 interface Props {
     variant?: 'classic' | 'modern';
+    dataJenis?: any[];
+    dataTahun?: any[];
 }
 
-export default function StatistikMiniSection({ variant = 'classic' }: Props) {
+export default function StatistikMiniSection({ variant = 'classic', dataJenis, dataTahun }: Props) {
     const themeColor = variant === 'modern' ? '#003399' : '#0d9488';
     const isModern = variant === 'modern';
+
+    const displayJenis = dataJenis || STAT_JENIS_MINI;
+    const displayTahun = dataTahun || STAT_TAHUN_MINI;
 
     return (
         <section className="py-16 bg-white">
@@ -73,13 +78,13 @@ export default function StatistikMiniSection({ variant = 'classic' }: Props) {
                         </div>
                         <div className="p-5">
                             <ResponsiveContainer width="100%" height={220}>
-                                <BarChart data={STAT_JENIS_MINI} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+                                <BarChart data={displayJenis} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
                                     <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                                     <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#64748b' }} />
                                     <YAxis tick={{ fontSize: 10, fill: '#64748b' }} />
                                     <Tooltip content={<CustomTip themeColor={themeColor} />} />
                                     <Bar dataKey="jumlah" radius={[3, 3, 0, 0]}>
-                                        {STAT_JENIS_MINI.map((_, i) => (
+                                        {displayJenis.map((_, i) => (
                                             <Cell key={i} fill={i % 2 === 0 ? themeColor : '#1e293b'} />
                                         ))}
                                     </Bar>
@@ -92,13 +97,13 @@ export default function StatistikMiniSection({ variant = 'classic' }: Props) {
                     <div className={`bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm transition-all ${isModern ? 'hover:shadow-xl hover:shadow-blue-900/5 hover:border-blue-200' : ''}`}>
                         <div className={`px-5 py-4 transition-colors ${isModern ? 'bg-[#003399]' : 'bg-[#0d9488]'}`}>
                             <p className="text-white font-bold text-sm">Tren Produk Hukum per Tahun</p>
-                            <p className={`text-xs ${isModern ? 'text-blue-100' : 'text-teal-100'}`}>Perkembangan 2020–2026</p>
+                            <p className={`text-xs ${isModern ? 'text-blue-100' : 'text-teal-100'}`}>Perkembangan 10 Tahun Terakhir</p>
                         </div>
                         <div className="p-5">
                             <ResponsiveContainer width="100%" height={220}>
-                                <LineChart data={STAT_TAHUN_MINI} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+                                <LineChart data={displayTahun} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
                                     <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                                    <XAxis dataKey="tahun" tick={{ fontSize: 10, fill: '#64748b' }} />
+                                    <XAxis dataKey="year" tick={{ fontSize: 10, fill: '#64748b' }} />
                                     <YAxis tick={{ fontSize: 10, fill: '#64748b' }} />
                                     <Tooltip content={<CustomTip themeColor={themeColor} />} />
                                     <Line

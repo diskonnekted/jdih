@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import MobileLayout from '@/Layouts/MobileLayout';
 import { Head, Link } from '@inertiajs/react';
 import { 
     Search, Newspaper, Gavel, 
     ArrowRight, Clock, ChevronRight, Image as ImageIcon,
-    CheckCircle2, Play, ExternalLink
+    CheckCircle2, Play, ExternalLink, BarChart3
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
+
+// ⚡ Lazy load: recharts (~270KB)
+const StatistikMiniSection = lazy(() => import('@/Components/StatistikMiniSection'));
 
 interface Props {
     latestNews: any[];
@@ -17,6 +20,8 @@ interface Props {
     relatedLinks: any[];
     banners: any[];
     publicDialogues: any[];
+    dataJenisMini?: any[];
+    dataTahunMini?: any[];
     stats: {
         total: number;
         perda: number;
@@ -141,6 +146,8 @@ export default function MobileHome({
     relatedLinks = [],
     banners = [],
     publicDialogues = [],
+    dataJenisMini = [],
+    dataTahunMini = [],
     stats 
 }: Props) {
     const [currentSlide, setCurrentIndex] = useState(0);
@@ -304,9 +311,21 @@ export default function MobileHome({
                                 <ChevronRight className="h-4 w-4 text-slate-300" />
                             </Link>
                         ))}
-                    </div>
-                </div>
-
+                    banners: any[];
+                    publicDialogues: any[];
+                    dataJenisMini?: any[];
+                    dataTahunMini?: any[];
+                    stats: {
+                    ...
+                                {/* Statistics Section with Charts */}
+                                <div className="px-6 space-y-4">
+                                    <div className="flex items-center justify-between">
+                                        <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Statistik Data</h3>
+                                    </div>
+                                    <Suspense fallback={<div className="h-40 flex items-center justify-center bg-white rounded-3xl border border-slate-100 text-[10px] font-black text-slate-300 uppercase tracking-widest">Memuat Grafik...</div>}>
+                                        <StatistikMiniSection dataJenis={dataJenisMini} dataTahun={dataTahunMini} />
+                                    </Suspense>
+                                </div>
                 {/* 4. Berita Terbaru */}
                 <div className="px-6 space-y-4">
                     <div className="flex items-center justify-between">

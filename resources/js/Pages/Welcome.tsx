@@ -619,7 +619,9 @@ export default function Welcome({
     counts = {},
     totalViews = 0,
     videos = [],
-    publicDialogues = [] 
+    publicDialogues = [],
+    dataJenisMini = [],
+    dataTahunMini = []
 }: PageProps & { 
     news?: any[], 
     banners?: any[], 
@@ -629,7 +631,9 @@ export default function Welcome({
     counts?: any,
     totalViews?: number,
     videos?: any[],
-    publicDialogues?: any[]
+    publicDialogues?: any[],
+    dataJenisMini?: any[],
+    dataTahunMini?: any[]
 }) {
     const countsData = counts || {};
     const totalCount = Object.values(countsData).reduce((a, b) => (a as number) + (b as number), 0) as number;
@@ -694,26 +698,10 @@ export default function Welcome({
 
             <LatestDocuments variant={activeModel} documents={latestDocs} />
             
-            {/* Statistics Mini */}
-            <section className="py-16 bg-slate-50">
-                <div className="max-w-7xl mx-auto px-6 text-center">
-                    <div className="mb-10">
-                        <p className="text-sm font-bold uppercase tracking-widest mb-1" style={{ color: getThemeColor(activeModel) }}>Statistik</p>
-                        <h2 className="text-3xl font-bold text-[#1e293b]">Data Terintegrasi</h2>
-                    </div>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                        {STATS_DYNAMIC.map((s) => (
-                            <div key={s.label}>
-                                <div className="h-16 w-16 bg-[#0d9488]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <s.icon className="h-8 w-8 text-[#0d9488]" />
-                                </div>
-                                <div className="text-3xl font-bold text-[#1e293b] mb-1">{s.value}</div>
-                                <div className="text-sm text-slate-500">{s.label}</div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
+            {/* Statistics Section with Charts */}
+            <Suspense fallback={<div className="h-96 flex items-center justify-center bg-slate-50 text-slate-400">Memuat Grafik...</div>}>
+                <StatistikMiniSection variant={activeModel} dataJenis={dataJenisMini} dataTahun={dataTahunMini} />
+            </Suspense>
 
             <NewsSection news={news} variant={activeModel} />
             <InfografisSection items={infographics} variant={activeModel} />
