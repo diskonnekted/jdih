@@ -39,14 +39,14 @@ class PublicDialogueController extends Controller
     {
         $request->validate([
             'full_name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
+            'address' => 'required|string|max:500',
             'suggestion' => 'required|string|min:10',
         ]);
 
         PublicDialogueResponse::create([
             'public_dialogue_id' => $id,
             'full_name' => $request->full_name,
-            'email' => $request->email,
+            'address' => $request->address,
             'suggestion' => $request->suggestion,
             'status' => 'pending', // Default status is pending for moderation
         ]);
