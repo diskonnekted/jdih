@@ -285,7 +285,7 @@ function Hero({ banners = [], stats = [], publicDialogues = [] }: { banners?: an
     return (
         <section onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
             {/* ── Slider Area ── */}
-            <div className="relative h-[650px] lg:h-[550px] overflow-hidden bg-slate-900">
+            <div className="relative min-h-[750px] lg:min-h-[650px] flex items-center overflow-hidden bg-slate-900">
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={currentIndex}
