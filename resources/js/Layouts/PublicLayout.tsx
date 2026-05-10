@@ -349,7 +349,7 @@ function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10 pb-10 border-b border-slate-700">
                     <div className="md:col-span-2">
                         <Link href="/" className="inline-block mb-4" aria-label="Beranda JDIH">
-                            <img src="/jdih-black.png" alt="Logo JDIH Banjarnegara" width={200} height={56} className="h-14 w-auto object-contain" />
+                            <img src="/logo_jdih.webp" alt="Logo JDIH Banjarnegara" width={200} height={56} className="h-14 w-auto object-contain" />
                         </Link>
                         <p className="text-sm leading-relaxed mb-5 max-w-sm">
                             Jaringan Dokumentasi dan Informasi Hukum Kabupaten Banjarnegara – wadah pendayagunaan bersama atas dokumen hukum secara tertib, terpadu dan berkesinambungan.
