@@ -121,7 +121,7 @@
             <div class="loader-container">
                 <div class="loader-logo-wrapper">
                     <div class="loader-ring"></div>
-                    <img src="/logo_jdih.webp" alt="Loading..." class="loader-logo" />
+                    <img src="/loader.png" alt="Loading..." class="loader-logo" />
                 </div>
                 <div class="loader-text">Memuat Data Hukum...</div>
             </div>
