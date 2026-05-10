@@ -1,16 +1,15 @@
-const CACHE_NAME = 'jdih-bna-cache-v3';
+const CACHE_NAME = 'jdih-bna-cache-v4';
 const ASSETS_TO_CACHE = [
     '/',
     '/manifest.json',
-    '/icons/icon-192x192.png',
-    '/icons/icon-512x512.png'
+    '/favicon.png'
 ];
 
 self.addEventListener('install', (event) => {
-    self.skipWaiting(); // Force update
+    self.skipWaiting();
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
-            return cache.addAll(ASSETS_TO_CACHE);
+            return cache.addAll(ASSETS_TO_CACHE).catch(err => console.log('Pre-cache error:', err));
         })
     );
 });
@@ -18,21 +17,32 @@ self.addEventListener('install', (event) => {
 self.addEventListener('fetch', (event) => {
     if (event.request.method !== 'GET') return;
 
-    // Network-First Strategy for better updates
+    // Jangan intercept request ke Vite/Hot Reload agar tidak konflik saat development
+    if (event.request.url.includes(':5173') || event.request.url.includes('@vite')) {
+        return;
+    }
+
     event.respondWith(
         fetch(event.request)
             .then((response) => {
-                // If network works, return it
                 return response;
             })
             .catch(() => {
-                // If network fails, try cache
                 return caches.match(event.request).then((cachedResponse) => {
-                    if (cachedResponse) return cachedResponse;
+                    // Jika ada di cache, kembalikan. 
+                    // Jika tidak ada, kembalikan response error yang valid atau biarkan gagal secara natural
+                    if (cachedResponse) {
+                        return cachedResponse;
+                    }
+                    
+                    // Penting: Jangan kembalikan null. 
+                    // Untuk navigasi halaman, bisa arahkan ke fallback '/'
                     if (event.request.mode === 'navigate') {
                         return caches.match('/');
                     }
-                    return null;
+                    
+                    // Untuk aset lain, biarkan browser menangani kegagalan fetch yang asli
+                    return fetch(event.request); 
                 });
             })
     );

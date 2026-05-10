@@ -19,7 +19,22 @@ Route::get('/qrcode', function (\Illuminate\Http\Request $request) {
     if (!$url) {
         return response('No URL provided', 400);
     }
-    return response(\SimpleSoftwareIO\QrCode\Facades\QrCode::size(150)->generate($url), 200, ['Content-Type' => 'image/svg+xml']);
+    
+    // Gunakan try-catch untuk debugging jika terjadi error di server
+    try {
+        $qrcode = \SimpleSoftwareIO\QrCode\Facades\QrCode::size(150)
+            ->format('svg')
+            ->margin(1)
+            ->generate($url);
+            
+        return response($qrcode, 200, [
+            'Content-Type' => 'image/svg+xml',
+            'Cache-Control' => 'public, max-age=3600'
+        ]);
+    } catch (\Exception $e) {
+        \Illuminate\Support\Facades\Log::error('QR Code Error: ' . $e->getMessage());
+        return response('Error generating QR Code', 500);
+    }
 })->name('qrcode');
 
 Route::get('/', function () {

@@ -178,9 +178,9 @@ export default function DaftarDokumen({ kategori, title, code, documents, filter
                                             <div className="shrink-0 flex items-center gap-4">
                                                 {doc.file_path && (
                                                     <img 
-                                                        src={`/qrcode?url=${window.location.origin}/dokumen/${doc.id}/unduh`} 
+                                                        src={`/qrcode?url=${encodeURIComponent(window.location.origin + '/dokumen/' + doc.id + '/unduh')}`} 
                                                         alt={`QR Code for ${doc.title}`} 
-                                                        className="w-24 h-24 rounded-lg"
+                                                        className="w-24 h-24 rounded-lg bg-white p-1"
                                                     />
                                                 )}
                                                 <div className="h-10 w-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-[#0d9488]/10 transition-colors">
