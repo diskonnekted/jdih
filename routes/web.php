@@ -25,7 +25,14 @@ Route::get('/qrcode', function (\Illuminate\Http\Request $request) {
         $url = url($url);
     }
 
+    \Illuminate\Support\Facades\Log::info('Generating QR Code for URL: ' . $url);
+
     try {
+        // Cek apakah class facade bisa diakses
+        if (!class_exists('\SimpleSoftwareIO\QrCode\Facades\QrCode')) {
+            throw new \Exception('QrCode Facade class not found');
+        }
+
         $qrcode = \SimpleSoftwareIO\QrCode\Facades\QrCode::size(150)
             ->format('svg')
             ->margin(1)
@@ -35,12 +42,12 @@ Route::get('/qrcode', function (\Illuminate\Http\Request $request) {
             'Content-Type' => 'image/svg+xml',
             'Cache-Control' => 'public, max-age=3600'
         ]);
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
         \Illuminate\Support\Facades\Log::error('QR Code Error: ' . $e->getMessage());
-        return response('Error generating QR Code', 500);
+        \Illuminate\Support\Facades\Log::error($e->getTraceAsString());
+        return response('Error: ' . $e->getMessage(), 500);
     }
-})->name('qrcode');
-Route::get('/', function () {
+})->name('qrcode');Route::get('/', function () {
     // ⚡ Cache semua query berat — TTL 5 menit untuk konten dinamis, 10 menit untuk statistik
     $latestNews = \Illuminate\Support\Facades\Cache::remember('home.news', 300, function () {
         return \App\Models\News::where('status', 'published')
