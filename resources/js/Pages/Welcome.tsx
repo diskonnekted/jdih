@@ -9,9 +9,7 @@ import {
 import { PageProps } from '@/types';
 import PublicLayout from '@/Layouts/PublicLayout';
 import SearchForm, { SearchValues } from '@/Components/SearchForm';
-
-// ⚡ Lazy load: recharts (~270KB) hanya dimuat saat section ini terlihat
-const StatistikMiniSection = lazy(() => import('@/Components/StatistikMiniSection'));
+import StatistikMiniSection from '@/Components/StatistikMiniSection';
 
 /* ------------------------------------------------------------------ */
 /* COLOUR TOKENS: Teal #0d9488 | Slate Navy #1e293b | No gradients    */
@@ -704,9 +702,7 @@ export default function Welcome({
             <LatestDocuments variant={activeModel} documents={latestDocs} />
             
             {/* Statistics Section with Charts */}
-            <Suspense fallback={<div className="h-96 flex items-center justify-center bg-slate-50 text-slate-400">Memuat Grafik...</div>}>
-                <StatistikMiniSection variant={activeModel} dataJenis={dataJenisMini} dataTahun={dataTahunMini} />
-            </Suspense>
+            <StatistikMiniSection variant={activeModel} dataJenis={dataJenisMini} dataTahun={dataTahunMini} />
 
             <NewsSection news={news} variant={activeModel} />
             <InfografisSection items={infographics} variant={activeModel} />
