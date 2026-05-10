@@ -1,4 +1,4 @@
-import React, { useState, Suspense, lazy } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { Head, Link } from '@inertiajs/react';
 import {
     Search, Scale, FileText, Gavel, Megaphone, ClipboardList,
@@ -94,11 +94,32 @@ function TypeBadge({ type, variant = 'classic' }: { type: string, variant?: 'cla
     );
 }
 
+import { AnimatePresence, motion } from 'framer-motion';
+
 /* ------------------------------------------------------------------ */
-/* HERO  –  2-column split layout                                      */
+/* HERO  –  Slider with dynamic banners                               */
 /* ------------------------------------------------------------------ */
-function Hero({ banner }: { banner?: any }) {
-    const bgImage = banner?.image || '/images/hero.webp';
+function Hero({ banners = [] }: { banners?: any[] }) {
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [isHovered, setIsHovered] = useState(false);
+
+    // Fallback if no banners
+    const displayBanners = banners.length > 0 ? banners : [{
+        image: '/images/hero.webp',
+        title: 'Jaringan Dokumentasi & Informasi Hukum',
+        url: null
+    }];
+
+    useEffect(() => {
+        if (displayBanners.length <= 1 || isHovered) return;
+        
+        const timer = setInterval(() => {
+            setCurrentIndex((prev) => (prev + 1) % displayBanners.length);
+        }, 6000); // Ganti tiap 6 detik
+
+        return () => clearInterval(timer);
+    }, [displayBanners.length, isHovered]);
+
     function handleSearch(values: SearchValues) {
         const JENIS_SLUG: Record<string, string> = {
             'Peraturan Daerah':            '/peraturan-daerah',
@@ -127,29 +148,50 @@ function Hero({ banner }: { banner?: any }) {
     }
 
     return (
-        <section>
-            {/* ── Main hero area ── */}
-            <div
-                className="relative bg-cover bg-left-center bg-no-repeat"
-                style={{ backgroundImage: `url('${bgImage}')` }}
-            >
-                {/* overlay – slightly lighter on the right so form panel pops */}
-                <div className="absolute inset-0 bg-[#1e293b]/85" />
+        <section onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+            {/* ── Slider Area ── */}
+            <div className="relative h-[650px] lg:h-[550px] overflow-hidden bg-slate-900">
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={currentIndex}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 1 }}
+                        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                        style={{ backgroundImage: `url('${displayBanners[currentIndex].image}')` }}
+                    >
+                        {/* overlay */}
+                        <div className="absolute inset-0 bg-[#1e293b]/85" />
+                    </motion.div>
+                </AnimatePresence>
 
-                <div className="relative z-10 max-w-7xl mx-auto px-6 py-14 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+                <div className="relative z-10 max-w-7xl mx-auto h-full px-6 py-14 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
 
-                    {/* ── LEFT: Headline ── */}
+                    {/* ── LEFT: Headline with Motion ── */}
                     <div>
-                        <div className="inline-block bg-[#0d9488] text-white text-xs font-bold px-4 py-1.5 rounded mb-6 tracking-widest uppercase">
-                            Jaringan Dokumentasi &amp; Informasi Hukum
-                        </div>
-                        <h1 className="text-4xl md:text-5xl font-bold text-white mb-5 leading-tight">
-                            Portal Produk Hukum<br />
-                            <span className="text-[#0d9488]">Kabupaten Banjarnegara</span>
-                        </h1>
-                        <p className="text-slate-300 text-base leading-relaxed mb-8 max-w-md">
-                            Akses mudah ke database Peraturan Daerah, Peraturan Bupati, Keputusan Bupati, dan produk hukum lainnya secara transparan dan terkini.
-                        </p>
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={currentIndex}
+                                initial={{ y: 20, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                exit={{ y: -20, opacity: 0 }}
+                                transition={{ duration: 0.5 }}
+                            >
+                                <div className="inline-block bg-[#0d9488] text-white text-xs font-bold px-4 py-1.5 rounded mb-6 tracking-widest uppercase">
+                                    Jaringan Dokumentasi &amp; Informasi Hukum
+                                </div>
+                                <h1 className="text-4xl md:text-5xl font-bold text-white mb-5 leading-tight">
+                                    {displayBanners[currentIndex].title.includes('Banjarnegara') 
+                                        ? displayBanners[currentIndex].title 
+                                        : <>Portal Produk Hukum<br /><span className="text-[#0d9488]">Kabupaten Banjarnegara</span></>
+                                    }
+                                </h1>
+                                <p className="text-slate-300 text-base leading-relaxed mb-8 max-w-md">
+                                    Akses mudah ke database Peraturan Daerah, Peraturan Bupati, Keputusan Bupati, dan produk hukum lainnya secara transparan dan terkini.
+                                </p>
+                            </motion.div>
+                        </AnimatePresence>
 
                         {/* Mini stats */}
                         <div className="grid grid-cols-2 gap-4">
@@ -168,7 +210,7 @@ function Hero({ banner }: { banner?: any }) {
                     </div>
 
                     {/* ── RIGHT: Search Form Panel ── */}
-                    <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+                    <div className="bg-white rounded-2xl shadow-2xl overflow-hidden self-center lg:self-auto">
                         {/* Panel header */}
                         <div className="bg-[#1e293b] px-6 py-4 flex items-center gap-3">
                             <div className="h-8 w-8 bg-[#0d9488] rounded-lg flex items-center justify-center shrink-0">
@@ -189,9 +231,23 @@ function Hero({ banner }: { banner?: any }) {
                     </div>
 
                 </div>
+
+                {/* Slider Indicators */}
+                {displayBanners.length > 1 && (
+                    <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+                        {displayBanners.map((_, idx) => (
+                            <button
+                                key={idx}
+                                onClick={() => setCurrentIndex(idx)}
+                                className={`h-1.5 transition-all duration-300 rounded-full ${currentIndex === idx ? 'w-8 bg-[#0d9488]' : 'w-2 bg-white/30 hover:bg-white/50'}`}
+                                aria-label={`Go to slide ${idx + 1}`}
+                            />
+                        ))}
+                    </div>
+                )}
             </div>
 
-            {/* ── Stats strip (mobile only – desktop stats inline above) ── */}
+            {/* ── Stats strip (mobile only) ── */}
             <div className="bg-[#0d9488] lg:hidden">
                 <div className="max-w-7xl mx-auto px-6 py-4 grid grid-cols-2 gap-4">
                     {STATS.map((s) => (
@@ -563,7 +619,7 @@ function InfografisSection({ items, variant = 'classic' }: { items: any[], varia
 export default function Welcome({ 
     auth, 
     news = [], 
-    banner = null, 
+    banners = [], 
     isMobile = false, 
     infographics = [], 
     latestDocs = [], 
@@ -572,7 +628,7 @@ export default function Welcome({
     videos = [] 
 }: PageProps & { 
     news?: any[], 
-    banner?: any, 
+    banners?: any[], 
     isMobile?: boolean, 
     infographics?: any[], 
     latestDocs?: any[], 
@@ -668,55 +724,10 @@ export default function Welcome({
         <PublicLayout user={auth?.user}>
             <Head>
                 <title>JDIH Kabupaten Banjarnegara – Jaringan Dokumentasi & Informasi Hukum</title>
-                <link rel="preload" as="image" href={banner?.image || '/images/hero.jpg'} fetchPriority="high" />
+                <link rel="preload" as="image" href={banners[0]?.image || '/images/hero.webp'} fetchPriority="high" />
             </Head>
             
-            <section>
-                <div className="relative bg-cover bg-left-center bg-no-repeat" style={{ backgroundImage: `url('${banner?.image || '/images/hero.webp'}')` }}>
-                    <div className="absolute inset-0 bg-[#1e293b]/85" />
-                    <div className="relative z-10 max-w-7xl mx-auto px-6 py-14 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-                        <div>
-                            <div className="inline-block bg-[#0d9488] text-white text-xs font-bold px-4 py-1.5 rounded mb-6 tracking-widest uppercase">
-                                Jaringan Dokumentasi &amp; Informasi Hukum
-                            </div>
-                            <h1 className="text-4xl md:text-5xl font-bold text-white mb-5 leading-tight">
-                                Portal Produk Hukum<br />
-                                <span className="text-[#0d9488]">Kabupaten Banjarnegara</span>
-                            </h1>
-                            <p className="text-slate-300 text-base leading-relaxed mb-8 max-w-md">
-                                Akses mudah ke database Peraturan Daerah, Peraturan Bupati, Keputusan Bupati, dan produk hukum lainnya secara transparan dan terkini.
-                            </p>
-                            <div className="grid grid-cols-2 gap-4">
-                                {STATS_DYNAMIC.map((s) => (
-                                    <div key={s.label} className="flex items-center gap-3">
-                                        <div className="h-10 w-10 bg-[#0d9488]/20 rounded-lg flex items-center justify-center shrink-0">
-                                            <s.icon className="h-5 w-5 text-[#0d9488]" />
-                                        </div>
-                                        <div>
-                                            <div className="text-xl font-bold text-white leading-none">{s.value}</div>
-                                            <div className="text-xs text-slate-400">{s.label}</div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
-                            <div className="bg-[#1e293b] px-6 py-4 flex items-center gap-3">
-                                <div className="h-8 w-8 bg-[#0d9488] rounded-lg flex items-center justify-center shrink-0">
-                                    <Search className="h-4 w-4 text-white" />
-                                </div>
-                                <div>
-                                    <p className="text-white font-bold text-sm">Pencarian Dokumen Hukum</p>
-                                    <p className="text-slate-400 text-xs">Temukan produk hukum Kab. Banjarnegara</p>
-                                </div>
-                            </div>
-                            <div className="p-6">
-                                <SearchForm mode="compact" onSearch={handleSearch} />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            <Hero banners={banners} />
 
             {/* Category Grid */}
             <section className="py-16 bg-slate-50">

@@ -24,6 +24,11 @@ class BannersTable
                     ->label('Judul Banner')
                     ->wrap()
                     ->searchable(),
+                \Filament\Tables\Columns\TextInputColumn::make('sort_order')
+                    ->label('Urutan')
+                    ->type('number')
+                    ->rules(['required', 'numeric'])
+                    ->sortable(),
                 \Filament\Tables\Columns\ToggleColumn::make('is_active')
                     ->label('Status Aktif'),
             ])

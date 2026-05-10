@@ -78,8 +78,13 @@ Route::get('/', function () {
             });
     });
 
-    $activeBanner = \Illuminate\Support\Facades\Cache::remember('home.banner', 600, function () {
-        return \App\Models\Banner::where('is_active', true)->latest()->first();
+    $banners = \Illuminate\Support\Facades\Cache::remember('home.banners', 600, function () {
+        return \App\Models\Banner::where('is_active', true)->orderBy('sort_order', 'asc')->get()->map(fn($b) => [
+            'id' => $b->id,
+            'title' => $b->title,
+            'image' => '/storage/' . $b->image_path,
+            'url' => $b->url
+        ]);
     });
 
     $infographics = \Illuminate\Support\Facades\Cache::remember('home.infographics', 600, function () {
@@ -154,12 +159,7 @@ Route::get('/', function () {
         'counts'         => $counts,
         'totalViews'     => $totalViews,
         'videos'         => $videos,
-        'banner'         => $activeBanner ? [
-            'id'    => $activeBanner->id,
-            'title' => $activeBanner->title,
-            'image' => '/storage/' . $activeBanner->image_path,
-            'url'   => $activeBanner->url,
-        ] : null,
+        'banners'        => $banners,
     ]);
 });
 

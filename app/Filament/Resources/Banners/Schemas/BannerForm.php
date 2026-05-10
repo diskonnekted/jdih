@@ -34,6 +34,12 @@ class BannerForm
                     ->label('Tautan (Opsional)')
                     ->url()
                     ->maxLength(255),
+
+                TextInput::make('sort_order')
+                    ->label('Urutan Slider')
+                    ->numeric()
+                    ->default(0)
+                    ->required(),
                 
                 Toggle::make('is_active')
                     ->label('Jadikan Banner Aktif')
