@@ -311,21 +311,19 @@ export default function MobileHome({
                                 <ChevronRight className="h-4 w-4 text-slate-300" />
                             </Link>
                         ))}
-                    banners: any[];
-                    publicDialogues: any[];
-                    dataJenisMini?: any[];
-                    dataTahunMini?: any[];
-                    stats: {
-                    ...
-                                {/* Statistics Section with Charts */}
-                                <div className="px-6 space-y-4">
-                                    <div className="flex items-center justify-between">
-                                        <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Statistik Data</h3>
-                                    </div>
-                                    <Suspense fallback={<div className="h-40 flex items-center justify-center bg-white rounded-3xl border border-slate-100 text-[10px] font-black text-slate-300 uppercase tracking-widest">Memuat Grafik...</div>}>
-                                        <StatistikMiniSection dataJenis={dataJenisMini} dataTahun={dataTahunMini} />
-                                    </Suspense>
-                                </div>
+                    </div>
+                </div>
+
+                {/* Statistics Section with Charts */}
+                <div className="px-6 space-y-4">
+                    <div className="flex items-center justify-between">
+                        <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Statistik Data</h3>
+                    </div>
+                    <Suspense fallback={<div className="h-40 flex items-center justify-center bg-white rounded-3xl border border-slate-100 text-[10px] font-black text-slate-300 uppercase tracking-widest">Memuat Grafik...</div>}>
+                        <StatistikMiniSection dataJenis={dataJenisMini} dataTahun={dataTahunMini} />
+                    </Suspense>
+                </div>
+
                 {/* 4. Berita Terbaru */}
                 <div className="px-6 space-y-4">
                     <div className="flex items-center justify-between">

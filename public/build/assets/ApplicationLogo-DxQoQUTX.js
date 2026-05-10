@@ -1,1 +1,0 @@
-import{j as o}from"./app-apGQ9Mn3.js";function n(a){return o.jsx("img",{...a,src:"/logo_jdih.webp",alt:"Logo JDIH Banjarnegara",className:`h-20 w-auto object-contain ${a.className||""}`})}export{n as A};
