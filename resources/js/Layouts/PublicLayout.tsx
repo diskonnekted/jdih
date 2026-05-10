@@ -34,7 +34,7 @@ const NAV_ITEMS = [
             { label: 'Peraturan Bupati', href: '/peraturan-bupati' },
             { label: 'Dokumen Hukum Terjemahan', href: '/dokumen-hukum-terjemahan' },
             { label: 'Keputusan Bupati', href: '/keputusan-bupati' },
-            { label: 'Instruksi Bupati', href: '/instruksi-bupati' },
+            { label: 'Surat Edaran', href: '/instruksi-bupati' },
             { label: 'Keputusan Sekretaris Daerah', href: '/keputusan-sekretaris-daerah' },
             { 
                 label: 'Peraturan/Keputusan Kepala OPD', 
