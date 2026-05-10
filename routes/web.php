@@ -78,7 +78,7 @@ Route::get('/', function () {
             });
     });
 
-    $banners = \Illuminate\Support\Facades\Cache::remember('home.banners', 600, function () {
+    $banners = \Illuminate\Support\Facades\Cache::remember('home.banners', 60, function () {
         return \App\Models\Banner::where('is_active', true)->orderBy('sort_order', 'asc')->get()->map(fn($b) => [
             'id' => $b->id,
             'title' => $b->title,
@@ -90,7 +90,7 @@ Route::get('/', function () {
         ]);
     });
 
-    $infographics = \Illuminate\Support\Facades\Cache::remember('home.infographics', 600, function () {
+    $infographics = \Illuminate\Support\Facades\Cache::remember('home.infographics', 60, function () {
         return \App\Models\Infographic::where('is_active', true)
             ->orderBy('sort_order', 'asc')
             ->get()
