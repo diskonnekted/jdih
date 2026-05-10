@@ -57,6 +57,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/ikm/print', [\App\Http\Controllers\IkmReportController::class, 'print'])->name('admin.ikm.print');
 });
 
+Route::post('/public-consultation', [\App\Http\Controllers\PublicConsultationController::class, 'store'])->name('public-consultation.store');
+
 Route::get('/', function () {
     // ⚡ Cache semua query berat — TTL 5 menit untuk konten dinamis, 10 menit untuk statistik
     $latestNews = \Illuminate\Support\Facades\Cache::remember('home.news', 300, function () {

@@ -96,6 +96,106 @@ function TypeBadge({ type, variant = 'classic' }: { type: string, variant?: 'cla
 
 import { AnimatePresence, motion } from 'framer-motion';
 
+import axios from 'axios';
+
+function ConsultationForm() {
+    const [loading, setLoading] = useState(false);
+    const [success, setSuccess] = useState(false);
+    const [formData, setFormData] = useState({
+        name: '',
+        address: '',
+        suggestion: '',
+        type: 'Aspirasi Masyarakat'
+    });
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            await axios.post('/public-consultation', formData);
+            setSuccess(true);
+            setFormData({ name: '', address: '', suggestion: '', type: 'Aspirasi Masyarakat' });
+        } catch (error) {
+            alert('Gagal mengirim aspirasi. Silakan coba lagi.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (success) {
+        return (
+            <div className="text-center py-8">
+                <div className="h-16 w-16 bg-teal-50 text-[#0d9488] rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Users className="h-8 w-8" />
+                </div>
+                <h3 className="text-lg font-bold text-slate-900 mb-2">Terima Kasih!</h3>
+                <p className="text-sm text-slate-500 mb-6">Aspirasi Anda telah kami terima dan akan segera kami proses.</p>
+                <button 
+                    onClick={() => setSuccess(false)}
+                    className="text-[#0d9488] font-bold text-sm hover:underline"
+                >
+                    Kirim Aspirasi Lain
+                </button>
+            </div>
+        );
+    }
+
+    return (
+        <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Jenis Layanan</label>
+                <select 
+                    className="w-full bg-slate-50 border-slate-200 rounded-lg text-sm font-semibold focus:ring-[#0d9488] focus:border-[#0d9488]"
+                    value={formData.type}
+                    disabled
+                >
+                    <option>Aspirasi Masyarakat</option>
+                </select>
+            </div>
+            <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Nama Lengkap</label>
+                <input 
+                    type="text" 
+                    required
+                    placeholder="Masukkan nama Anda"
+                    className="w-full bg-slate-50 border-slate-200 rounded-lg text-sm focus:ring-[#0d9488] focus:border-[#0d9488]"
+                    value={formData.name}
+                    onChange={e => setFormData({...formData, name: e.target.value})}
+                />
+            </div>
+            <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Alamat</label>
+                <input 
+                    type="text" 
+                    required
+                    placeholder="Masukkan alamat domisili"
+                    className="w-full bg-slate-50 border-slate-200 rounded-lg text-sm focus:ring-[#0d9488] focus:border-[#0d9488]"
+                    value={formData.address}
+                    onChange={e => setFormData({...formData, address: e.target.value})}
+                />
+            </div>
+            <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Saran & Masukan</label>
+                <textarea 
+                    required
+                    rows={3}
+                    placeholder="Tuliskan aspirasi atau masukan Anda..."
+                    className="w-full bg-slate-50 border-slate-200 rounded-lg text-sm focus:ring-[#0d9488] focus:border-[#0d9488]"
+                    value={formData.suggestion}
+                    onChange={e => setFormData({...formData, suggestion: e.target.value})}
+                ></textarea>
+            </div>
+            <button 
+                type="submit"
+                disabled={loading}
+                className="w-full bg-[#0d9488] text-white font-bold py-3 rounded-lg hover:bg-teal-700 transition-colors shadow-lg shadow-teal-900/10 flex items-center justify-center gap-2"
+            >
+                {loading ? 'Mengirim...' : 'Kirim Aspirasi'}
+            </button>
+        </form>
+    );
+}
+
 /* ------------------------------------------------------------------ */
 /* HERO  –  Slider with dynamic banners                               */
 /* ------------------------------------------------------------------ */
@@ -211,24 +311,21 @@ function Hero({ banners = [], stats = [] }: { banners?: any[], stats?: any[] }) 
                         )}
                     </div>
 
-                    {/* ── RIGHT: Search Form Panel ── */}
+                    {/* ── RIGHT: Public Consultation Form Panel ── */}
                     <div className="bg-white rounded-2xl shadow-2xl overflow-hidden self-center lg:self-auto">
                         {/* Panel header */}
                         <div className="bg-[#1e293b] px-6 py-4 flex items-center gap-3">
                             <div className="h-8 w-8 bg-[#0d9488] rounded-lg flex items-center justify-center shrink-0">
-                                <Search className="h-4 w-4 text-white" />
+                                <Users className="h-4 w-4 text-white" />
                             </div>
                             <div>
-                                <p className="text-white font-bold text-sm">Pencarian Dokumen Hukum</p>
-                                <p className="text-slate-400 text-xs">Temukan produk hukum Kab. Banjarnegara</p>
+                                <p className="text-white font-bold text-sm">Forum Konsultasi Publik</p>
+                                <p className="text-slate-400 text-xs">Sampaikan aspirasi & masukan Anda</p>
                             </div>
                         </div>
                         {/* Form body */}
                         <div className="p-6">
-                            <SearchForm
-                                mode="compact"
-                                onSearch={handleSearch}
-                            />
+                            <ConsultationForm />
                         </div>
                     </div>
 
