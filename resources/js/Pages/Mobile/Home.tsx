@@ -134,7 +134,8 @@ function ConsultationForm({ publicDialogues = [] }: { publicDialogues?: any[] })
 }
 
 import { useState, useEffect } from 'react';
-import { AnimatePresence, CheckCircle2 } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
+import { AnimatePresence } from 'framer-motion';
 
 export default function MobileHome({ 
     latestNews = [], 
