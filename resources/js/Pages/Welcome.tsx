@@ -145,11 +145,12 @@ function ConsultationForm() {
             <div>
                 <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Jenis Layanan</label>
                 <select 
-                    className="w-full bg-slate-50 border-slate-200 rounded-lg text-sm font-semibold focus:ring-[#0d9488] focus:border-[#0d9488]"
+                    className="w-full bg-slate-50 border-slate-200 rounded-lg text-sm font-semibold focus:ring-[#0d9488] focus:border-[#0d9488] cursor-pointer"
                     value={formData.type}
-                    disabled
+                    onChange={e => setFormData({...formData, type: e.target.value})}
                 >
-                    <option>Aspirasi Masyarakat</option>
+                    <option value="Aspirasi Masyarakat">Aspirasi Masyarakat</option>
+                    <option value="Konsultasi Publik">Konsultasi Publik</option>
                 </select>
             </div>
             <div>
