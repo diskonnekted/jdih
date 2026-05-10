@@ -73,8 +73,8 @@ export default function MobileLayout({ children }: Props) {
             {/* Header */}
             <header className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-slate-100 flex items-center justify-between px-6 z-50">
                 <Link href="/mobile" className="flex items-center gap-2">
-                    <div className="bg-[#0d9488] p-1.5 rounded-lg">
-                        <Scale className="h-5 w-5 text-white" />
+                    <div className="bg-[#0d9488] p-1 rounded-lg">
+                        <img src="/jdih-black.png" alt="JDIH" className="h-6 w-auto object-contain brightness-0 invert" />
                     </div>
                     <div className="flex flex-col">
                         <span className="text-sm font-black text-[#0d9488] leading-tight">JDIH BNA</span>
