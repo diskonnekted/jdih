@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import MobileLayout from '@/Layouts/MobileLayout';
 import { Head, Link } from '@inertiajs/react';
 import { 
     Search, Newspaper, Gavel, 
-    ArrowRight, Clock, ChevronRight, Image as ImageIcon
+    ArrowRight, Clock, ChevronRight, Image as ImageIcon,
+    CheckCircle2
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import axios from 'axios';
 
 interface Props {
     latestNews: any[];
@@ -21,8 +23,6 @@ interface Props {
         perbup: number;
     };
 }
-
-import axios from 'axios';
 
 function ConsultationForm({ publicDialogues = [] }: { publicDialogues?: any[] }) {
     const [loading, setLoading] = useState(false);
@@ -133,10 +133,6 @@ function ConsultationForm({ publicDialogues = [] }: { publicDialogues?: any[] })
     );
 }
 
-import { useState, useEffect } from 'react';
-import { CheckCircle2 } from 'lucide-react';
-import { AnimatePresence } from 'framer-motion';
-
 export default function MobileHome({ 
     latestNews = [], 
     infographics = [], 
@@ -235,7 +231,7 @@ export default function MobileHome({
                     </div>
                 </div>
 
-                {/* Quick Search Floating (optional, but keep for convenience) */}
+                {/* Quick Search Floating */}
                 <div className="px-6 -mt-12 relative z-20">
                     <Link href="/mobile/pencarian" className="w-full bg-white text-[#0d9488] rounded-3xl p-5 flex items-center justify-between shadow-xl border border-teal-50 active:scale-95 transition-all">
                         <div className="flex items-center gap-4">
