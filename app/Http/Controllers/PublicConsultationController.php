@@ -14,6 +14,8 @@ class PublicConsultationController extends Controller
             'name' => 'required|string|max:255',
             'address' => 'required|string|max:500',
             'suggestion' => 'required|string|max:2000',
+            'type' => 'required|string',
+            'public_dialogue_id' => 'required_if:type,Konsultasi Publik|nullable|exists:public_dialogues,id'
         ]);
 
         if ($validator->fails()) {
@@ -26,9 +28,8 @@ class PublicConsultationController extends Controller
 
         try {
             // Kita simpan ke tabel public_dialogue_responses
-            // Diasumsikan response ini adalah untuk Dialog Publik yang sedang aktif atau kategori 'Aspirasi'
             PublicDialogueResponse::create([
-                'public_dialogue_id' => 1, // Default ke ID 1 (Aspirasi Masyarakat)
+                'public_dialogue_id' => $request->type === 'Konsultasi Publik' ? $request->public_dialogue_id : 1, // Default ke ID 1 jika aspirasi umum
                 'user_name' => $request->name,
                 'address' => $request->address,
                 'content' => $request->suggestion,

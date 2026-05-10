@@ -98,23 +98,30 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 import axios from 'axios';
 
-function ConsultationForm() {
+function ConsultationForm({ publicDialogues = [] }: { publicDialogues?: any[] }) {
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
         address: '',
         suggestion: '',
-        type: 'Aspirasi Masyarakat'
+        type: 'Aspirasi Masyarakat',
+        public_dialogue_id: ''
     });
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        
+        if (formData.type === 'Konsultasi Publik' && !formData.public_dialogue_id) {
+            alert('Mohon pilih draft dokumen yang ingin dikomentari.');
+            return;
+        }
+
         setLoading(true);
         try {
             await axios.post('/public-consultation', formData);
             setSuccess(true);
-            setFormData({ name: '', address: '', suggestion: '', type: 'Aspirasi Masyarakat' });
+            setFormData({ name: '', address: '', suggestion: '', type: 'Aspirasi Masyarakat', public_dialogue_id: '' });
         } catch (error) {
             alert('Gagal mengirim aspirasi. Silakan coba lagi.');
         } finally {
@@ -129,12 +136,12 @@ function ConsultationForm() {
                     <Users className="h-8 w-8" />
                 </div>
                 <h3 className="text-lg font-bold text-slate-900 mb-2">Terima Kasih!</h3>
-                <p className="text-sm text-slate-500 mb-6">Aspirasi Anda telah kami terima dan akan segera kami proses.</p>
+                <p className="text-sm text-slate-500 mb-6">Partisipasi Anda sangat berharga untuk pembentukan produk hukum yang lebih baik.</p>
                 <button 
                     onClick={() => setSuccess(false)}
                     className="text-[#0d9488] font-bold text-sm hover:underline"
                 >
-                    Kirim Aspirasi Lain
+                    Kirim Partisipasi Lain
                 </button>
             </div>
         );
@@ -147,12 +154,36 @@ function ConsultationForm() {
                 <select 
                     className="w-full bg-slate-50 border-slate-200 rounded-lg text-sm font-semibold focus:ring-[#0d9488] focus:border-[#0d9488] cursor-pointer"
                     value={formData.type}
-                    onChange={e => setFormData({...formData, type: e.target.value})}
+                    onChange={e => setFormData({...formData, type: e.target.value, public_dialogue_id: ''})}
                 >
                     <option value="Aspirasi Masyarakat">Aspirasi Masyarakat</option>
-                    <option value="Konsultasi Publik">Konsultasi Publik</option>
+                    <option value="Konsultasi Publik">Konsultasi Publik (Draft Produk Hukum)</option>
                 </select>
             </div>
+
+            {formData.type === 'Konsultasi Publik' && (
+                <div>
+                    <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Pilih Draft Dokumen</label>
+                    <select 
+                        required
+                        className="w-full bg-teal-50/50 border-[#0d9488]/20 rounded-lg text-sm font-medium focus:ring-[#0d9488] focus:border-[#0d9488] cursor-pointer"
+                        value={formData.public_dialogue_id}
+                        onChange={e => setFormData({...formData, public_dialogue_id: e.target.value})}
+                    >
+                        <option value="">-- Pilih Draft Dokumen --</option>
+                        {publicDialogues.map((d) => (
+                            <option key={d.id} value={d.id}>
+                                {d.document_type} - {d.title} ({d.year})
+                            </option>
+                        ))}
+                        {publicDialogues.length === 0 && (
+                            <option disabled>Tidak ada draft aktif saat ini</option>
+                        )}
+                    </select>
+                    <p className="text-[10px] text-slate-400 mt-1">* Masyarakat dapat memberikan masukan untuk draft di atas</p>
+                </div>
+            )}
+
             <div>
                 <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Nama Lengkap</label>
                 <input 
@@ -180,7 +211,7 @@ function ConsultationForm() {
                 <textarea 
                     required
                     rows={3}
-                    placeholder="Tuliskan aspirasi atau masukan Anda..."
+                    placeholder={formData.type === 'Konsultasi Publik' ? "Tuliskan komentar atau usulan perbaikan untuk draft ini..." : "Tuliskan aspirasi atau masukan Anda..."}
                     className="w-full bg-slate-50 border-slate-200 rounded-lg text-sm focus:ring-[#0d9488] focus:border-[#0d9488]"
                     value={formData.suggestion}
                     onChange={e => setFormData({...formData, suggestion: e.target.value})}
@@ -191,7 +222,7 @@ function ConsultationForm() {
                 disabled={loading}
                 className="w-full bg-[#0d9488] text-white font-bold py-3 rounded-lg hover:bg-teal-700 transition-colors shadow-lg shadow-teal-900/10 flex items-center justify-center gap-2"
             >
-                {loading ? 'Mengirim...' : 'Kirim Aspirasi'}
+                {loading ? 'Mengirim...' : (formData.type === 'Konsultasi Publik' ? 'Kirim Masukan Draft' : 'Kirim Aspirasi')}
             </button>
         </form>
     );
@@ -200,7 +231,7 @@ function ConsultationForm() {
 /* ------------------------------------------------------------------ */
 /* HERO  –  Slider with dynamic banners                               */
 /* ------------------------------------------------------------------ */
-function Hero({ banners = [], stats = [] }: { banners?: any[], stats?: any[] }) {
+function Hero({ banners = [], stats = [], publicDialogues = [] }: { banners?: any[], stats?: any[], publicDialogues?: any[] }) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isHovered, setIsHovered] = useState(false);
 
@@ -326,7 +357,7 @@ function Hero({ banners = [], stats = [] }: { banners?: any[], stats?: any[] }) 
                         </div>
                         {/* Form body */}
                         <div className="p-6">
-                            <ConsultationForm />
+                            <ConsultationForm publicDialogues={publicDialogues} />
                         </div>
                     </div>
 
@@ -496,16 +527,20 @@ function NewsSection({ news, variant = 'classic' }: { news: any[], variant?: 'cl
                                     alt={article.title}
                                     width={400}
                                     height={225}
-                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                    loading="lazy"
+                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                 />
                             </div>
-                            <div className="p-4">
-                                <span className={`text-[10px] font-bold uppercase tracking-widest transition-colors ${variant === 'modern' ? 'text-[#003399]' : 'text-[#0d9488]'}`}>{article.category}</span>
-                                <p className={`font-semibold text-[#1e293b] text-sm mt-1 leading-snug transition-colors line-clamp-3 ${variant === 'modern' ? 'group-hover:text-[#003399]' : 'group-hover:text-[#0d9488]'}`}>
+                            <div className="p-5">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-500 uppercase tracking-widest">{article.category}</span>
+                                    <span className="text-[10px] text-slate-400">{article.date}</span>
+                                </div>
+                                <h3 className={`font-bold text-slate-800 text-sm line-clamp-2 leading-snug mb-3 transition-colors ${variant === 'modern' ? 'group-hover:text-[#003399]' : 'group-hover:text-[#0d9488]'}`}>
                                     {article.title}
-                                </p>
-                                <p className="text-xs text-slate-400 mt-3">{fmtDate(article.date)}</p>
+                                </h3>
+                                <div className="flex items-center gap-1 text-[10px] font-bold text-[#0d9488] uppercase tracking-wider">
+                                    Baca Selengkapnya <ArrowRight className="h-3 w-3" />
+                                </div>
                             </div>
                         </Link>
                     ))}
@@ -516,199 +551,57 @@ function NewsSection({ news, variant = 'classic' }: { news: any[], variant?: 'cl
 }
 
 /* ------------------------------------------------------------------ */
-/* VIDEO                                                               */
-/* ------------------------------------------------------------------ */
-function VideoSection({ variant = 'classic' }: { variant?: 'classic' | 'modern' }) {
-    const themeColor = getThemeColor(variant);
-    const isModern = variant === 'modern';
-
-    return (
-        <section className={`py-16 transition-colors ${isModern ? 'bg-[#001a4d]' : 'bg-[#1e293b]'}`}>
-            <div className="max-w-7xl mx-auto px-6">
-                <div className="flex items-end justify-between mb-10">
-                    <div>
-                        <p className="text-sm font-bold uppercase tracking-widest mb-1" style={{ color: themeColor }}>Media</p>
-                        <h2 className="text-3xl font-bold text-white">Video Terbaru</h2>
-                    </div>
-                    <Link href="/video" 
-                        className={`flex items-center gap-2 text-sm font-semibold transition-colors`}
-                        style={{ color: themeColor }}
-                    >
-                        Selengkapnya <ArrowRight className="h-4 w-4" />
-                    </Link>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                    {VIDEOS.map((v) => (
-                        <a key={v.id} href={v.href} target="_blank" rel="noreferrer"
-                            className={`group border rounded-lg overflow-hidden transition-all ${isModern ? 'bg-[#002673] border-[#003399] hover:border-blue-400' : 'bg-slate-800 border-slate-700 hover:border-[#0d9488]'}`}>
-                            <div className={`h-48 relative flex items-center justify-center overflow-hidden bg-slate-900`}>
-                                <img 
-                                    src={v.image} 
-                                    alt={v.title} 
-                                    width={400}
-                                    height={225}
-                                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                                <div className={`relative z-10 h-14 w-14 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-2xl backdrop-blur-sm bg-white/20 border border-white/30`} style={{ color: themeColor }}>
-                                    <Play className="h-6 w-6 text-white ml-1 fill-white" />
-                                </div>
-                            </div>
-                            <div className="p-4 relative bg-inherit">
-                                <p className={`text-white text-sm font-bold leading-snug transition-colors ${isModern ? 'group-hover:text-blue-300' : 'group-hover:text-[#0d9488]'}`}>{v.title}</p>
-                                <span className="text-slate-400 text-[10px] uppercase font-black tracking-widest mt-2 block">Durasi {v.duration}</span>
-                            </div>
-                        </a>
-                    ))}
-                </div>
-            </div>
-        </section>
-    );
-}
-
-/* ------------------------------------------------------------------ */
-/* RELATED LINKS                                                       */
-/* ------------------------------------------------------------------ */
-function RelatedLinks({ variant = 'classic' }: { variant?: 'classic' | 'modern' }) {
-    const themeColor = getThemeColor(variant);
-
-    return (
-        <section className="py-20 bg-slate-50/50">
-            <div className="max-w-7xl mx-auto px-6">
-                <div className="mb-12 text-center md:text-left">
-                    <p className="text-sm font-black uppercase tracking-widest mb-2" style={{ color: themeColor }}>Tautan Eksternal</p>
-                    <h2 className="text-3xl md:text-4xl font-black text-[#1e293b]">Tautan Terkait</h2>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {RELATED_LINKS.map((link) => (
-                        <a key={link.label} href={link.href} target="_blank" rel="noreferrer"
-                            className={`group flex items-center gap-5 p-6 bg-white border border-slate-200 rounded-2xl shadow-sm hover:-translate-y-1.5 hover:shadow-xl transition-all duration-300 ${variant === 'modern' ? 'hover:border-[#003399]/30 hover:ring-4 hover:ring-blue-50' : 'hover:border-[#0d9488]/30 hover:ring-4 hover:ring-teal-50'}`}>
-                            
-                            <div className="h-16 w-16 bg-white rounded-2xl shadow-sm flex items-center justify-center shrink-0 border border-slate-100 p-2.5 group-hover:scale-110 transition-transform duration-300">
-                                <img src={link.image} alt={link.label} className="h-full w-full object-contain drop-shadow-sm" />
-                            </div>
-                            
-                            <span className={`font-bold text-slate-700 text-base leading-snug transition-colors flex-1 ${variant === 'modern' ? 'group-hover:text-[#003399]' : 'group-hover:text-[#0d9488]'}`}>
-                                {link.label}
-                            </span>
-                            
-                            <div className={`h-10 w-10 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${variant === 'modern' ? 'bg-slate-50 text-slate-400 group-hover:bg-[#003399] group-hover:text-white' : 'bg-slate-50 text-slate-400 group-hover:bg-[#0d9488] group-hover:text-white group-hover:rotate-45'}`}>
-                                <ExternalLink className="h-4 w-4" />
-                            </div>
-                        </a>
-                    ))}
-                </div>
-            </div>
-        </section>
-    );
-}
-
-/* ------------------------------------------------------------------ */
-/* CTA                                                                 */
-/* ------------------------------------------------------------------ */
-function CTA({ variant = 'classic' }: { variant?: 'classic' | 'modern' }) {
-    const isModern = variant === 'modern';
-    const themeColor = getThemeColor(variant);
-    
-    return (
-        <section className={`py-16 transition-colors ${isModern ? 'bg-[#002673]' : 'bg-[#0d9488]'}`}>
-            <div className="max-w-4xl mx-auto px-6 text-center">
-                <h2 className="text-3xl font-bold text-white mb-4">Butuh Bantuan Terkait Informasi Hukum?</h2>
-                <p className={`text-lg mb-8 max-w-xl mx-auto ${isModern ? 'text-blue-100' : 'text-teal-100'}`}>
-                    Tim kami siap membantu memberikan informasi terkini mengenai regulasi di Kabupaten Banjarnegara.
-                </p>
-                <div className="flex flex-col sm:flex-row justify-center gap-4">
-                    <a href="tel:02865912218" className={`px-8 py-3.5 bg-white font-bold rounded hover:bg-slate-100 transition-colors flex items-center justify-center gap-2`} style={{ color: themeColor }}>
-                        <Phone className="h-5 w-5" /> Hubungi Kami
-                    </a>
-                    <a href="mailto:jdihbanjarnegara@gmail.com" className={`px-8 py-3.5 bg-[#1e293b] text-white font-bold rounded hover:bg-slate-900 transition-colors flex items-center justify-center gap-2`}>
-                        <Mail className="h-5 w-5" /> Kirim Email
-                    </a>
-                </div>
-            </div>
-        </section>
-    );
-}
-
-/* ------------------------------------------------------------------ */
-/* STATISTIK MINI (landing)                                             */
-/* ------------------------------------------------------------------ */
-/* StatistikSection dipindah ke @/Components/StatistikMiniSection (lazy-loaded) */
-
-import MobileHome from './Mobile/Home';
-
-/* ------------------------------------------------------------------ */
 /* INFOGRAFIS                                                          */
 /* ------------------------------------------------------------------ */
 function InfografisSection({ items, variant = 'classic' }: { items: any[], variant?: 'classic' | 'modern' }) {
-    const [selectedImg, setSelectedImg] = useState<string | null>(null);
     const themeColor = getThemeColor(variant);
-    
-    if (!items.length) return null;
+    const [selectedImg, setSelectedImg] = useState<string | null>(null);
 
     return (
         <section className="py-16 bg-white">
             <div className="max-w-7xl mx-auto px-6">
                 <div className="flex items-end justify-between mb-10">
                     <div>
-                        <p className="text-sm font-bold uppercase tracking-widest mb-1" style={{ color: themeColor }}>Visual</p>
+                        <p className="text-sm font-bold uppercase tracking-widest mb-1" style={{ color: themeColor }}>Media</p>
                         <h2 className="text-3xl font-bold text-[#1e293b]">Infografis Hukum</h2>
                     </div>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                     {items.map((item) => (
                         <div key={item.id} 
                             onClick={() => setSelectedImg(item.image)}
-                            className={`group relative aspect-[3/4] bg-slate-100 rounded-2xl overflow-hidden border border-slate-200 transition-all cursor-zoom-in ${variant === 'modern' ? 'hover:border-[#003399] hover:shadow-xl' : 'hover:border-[#0d9488] hover:shadow-md'}`}>
-                            <img
-                                src={item.image}
-                                alt={item.title}
-                                width={400}
-                                height={600}
-                                className="w-full h-full object-top object-cover group-hover:scale-105 transition-transform duration-700"
-                                loading="lazy"
-                            />
-                            
-                            {/* Overlay on hover */}
-                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <div className="bg-white/20 backdrop-blur-md p-3 rounded-full border border-white/30 transform scale-90 group-hover:scale-100 transition-transform">
-                                    <ZoomIn className="h-6 w-6 text-white" />
+                            className="group relative aspect-[3/4] bg-slate-100 rounded-xl overflow-hidden cursor-zoom-in border border-slate-200">
+                            <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+                                <p className="text-white text-[10px] font-bold leading-tight line-clamp-2">{item.title}</p>
+                                <div className="mt-2 h-6 w-6 bg-[#0d9488] rounded flex items-center justify-center">
+                                    <ZoomIn className="h-3 w-3 text-white" />
                                 </div>
-                            </div>
-
-                            <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent translate-y-2 group-hover:translate-y-0 transition-transform">
-                                <p className="text-white text-[10px] font-black uppercase tracking-widest leading-tight">
-                                    {item.title}
-                                </p>
                             </div>
                         </div>
                     ))}
                 </div>
             </div>
 
-            {/* Lightbox Modal */}
-            {selectedImg && (
-                <div 
-                    className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-md flex items-start justify-center overflow-y-auto p-4 sm:p-8 cursor-zoom-out animate-in fade-in duration-300"
-                    onClick={() => setSelectedImg(null)}
-                >
-                    <button 
-                        className="fixed top-6 right-6 p-3 bg-white/10 hover:bg-[#0d9488] rounded-full text-white transition-all z-[10000] border border-white/20 shadow-xl"
-                        onClick={(e) => { e.stopPropagation(); setSelectedImg(null); }}
+            {/* Lightbox */}
+            <AnimatePresence>
+                {selectedImg && (
+                    <motion.div 
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[100] bg-[#1e293b]/95 backdrop-blur-sm flex items-center justify-center p-6"
+                        onClick={() => setSelectedImg(null)}
                     >
-                        <X className="h-6 w-6" />
-                    </button>
-                    
-                    <div className="relative w-full max-w-4xl mx-auto my-auto py-8">
-                        <img 
-                            src={selectedImg} 
-                            alt="Infografis Full" 
-                            className="w-full h-auto max-w-full rounded-xl shadow-2xl animate-in zoom-in-95 duration-500 ring-1 ring-white/10"
-                            onClick={(e) => e.stopPropagation()}
+                        <button className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors">
+                            <X className="h-8 w-8" />
+                        </button>
+                        <motion.img 
+                            initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }}
+                            src={selectedImg} className="max-w-full max-h-full rounded-lg shadow-2xl" 
                         />
-                    </div>
-                </div>
-            )}
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </section>
     );
 }
@@ -725,7 +618,8 @@ export default function Welcome({
     latestDocs = [], 
     counts = {},
     totalViews = 0,
-    videos = [] 
+    videos = [],
+    publicDialogues = [] 
 }: PageProps & { 
     news?: any[], 
     banners?: any[], 
@@ -734,7 +628,8 @@ export default function Welcome({
     latestDocs?: any[], 
     counts?: any,
     totalViews?: number,
-    videos?: any[]
+    videos?: any[],
+    publicDialogues?: any[]
 }) {
     const countsData = counts || {};
     const totalCount = Object.values(countsData).reduce((a, b) => (a as number) + (b as number), 0) as number;
@@ -752,13 +647,13 @@ export default function Welcome({
     ];
 
     const STATS_DYNAMIC = [
-        { label: 'Total Dokumen',    value: (totalCount || 0).toLocaleString('id-ID'), icon: FileText },
-        { label: 'Jenis Peraturan',  value: Object.keys(countsData).length.toString(),     icon: Scale },
+        { label: 'Total Dokumen',    value: totalCount.toLocaleString('id-ID'), icon: FileText },
+        { label: 'Jenis Peraturan',  value: Object.keys(countsData).length.toString(), icon: Scale },
         { label: 'Tahun Dokumen',    value: '40+',    icon: Calendar },
-        { label: 'Total Dilihat',    value: (totalViews || 0).toLocaleString('id-ID'), icon: Users },
+        { label: 'Total Dilihat',    value: totalViews.toLocaleString('id-ID'), icon: Users },
     ];
 
-    const handleSearch = (values: any) => {
+    function handleSearch(values: SearchValues) {
         const JENIS_SLUG: Record<string, string> = {
             'Peraturan Daerah':            '/peraturan-daerah',
             'Peraturan Bupati':            '/peraturan-bupati',
@@ -772,52 +667,17 @@ export default function Welcome({
             'RANHAM':                      '/ranham',
             'Risalah Rapat':               '/risalah-rapat',
             'Artikel Bidang Hukum':        '/artikel-bidang-hukum',
-            'Katalog':                     '/katalog',
+            'Katalog':                     '/pencarian',
             'Putusan':                     '/putusan',
             'Kerja Sama Daerah':           '/kerja-sama-daerah',
         };
-        const query = values.query || values.namaDokumen || '';
-        const type  = values.type  || values.jenisDokumen || '';
-
-        // ⚡ Universal search: jika tidak ada jenis dokumen terpilih,
-        // arahkan ke /katalog agar mencari di semua kategori.
-        // Jika jenis terpilih, gunakan halaman kategori spesifik.
-        const base = type
-            ? (JENIS_SLUG[type] ?? '/katalog')
-            : (query ? '/katalog' : '/peraturan-daerah');
-
+        const base = JENIS_SLUG[values.jenisDokumen] ?? '/peraturan-daerah';
         const params = new URLSearchParams();
-        if (query)                           params.set('namaDokumen', query);
-        if (values.nomor)                    params.set('nomor', values.nomor);
-        if (values.tahun || values.year)     params.set('tahun', values.tahun || values.year);
-        if (values.status)                   params.set('status', values.status);
+        if (values.namaDokumen) params.set('namaDokumen', values.namaDokumen);
+        if (values.nomor)       params.set('nomor', values.nomor);
+        if (values.tahun)       params.set('tahun', values.tahun);
+        if (values.status)      params.set('status', values.status);
         window.location.href = base + (params.toString() ? '?' + params.toString() : '');
-    };
-
-    if (isMobile) {
-        return (
-            <MobileHome 
-                latestNews={news.map(n => ({
-                    id: n.slug,
-                    title: n.title,
-                    thumbnail: n.image,
-                    date: fmtDate(n.date)
-                }))}
-                infographics={infographics}
-                latestDocs={latestDocs}
-                videos={videos.length > 0 ? videos.map((v: any) => ({
-                    title: v.title,
-                    href: v.video_url || v.href,
-                    image: v.thumbnail_path ? `/images/${v.thumbnail_path}` : (v.image || '/images/video-placeholder.png')
-                })) : VIDEOS}
-                relatedLinks={RELATED_LINKS}
-                stats={{
-                    total: totalCount,
-                    perda: counts['Peraturan Daerah'] || 0,
-                    perbup: counts['Peraturan Bupati'] || 0
-                }}
-            />
-        );
     }
 
     return (
@@ -827,43 +687,18 @@ export default function Welcome({
                 <link rel="preload" as="image" href={banners[0]?.image || '/images/hero.webp'} fetchPriority="high" />
             </Head>
             
-            <Hero banners={banners} stats={STATS_DYNAMIC} />
+            <Hero banners={banners} stats={STATS_DYNAMIC} publicDialogues={publicDialogues} />
 
             {/* Category Grid */}
-            <section className="py-16 bg-slate-50">
-                <div className="max-w-7xl mx-auto px-6">
-                    <div className="flex items-end justify-between mb-10">
-                        <div>
-                            <p className="text-sm font-bold uppercase tracking-widest mb-1 text-[#0d9488]">Database</p>
-                            <h2 className="text-3xl font-bold text-[#1e293b]">Kategori Produk Hukum</h2>
-                        </div>
-                        <Link href="/peraturan-daerah" className="hidden md:flex items-center gap-2 text-sm font-semibold text-[#0d9488]">
-                            Lihat Semua <ArrowRight className="h-4 w-4" />
-                        </Link>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                        {CATEGORIES_DYNAMIC.map((cat) => (
-                            <Link key={cat.code} href={cat.href} className="group flex items-center gap-4 p-5 bg-white border border-slate-200 rounded-lg transition-all hover:border-[#0d9488] hover:shadow-md">
-                                <div className="h-12 w-12 rounded flex items-center justify-center shrink-0" style={{ backgroundColor: cat.color }}>
-                                    <cat.icon className="h-6 w-6 text-white" />
-                                </div>
-                                <div className="min-w-0">
-                                    <div className="font-bold text-[#1e293b] text-sm group-hover:text-[#0d9488] truncate">{cat.title}</div>
-                                    <div className="text-slate-500 text-xs">{cat.count.toLocaleString('id-ID')} Dokumen</div>
-                                </div>
-                            </Link>
-                        ))}
-                    </div>
-                </div>
-            </section>
+            <CategoryGrid variant={activeModel} counts={countsData} />
 
-            <LatestDocuments documents={latestDocs} />
+            <LatestDocuments variant={activeModel} documents={latestDocs} />
             
             {/* Statistics Mini */}
-            <section className="py-16 bg-white">
+            <section className="py-16 bg-slate-50">
                 <div className="max-w-7xl mx-auto px-6 text-center">
                     <div className="mb-10">
-                        <p className="text-sm font-bold uppercase tracking-widest mb-1 text-[#0d9488]">Statistik</p>
+                        <p className="text-sm font-bold uppercase tracking-widest mb-1" style={{ color: getThemeColor(activeModel) }}>Statistik</p>
                         <h2 className="text-3xl font-bold text-[#1e293b]">Data Terintegrasi</h2>
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -880,8 +715,8 @@ export default function Welcome({
                 </div>
             </section>
 
-            <NewsSection news={news} />
-            <InfografisSection items={infographics} />
+            <NewsSection news={news} variant={activeModel} />
+            <InfografisSection items={infographics} variant={activeModel} />
             
             {/* Video Section */}
             <section className="py-16 bg-[#1e293b]">
@@ -904,16 +739,16 @@ export default function Welcome({
                                         alt={v.title} 
                                         className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80" 
                                     />
-                                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all" />
-                                    <div className="relative z-10 h-14 w-14 rounded-full flex items-center justify-center bg-white/20 border border-white/30 backdrop-blur-sm group-hover:scale-110 transition-transform">
-                                        <Play className="h-6 w-6 text-white ml-1 fill-white" />
+                                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors" />
+                                    <div className="relative z-10 h-12 w-12 bg-white/20 backdrop-blur-md border border-white/30 rounded-full flex items-center justify-center group-hover:scale-110 group-hover:bg-[#0d9488] transition-all">
+                                        <Play className="h-5 w-5 text-white fill-white" />
+                                    </div>
+                                    <div className="absolute bottom-3 right-3 px-2 py-1 bg-black/60 backdrop-blur-sm text-[10px] text-white font-bold rounded">
+                                        {v.duration}
                                     </div>
                                 </div>
-                                <div className="p-4">
-                                    <p className="text-white text-sm font-bold group-hover:text-[#0d9488] transition-colors line-clamp-2">{v.title}</p>
-                                    <span className="text-slate-400 text-[10px] uppercase font-black tracking-widest mt-2 block">
-                                        {v.duration ? `Durasi ${v.duration}` : 'Video Informasi'}
-                                    </span>
+                                <div className="p-5">
+                                    <h4 className="text-white font-bold text-sm line-clamp-2 leading-snug group-hover:text-[#0d9488] transition-colors">{v.title}</h4>
                                 </div>
                             </a>
                         ))}
@@ -921,8 +756,96 @@ export default function Welcome({
                 </div>
             </section>
 
-            <RelatedLinks />
-            <CTA />
+            {/* Related Links */}
+            <section className="py-16 bg-white border-t border-slate-100">
+                <div className="max-w-7xl mx-auto px-6">
+                    <div className="mb-10">
+                        <p className="text-sm font-bold uppercase tracking-widest mb-1 text-[#0d9488]">Tautan</p>
+                        <h2 className="text-3xl font-bold text-[#1e293b]">Link Terkait</h2>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+                        {RELATED_LINKS.map((link) => (
+                            <a key={link.label} href={link.href} target="_blank" rel="noreferrer" className="group p-4 bg-slate-50 border border-slate-100 rounded-xl hover:border-[#0d9488] hover:bg-white hover:shadow-xl hover:shadow-teal-900/5 transition-all text-center">
+                                <div className="h-16 flex items-center justify-center mb-3 grayscale group-hover:grayscale-0 transition-all">
+                                    <img src={link.image} alt={link.label} className="max-h-full max-w-full object-contain" />
+                                </div>
+                                <div className="text-[10px] font-bold text-slate-400 group-hover:text-[#0d9488] transition-colors uppercase tracking-wider line-clamp-2">
+                                    {link.label}
+                                </div>
+                            </a>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            <footer className="bg-[#1e293b] text-white pt-20 pb-10">
+                <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
+                    <div>
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="h-12 w-12 bg-white rounded-xl flex items-center justify-center p-2">
+                                <img src="/logo_jdih.png" alt="Logo JDIH" className="max-h-full max-w-full" />
+                            </div>
+                            <div>
+                                <div className="font-black text-xl leading-none">JDIH</div>
+                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Banjarnegara</div>
+                            </div>
+                        </div>
+                        <p className="text-slate-400 text-sm leading-relaxed mb-6">
+                            Wadah pendayagunaan bersama atas dokumen hukum secara tertib, terpadu, dan berkesinambungan sebagai sarana pemberian pelayanan informasi hukum yang lengkap, akurat, mudah, and cepat.
+                        </p>
+                    </div>
+                    
+                    <div>
+                        <h4 className="font-bold text-sm uppercase tracking-widest mb-6 text-[#0d9488]">Layanan Kami</h4>
+                        <ul className="space-y-3">
+                            {['Produk Hukum', 'Informasi Hukum', 'Konsultasi Hukum', 'Pencarian Dokumen'].map(l => (
+                                <li key={l}>
+                                    <a href="#" className="text-slate-400 hover:text-white text-sm flex items-center gap-2 group transition-colors">
+                                        <div className="h-1 w-1 bg-slate-600 rounded-full group-hover:bg-[#0d9488]" />
+                                        {l}
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 className="font-bold text-sm uppercase tracking-widest mb-6 text-[#0d9488]">Kontak Kami</h4>
+                        <ul className="space-y-4">
+                            <li className="flex items-start gap-3">
+                                <Phone className="h-5 w-5 text-[#0d9488] shrink-0" />
+                                <div className="text-slate-400 text-sm">
+                                    (0286) 591212
+                                </div>
+                            </li>
+                            <li className="flex items-start gap-3">
+                                <Mail className="h-5 w-5 text-[#0d9488] shrink-0" />
+                                <div className="text-slate-400 text-sm">
+                                    jdih@banjarnegarakab.go.id
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 className="font-bold text-sm uppercase tracking-widest mb-6 text-[#0d9488]">Alamat</h4>
+                        <p className="text-slate-400 text-sm leading-relaxed">
+                            Bagian Hukum Setda Kabupaten Banjarnegara<br />
+                            Jl. A. Yani No. 16 Banjarnegara<br />
+                            Jawa Tengah, Indonesia
+                        </p>
+                    </div>
+                </div>
+
+                <div className="max-w-7xl mx-auto px-6 pt-10 border-t border-slate-800 flex flex-col md:row justify-between items-center gap-6">
+                    <p className="text-slate-500 text-xs font-medium">
+                        &copy; {new Date().getFullYear()} JDIH Kabupaten Banjarnegara. All rights reserved.
+                    </p>
+                    <div className="flex items-center gap-6">
+                        <a href="#" className="text-slate-500 hover:text-white transition-colors"><ExternalLink className="h-4 w-4" /></a>
+                    </div>
+                </div>
+            </footer>
         </PublicLayout>
     );
 }

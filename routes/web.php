@@ -153,6 +153,10 @@ Route::get('/', function () {
         return \App\Models\LegalDocument::sum('view_count');
     });
 
+    $publicDialogues = \App\Models\PublicDialogue::where('is_active', true)
+        ->orderBy('created_at', 'desc')
+        ->get();
+
     return Inertia::render('Welcome', [
         'canLogin'       => Route::has('login'),
         'canRegister'    => Route::has('register'),
@@ -165,6 +169,7 @@ Route::get('/', function () {
         'totalViews'     => $totalViews,
         'videos'         => $videos,
         'banners'        => $banners,
+        'publicDialogues'=> $publicDialogues,
     ]);
 });
 
