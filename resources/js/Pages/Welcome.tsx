@@ -313,8 +313,13 @@ function Hero({ banners = [], stats = [], publicDialogues = [] }: { banners?: an
                                 exit={{ y: -20, opacity: 0 }}
                                 transition={{ duration: 0.5 }}
                             >
-                                <div className="inline-block bg-[#0d9488] text-white text-xs font-bold px-4 py-1.5 rounded mb-6 tracking-widest uppercase">
-                                    {displayBanners[currentIndex].subtitle || 'Jaringan Dokumentasi & Informasi Hukum'}
+                                <div className="flex items-center gap-4 mb-6">
+                                    <div className="h-12 w-12 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl flex items-center justify-center p-2 shadow-xl">
+                                        <img src="/logo_jdih.webp" alt="Logo JDIH" className="max-h-full max-w-full object-contain" />
+                                    </div>
+                                    <div className="inline-block bg-[#0d9488] text-white text-xs font-bold px-4 py-1.5 rounded tracking-widest uppercase shadow-lg shadow-teal-900/20">
+                                        {displayBanners[currentIndex].subtitle || 'Jaringan Dokumentasi & Informasi Hukum'}
+                                    </div>
                                 </div>
                                 <h1 className="text-4xl md:text-5xl font-bold text-white mb-5 leading-tight whitespace-pre-line">
                                     {displayBanners[currentIndex].title || <>Portal Produk Hukum<br /><span className="text-[#0d9488]">Kabupaten Banjarnegara</span></>}
