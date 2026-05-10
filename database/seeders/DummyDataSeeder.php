@@ -46,7 +46,6 @@ class DummyDataSeeder extends Seeder
             ['name' => 'RANHAM',                        'code' => 'RANHAM',  'slug' => 'ranham',                        'description' => 'Rencana Aksi Nasional Hak Asasi Manusia'],
             ['name' => 'Risalah Rapat',                 'code' => 'RISAL',   'slug' => 'risalah-rapat',                 'description' => 'Risalah Rapat Pembahasan Perda'],
             ['name' => 'Artikel Bidang Hukum',          'code' => 'ARTKEL', 'slug' => 'artikel-bidang-hukum',          'description' => 'Artikel dan Tulisan Bidang Hukum'],
-            ['name' => 'Propemperda',                   'code' => 'PROP',    'slug' => 'propemperda',                   'description' => 'Program Pembentukan Peraturan Daerah'],
             ['name' => 'Propemperbup',                  'code' => 'PPB',     'slug' => 'propemperbup',                  'description' => 'Program Pembentukan Peraturan Bupati'],
             ['name' => 'Raperbup',                      'code' => 'RPB',     'slug' => 'raperbup',                      'description' => 'Rancangan Peraturan Bupati'],
             ['name' => 'Hasil Harmonisasi',             'code' => 'HAR',     'slug' => 'hasil-harmonisasi',             'description' => 'Hasil Harmonisasi Produk Hukum'],

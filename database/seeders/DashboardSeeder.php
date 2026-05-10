@@ -32,7 +32,6 @@ class DashboardSeeder extends Seeder
             ['name' => 'Surat Edaran Kepala OPD', 'slug' => 'se-kepala-opd', 'code' => 'SE-OPD'],
             ['name' => 'Dokumen Hukum Langka', 'slug' => 'dokumen-hukum-langka', 'code' => 'LANGKA'],
             ['name' => 'Keputusan Sekretaris Daerah', 'slug' => 'keputusan-sekda', 'code' => 'KEP-SEKDA'],
-            ['name' => 'Propemperda', 'slug' => 'propemperda', 'code' => 'PROPEMPERDA'],
             ['name' => 'Keputusan DPRD', 'slug' => 'keputusan-dprd', 'code' => 'KEP-DPRD'],
             ['name' => 'Memorandum of Understanding', 'slug' => 'mou', 'code' => 'MOU'],
             ['name' => 'Kerja Sama Daerah', 'slug' => 'kerja-sama-daerah', 'code' => 'KERJASAMA'],

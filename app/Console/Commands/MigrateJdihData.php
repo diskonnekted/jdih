@@ -39,7 +39,6 @@ class MigrateJdihData extends Command
         '22' => 29, // Dokumen Hukum Langka
         '27' => 15, // Kerja Sama Daerah
         '28' => 16, // Putusan
-        '24' => 14, // Propemperda
         '37' => 12, // Risalah Rapat
     ];
 

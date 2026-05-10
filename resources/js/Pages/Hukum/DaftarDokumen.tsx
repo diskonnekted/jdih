@@ -22,6 +22,7 @@ interface Document {
     date: string;
     status: string;
     subject?: string;
+    file_path?: string;
 }
 
 interface PaginationLinks {
@@ -73,7 +74,6 @@ export default function DaftarDokumen({ kategori, title, code, documents, filter
             'RANHAM':                      'ranham',
             'Risalah Rapat':               'risalah-rapat',
             'Artikel Bidang Hukum':        'artikel-bidang-hukum',
-            'Propemperda':                 'propemperda',
             'Katalog':                     'pencarian',
             'Putusan':                     'putusan',
             'Kerja Sama Daerah':           'kerja-sama-daerah',
@@ -175,7 +175,14 @@ export default function DaftarDokumen({ kategori, title, code, documents, filter
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="shrink-0">
+                                            <div className="shrink-0 flex items-center gap-4">
+                                                {doc.file_path && (
+                                                    <img 
+                                                        src={`/qrcode?url=${window.location.origin}/dokumen/${doc.id}/unduh`} 
+                                                        alt={`QR Code for ${doc.title}`} 
+                                                        className="w-24 h-24 rounded-lg"
+                                                    />
+                                                )}
                                                 <div className="h-10 w-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-[#0d9488]/10 transition-colors">
                                                     <ChevronRight className="h-5 w-5 text-slate-300 group-hover:text-[#0d9488]" />
                                                 </div>

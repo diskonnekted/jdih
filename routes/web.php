@@ -14,6 +14,14 @@ use Inertia\Inertia;
 // ---------------------------------------------------------------
 // HOME
 // ---------------------------------------------------------------
+Route::get('/qrcode', function (\Illuminate\Http\Request $request) {
+    $url = $request->get('url');
+    if (!$url) {
+        return response('No URL provided', 400);
+    }
+    return response(\SimpleSoftwareIO\QrCode\Facades\QrCode::size(150)->generate($url), 200, ['Content-Type' => 'image/svg+xml']);
+})->name('qrcode');
+
 Route::get('/', function () {
     // ⚡ Cache semua query berat — TTL 5 menit untuk konten dinamis, 10 menit untuk statistik
     $latestNews = \Illuminate\Support\Facades\Cache::remember('home.news', 300, function () {
@@ -709,6 +717,7 @@ Route::get("/{category:slug}", function(string $slug, \Illuminate\Http\Request $
             'date' => $doc->published_at?->format('Y-m-d') ?? $doc->created_at->format('Y-m-d'),
             'status' => $doc->status,
             'subject' => $doc->subject,
+            'file_path' => $doc->file_path,
         ]);
 
     return Inertia::render('Hukum/DaftarDokumen', [

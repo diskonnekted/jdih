@@ -19,7 +19,6 @@ const JENIS_DOKUMEN = [
     'RANHAM',
     'Risalah Rapat',
     'Artikel Bidang Hukum',
-    'Propemperda',
     'Katalog',
     'Putusan',
     'Kerja Sama Daerah',
