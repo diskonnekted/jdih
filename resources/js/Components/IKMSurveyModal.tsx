@@ -17,18 +17,14 @@ export default function IKMSurveyModal() {
     });
 
     useEffect(() => {
-        const hasSeenSurvey = localStorage.getItem('has_seen_ikm_survey');
-        if (!hasSeenSurvey) {
-            const timer = setTimeout(() => {
-                setIsOpen(true);
-            }, 3000); // Show after 3 seconds
-            return () => clearTimeout(timer);
-        }
+        const timer = setTimeout(() => {
+            setIsOpen(true);
+        }, 3000); // Show after 3 seconds
+        return () => clearTimeout(timer);
     }, []);
 
     const closeSurvey = () => {
         setIsOpen(false);
-        localStorage.setItem('has_seen_ikm_survey', 'true');
     };
 
     const handleRating = (key: string, value: number) => {
