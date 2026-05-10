@@ -18,6 +18,17 @@ class ManageCommunitySatisfactions extends ManageRecords
     protected function getHeaderActions(): array
     {
         return [
+            \Filament\Actions\Action::make('download_recap')
+                ->label('Rekap IKM (CSV)')
+                ->color('success')
+                ->icon('heroicon-o-document-arrow-down')
+                ->url(fn() => route('admin.ikm.download')),
+            \Filament\Actions\Action::make('print_report')
+                ->label('Cetak Laporan')
+                ->color('info')
+                ->icon('heroicon-o-printer')
+                ->url(fn() => route('admin.ikm.print'))
+                ->openUrlInNewTab(),
             CreateAction::make()->label('Tambah Data IKM'),
         ];
     }

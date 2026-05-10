@@ -47,7 +47,17 @@ Route::get('/qrcode', function (\Illuminate\Http\Request $request) {
         \Illuminate\Support\Facades\Log::error($e->getTraceAsString());
         return response('Error: ' . $e->getMessage(), 500);
     }
-})->name('qrcode');Route::get('/', function () {
+})->name('qrcode');
+
+// ---------------------------------------------------------------
+// IKM REPORTS (ADMIN)
+// ---------------------------------------------------------------
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/ikm/download', [\App\Http\Controllers\IkmReportController::class, 'download'])->name('admin.ikm.download');
+    Route::get('/admin/ikm/print', [\App\Http\Controllers\IkmReportController::class, 'print'])->name('admin.ikm.print');
+});
+
+Route::get('/', function () {
     // ⚡ Cache semua query berat — TTL 5 menit untuk konten dinamis, 10 menit untuk statistik
     $latestNews = \Illuminate\Support\Facades\Cache::remember('home.news', 300, function () {
         return \App\Models\News::where('status', 'published')
