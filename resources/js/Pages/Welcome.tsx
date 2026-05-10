@@ -26,9 +26,9 @@ const CATEGORIES = [
     { title: 'Keputusan Bupati',   code: 'KEPBUP', icon: Gavel,         count: '4.120', href: '/keputusan-bupati',           color: '#0d9488' },
     { title: 'Surat Edaran',       code: 'SE',     icon: Megaphone,     count: '840',   href: '/surat-edaran',              color: '#1e293b' },
     { title: 'Instruksi Bupati',   code: 'INBUP',  icon: ClipboardList, count: '320',   href: '/instruksi-bupati',          color: '#0d9488' },
-    { title: 'Monografi Hukum',    code: 'MONO',   icon: BookMarked,    count: '215',   href: '/naskah-akademik',           color: '#1e293b' },
-    { title: 'Naskah Akademik',    code: 'NA',     icon: FileSearch,    count: '98',    href: '/naskah-akademik',           color: '#0d9488' },
-    { title: 'Kerja Sama Daerah',  code: 'KSD',    icon: Handshake,     count: '62',    href: '/kerja-sama-daerah',         color: '#1e293b' },
+    { title: 'Naskah Akademik',    code: 'NA',     icon: FileSearch,    count: '98',    href: '/naskah-akademik',           color: '#1e293b' },
+    { title: 'Kerja Sama Daerah',  code: 'KSD',    icon: Handshake,     count: '62',    href: '/kerja-sama-daerah',         color: '#0d9488' },
+    { title: 'Putusan Pengadilan', code: 'PUT',    icon: Gavel,         count: '150',   href: '/putusan',                   color: '#1e293b' },
 ];
 
 const LATEST_DOCS = [
@@ -590,7 +590,6 @@ export default function Welcome({
         { title: 'Keputusan Bupati',   code: 'KEPBUP', icon: Gavel,         count: countsData['Keputusan Bupati'] || 0, href: '/keputusan-bupati',           color: '#0d9488' },
         { title: 'Surat Edaran',       code: 'SE',     icon: Megaphone,     count: countsData['Surat Edaran'] || 0,   href: '/surat-edaran',              color: '#1e293b' },
         { title: 'Instruksi Bupati',   code: 'INBUP',  icon: ClipboardList, count: countsData['Instruksi Bupati'] || 0,   href: '/instruksi-bupati',          color: '#0d9488' },
-        { title: 'Monografi Hukum',    code: 'MONO',   icon: BookMarked,    count: countsData['Monografi Hukum'] || 0,   href: '/naskah-akademik',           color: '#1e293b' },
         { title: 'Naskah Akademik',    code: 'NA',     icon: FileSearch,    count: countsData['Naskah Akademik'] || 0,    href: '/naskah-akademik',           color: '#0d9488' },
         { title: 'Kerja Sama Daerah',  code: 'KSD',    icon: Handshake,     count: countsData['Kerja Sama Daerah'] || 0,    href: '/kerja-sama-daerah',         color: '#1e293b' },
         { title: 'Putusan Pengadilan', code: 'PUT',    icon: Gavel,         count: countsData['Putusan'] || 0,              href: '/putusan',                   color: '#0d9488' },
