@@ -186,7 +186,7 @@ function Navbar({ user, variant = 'classic' }: { user?: any; variant?: 'classic'
             <div className="max-w-screen-2xl mx-auto px-10 h-16 flex items-center justify-between gap-x-32">
                 {/* Logo & Brand */}
                 <Link href="/" className="flex items-center gap-3 shrink-0 group" aria-label="Beranda JDIH Banjarnegara">
-                    <img src="/jdih-black.png" alt="Logo JDIH Banjarnegara" width={180} height={48} className="h-12 w-auto object-contain group-hover:scale-105 transition-transform" />
+                    <img src="/logo_jdih.webp" alt="Logo JDIH Banjarnegara" width={180} height={48} className="h-12 w-auto object-contain group-hover:scale-105 transition-transform" />
                 </Link>
 
                 {/* Desktop Menu */}
