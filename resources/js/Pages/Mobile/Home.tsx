@@ -4,7 +4,7 @@ import { Head, Link } from '@inertiajs/react';
 import { 
     Search, Newspaper, Gavel, 
     ArrowRight, Clock, ChevronRight, Image as ImageIcon,
-    CheckCircle2, Play, ExternalLink, BarChart3
+    CheckCircle2, Play, ExternalLink, BarChart3, Quote
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
@@ -193,8 +193,8 @@ export default function MobileHome({
 
                         <div className="relative z-10">
                             <div className="flex items-center gap-3 mb-4">
-                                <div className="h-8 w-8 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center p-1.5">
-                                    <img src="/logo_jdih.webp" alt="JDIH" className="h-full w-full object-contain" />
+                                <div className="h-8 w-8 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center">
+                                    <Quote className="h-4 w-4 text-teal-100 fill-teal-100" />
                                 </div>
                                 <span className="text-[9px] font-black uppercase tracking-[0.2em] text-teal-100">
                                     {displayBanners[currentSlide].subtitle || 'Portal Resmi'}

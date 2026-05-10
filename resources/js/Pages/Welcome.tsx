@@ -4,7 +4,7 @@ import {
     Search, Scale, FileText, Gavel, Megaphone, ClipboardList,
     BookMarked, FileSearch, Handshake, Download, Eye, Calendar,
     ArrowRight, Users, Play, ExternalLink,
-    Phone, Mail, X, ZoomIn
+    Phone, Mail, X, ZoomIn, Quote
 } from 'lucide-react';
 import { PageProps } from '@/types';
 import PublicLayout from '@/Layouts/PublicLayout';
@@ -312,8 +312,8 @@ function Hero({ banners = [], stats = [], publicDialogues = [] }: { banners?: an
                                 transition={{ duration: 0.5 }}
                             >
                                 <div className="flex items-center gap-4 mb-6">
-                                    <div className="h-12 w-12 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl flex items-center justify-center p-2 shadow-xl">
-                                        <img src="/logo_jdih.webp" alt="Logo JDIH" className="max-h-full max-w-full object-contain" />
+                                    <div className="h-12 w-12 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl flex items-center justify-center shadow-xl">
+                                        <Quote className="h-6 w-6 text-[#0d9488] fill-[#0d9488]" />
                                     </div>
                                     <div className="inline-block bg-[#0d9488] text-white text-xs font-bold px-4 py-1.5 rounded tracking-widest uppercase shadow-lg shadow-teal-900/20">
                                         {displayBanners[currentIndex].subtitle || 'Jaringan Dokumentasi & Informasi Hukum'}
