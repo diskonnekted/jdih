@@ -4,7 +4,7 @@ import { Head, Link } from '@inertiajs/react';
 import { 
     Search, Newspaper, Gavel, 
     ArrowRight, Clock, ChevronRight, Image as ImageIcon,
-    CheckCircle2
+    CheckCircle2, Play, ExternalLink
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
@@ -87,7 +87,7 @@ function ConsultationForm({ publicDialogues = [] }: { publicDialogues?: any[] })
                         value={formData.public_dialogue_id}
                         onChange={e => setFormData({...formData, public_dialogue_id: e.target.value})}
                     >
-                        <option className="text-slate-900" value="">-- Pilih Draft Dokumen --</option>
+                        <option className="text-slate-900" value="">-- Pilih Draft --</option>
                         {publicDialogues.map((d) => (
                             <option className="text-slate-900" key={d.id} value={d.id}>
                                 {d.document_type} - {d.title}
@@ -101,7 +101,7 @@ function ConsultationForm({ publicDialogues = [] }: { publicDialogues?: any[] })
                 <div>
                     <label className="block text-[8px] font-black text-teal-100 uppercase mb-1 tracking-widest">Nama</label>
                     <input 
-                        type="text" required placeholder="Nama Anda"
+                        type="text" required placeholder="Nama"
                         className="w-full bg-white/10 border-white/20 rounded-xl text-xs text-white placeholder-teal-100/50 focus:ring-[#0d9488] focus:border-[#0d9488]"
                         value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})}
                     />
@@ -203,7 +203,7 @@ export default function MobileHome({
                                     transition={{ duration: 0.4 }}
                                 >
                                     <h1 className="text-3xl font-black mb-2 leading-tight whitespace-pre-line">
-                                        {displayBanners[currentSlide].title === 'JDIH' ? 'JDIH' : displayBanners[currentSlide].title}
+                                        {displayBanners[currentSlide].title}
                                     </h1>
                                     <p className="text-xs font-bold text-teal-50 mb-6 opacity-80 leading-relaxed">
                                         {displayBanners[currentSlide].description || 'Jaringan Dokumentasi & Informasi Hukum Kabupaten Banjarnegara'}
@@ -343,6 +343,48 @@ export default function MobileHome({
                         ))}
                     </div>
                 </div>
+
+                {/* 5. Video Section */}
+                {videos && videos.length > 0 && (
+                    <div className="px-6 space-y-4">
+                        <div className="flex items-center justify-between">
+                            <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Video Edukasi</h3>
+                        </div>
+                        <div className="flex gap-4 overflow-x-auto pb-2 no-scrollbar">
+                            {videos.map((v, i) => (
+                                <a key={i} href={v.video_url} target="_blank" rel="noreferrer" className="min-w-[240px] group bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-sm flex-shrink-0">
+                                    <div className="aspect-video relative flex items-center justify-center bg-slate-900">
+                                        <img src={v.thumbnail_path ? `/images/${v.thumbnail_path}` : '/images/video-placeholder.png'} alt={v.title} className="absolute inset-0 w-full h-full object-cover opacity-60" />
+                                        <div className="relative h-10 w-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30">
+                                            <Play className="h-4 w-4 text-white fill-white" />
+                                        </div>
+                                    </div>
+                                    <div className="p-4">
+                                        <h4 className="text-xs font-bold text-slate-800 line-clamp-2 leading-tight">{v.title}</h4>
+                                    </div>
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* 6. Related Links */}
+                <div className="px-6 space-y-4">
+                    <div className="flex items-center justify-between">
+                        <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Tautan Terkait</h3>
+                    </div>
+                    <div className="grid grid-cols-3 gap-3">
+                        {relatedLinks.map((link, i) => (
+                            <a key={i} href={link.href} target="_blank" rel="noreferrer" className="bg-white p-3 rounded-2xl border border-slate-100 flex flex-col items-center gap-2 shadow-sm active:scale-95 transition-all">
+                                <div className="h-8 flex items-center justify-center grayscale opacity-50">
+                                    <img src={link.image} alt={link.label} className="max-h-full max-w-full object-contain" />
+                                </div>
+                                <span className="text-[8px] font-bold text-slate-400 text-center uppercase tracking-tighter line-clamp-1">{link.label}</span>
+                            </a>
+                        ))}
+                    </div>
+                </div>
+
             </div>
         </MobileLayout>
     );
