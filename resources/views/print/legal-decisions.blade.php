@@ -37,7 +37,7 @@
 </div>
 
 <div class="header">
-    <img src="{{ asset('images/logo-jdih.webp') }}" alt="Logo JDIH">
+    <img src="{{ asset('jdih-black.png') }}" alt="Logo JDIH">
     <h1>Daftar Putusan Hukum</h1>
     <h2>JDIH Kabupaten Banjarnegara</h2>
     <div class="meta">

@@ -35,7 +35,7 @@ export default function InfoJdih() {
                     </div>
                     <div className="relative z-10 flex items-center gap-4 mb-6">
                         <div className="h-16 w-16 rounded-2xl bg-[#0d9488] flex items-center justify-center shadow-lg shrink-0">
-                            <img src="/logo_jdih.webp" alt="JDIH" className="h-12 w-12 object-contain" onError={e => { (e.target as HTMLImageElement).style.display='none'; }} />
+                            <img src="/jdih-black.png" alt="JDIH" className="h-12 w-12 object-contain" onError={e => { (e.target as HTMLImageElement).style.display='none'; }} />
                         </div>
                         <div>
                             <p className="text-[9px] font-black text-teal-400 uppercase tracking-widest">Kabupaten Banjarnegara</p>

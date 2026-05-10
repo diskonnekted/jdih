@@ -32,7 +32,7 @@
 </div>
 
 <div class="header">
-    <img src="{{ asset('images/logo-jdih.webp') }}" alt="Logo JDIH">
+    <img src="{{ asset('jdih-black.png') }}" alt="Logo JDIH">
     <h1>Daftar Jenis Produk Hukum</h1>
     <h2>JDIH Kabupaten Banjarnegara</h2>
     <div class="meta">Dicetak: {{ now()->format('d F Y, H:i') }} WIB</div>

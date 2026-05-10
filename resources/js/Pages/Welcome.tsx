@@ -771,7 +771,7 @@ export default function Welcome({
                     <div>
                         <div className="flex items-center gap-3 mb-6">
                             <div className="h-12 w-12 bg-white rounded-xl flex items-center justify-center p-2">
-                                <img src="/logo_jdih.webp" alt="Logo JDIH" className="max-h-full max-w-full" />
+                                <img src="/jdih-black.png" alt="Logo JDIH" className="max-h-full max-w-full" />
                             </div>
                             <div>
                                 <div className="font-black text-xl leading-none">JDIH</div>
