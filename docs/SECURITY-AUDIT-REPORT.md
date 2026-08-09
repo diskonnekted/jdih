@@ -65,8 +65,8 @@ curl -I http://your-domain.com | grep -i x-debug-token
 **Status:** ✅ **VERIFIED SAFE**
 
 **Current Key:**
-```env
-GROQ_API_KEY=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
+```
+GROQ_API_KEY=gsk_***REDACTED***
 ```
 
 **Analysis:**

@@ -73,7 +73,7 @@ LOG_LEVEL=error
 **File:** `.env`
 
 ```
-GROQ_API_KEY=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
+GROQ_API_KEY=gsk_***REDACTED***
 ```
 
 **Risiko:** Jika file `.env` ini pernah ter-commit ke git history (meskipun sekarang ada di `.gitignore`), key tersebut tetap bisa ditemukan siapa saja yang punya akses ke history repo (`git log --all -- .env`).
