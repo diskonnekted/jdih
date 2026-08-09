@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Head, Link } from '@inertiajs/react';
 import axios from 'axios';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import PublicLayout from '@/Layouts/PublicLayout';
 import PageHeader from '@/Components/PageHeader';
 import { 
@@ -290,7 +292,9 @@ export default function DetailDokumen({ document, category, popular = [] }: Docu
                                                     {document.abstract ? (
                                                         <div 
                                                             className="text-slate-500 text-sm leading-relaxed mb-8 prose prose-slate max-w-none text-justify"
-                                                            dangerouslySetInnerHTML={{ __html: document.abstract }}
+                                                            dangerouslySetInnerHTML={{ 
+                                                                __html: document.abstract || '' 
+                                                            }}
                                                         />
                                                     ) : (
                                                         <p className="text-slate-500 text-sm leading-relaxed whitespace-pre-line mb-8">
@@ -312,10 +316,12 @@ export default function DetailDokumen({ document, category, popular = [] }: Docu
                                                         <div className="space-y-4">
                                                             <h5 className="text-sm font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
                                                                 <LinkIcon className="h-4 w-4" />
-                                                                Mencabut / Mengubah
+                                                                Dokumen yang Dicabut/Diubah Oleh Dokumen Ini
                                                             </h5>
                                                             <div className="grid gap-3">
-                                                                {document.related.map((doc: any) => (
+                                                                {document.related.map((doc: any) => {
+                                                                    const relationType = (doc as any).pivot?.relation_type || 'Mencabut';
+                                                                    return (
                                                                     <Link 
                                                                         key={doc.id}
                                                                         href={`/${doc.slug}/${doc.id}`}
@@ -324,10 +330,12 @@ export default function DetailDokumen({ document, category, popular = [] }: Docu
                                                                         <div className="space-y-1">
                                                                             <p className="text-xs font-bold text-[#0d9488]">{doc.type} Nomor {doc.number} Tahun {doc.year}</p>
                                                                             <p className="text-sm font-bold text-slate-700 line-clamp-1">{doc.title}</p>
+                                                                            <p className="text-[10px] font-bold text-slate-400 uppercase">{relationType}</p>
                                                                         </div>
                                                                         <ExternalLink className="h-4 w-4 text-slate-300 group-hover:text-[#0d9488]" />
                                                                     </Link>
-                                                                ))}
+                                                                    );
+                                                                })}
                                                             </div>
                                                         </div>
                                                     )}
@@ -335,10 +343,12 @@ export default function DetailDokumen({ document, category, popular = [] }: Docu
                                                         <div className="space-y-4">
                                                             <h5 className="text-sm font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
                                                                 <History className="h-4 w-4" />
-                                                                Dicabut / Diubah Oleh
+                                                                Dokumen Ini Dicabut/Diubah Oleh
                                                             </h5>
                                                             <div className="grid gap-3">
-                                                                {document.referenced_by.map((doc: any) => (
+                                                                {document.referenced_by.map((doc: any) => {
+                                                                    const relationType = (doc as any).pivot?.relation_type || 'Mencabut';
+                                                                    return (
                                                                     <Link 
                                                                         key={doc.id}
                                                                         href={`/${doc.slug}/${doc.id}`}
@@ -347,10 +357,12 @@ export default function DetailDokumen({ document, category, popular = [] }: Docu
                                                                         <div className="space-y-1">
                                                                             <p className="text-xs font-bold text-red-600">{doc.type} Nomor {doc.number} Tahun {doc.year}</p>
                                                                             <p className="text-sm font-bold text-slate-700 line-clamp-1">{doc.title}</p>
+                                                                            <p className="text-[10px] font-bold text-red-400 uppercase">{relationType}</p>
                                                                         </div>
                                                                         <ExternalLink className="h-4 w-4 text-slate-300 group-hover:text-red-500" />
                                                                     </Link>
-                                                                ))}
+                                                                    );
+                                                                })}
                                                             </div>
                                                         </div>
                                                     )}
@@ -381,10 +393,10 @@ export default function DetailDokumen({ document, category, popular = [] }: Docu
                                                             <div className="flex justify-between items-start mb-3">
                                                                 <div className="flex items-center gap-3">
                                                                     <div className="h-10 w-10 bg-white rounded-full flex items-center justify-center text-[#0d9488] font-black border border-slate-200">
-                                                                        {comment.name.charAt(0).toUpperCase()}
+                                                                        {(comment.name || 'A').charAt(0).toUpperCase()}
                                                                     </div>
                                                                     <div>
-                                                                        <p className="text-sm font-black text-slate-800 leading-none">{comment.name}</p>
+                                                                        <p className="text-sm font-black text-slate-800 leading-none">{comment.name || 'Anonymous'}</p>
                                                                         <p className="text-[10px] text-slate-400 font-bold uppercase mt-1">Masyarakat Umum</p>
                                                                     </div>
                                                                 </div>
@@ -435,7 +447,7 @@ export default function DetailDokumen({ document, category, popular = [] }: Docu
                                                 </div>
                                                 <div className="space-y-1">
                                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Komentar / Masukan</label>
-                                                    <textarea required name="comment" rows={4} className="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#0d9488] transition-all" placeholder="Tuliskan komentar Anda di sini..."></textarea>
+                                                    <textarea required name="comment" rows={4} maxLength={1000} className="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#0d9488] transition-all" placeholder="Tuliskan komentar Anda di sini... (max 1000 karakter)"></textarea>
                                                 </div>
                                                 <button type="submit" className="px-8 py-3 bg-[#0d9488] text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-[#0b7a6f] transition-all shadow-lg shadow-teal-900/10 active:scale-95">
                                                     Kirim Komentar
@@ -562,12 +574,20 @@ export default function DetailDokumen({ document, category, popular = [] }: Docu
                     <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50">
                         {chatMessages.map((msg, idx) => (
                             <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                                <div className={`max-w-[85%] p-4 rounded-2xl text-sm font-medium leading-relaxed ${
+                                <div className={`max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed ${
                                     msg.role === 'user' 
-                                    ? 'bg-[#0d9488] text-white rounded-tr-none' 
+                                    ? 'bg-[#0d9488] text-white rounded-tr-none font-medium' 
                                     : 'bg-white text-slate-700 shadow-sm border border-slate-100 rounded-tl-none'
                                 }`}>
-                                    {msg.text}
+                                    {msg.role === 'ai' ? (
+                                        <div className="prose prose-sm max-w-none prose-headings:font-bold prose-headings:text-slate-800 prose-strong:text-slate-800 prose-ul:text-slate-600 prose-ol:text-slate-600 prose-li:text-slate-600 prose-p:text-slate-600 prose-code:text-[#0d9488] prose-code:bg-slate-100 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-xs">
+                                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                                {msg.text}
+                                            </ReactMarkdown>
+                                        </div>
+                                    ) : (
+                                        <span className="font-medium">{msg.text}</span>
+                                    )}
                                 </div>
                             </div>
                         ))}

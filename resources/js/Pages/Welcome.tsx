@@ -63,7 +63,8 @@ const VIDEOS = [
 /* ------------------------------------------------------------------ */
 /* HELPERS                                                             */
 /* ------------------------------------------------------------------ */
-function fmtDate(d: string) {
+function fmtDate(d: string | null | undefined) {
+    if (!d) return '-';
     return new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 

@@ -29,12 +29,11 @@ class PublicConsultationController extends Controller
         try {
             // Kita simpan ke tabel public_dialogue_responses
             PublicDialogueResponse::create([
-                'public_dialogue_id' => $request->type === 'Konsultasi Publik' ? $request->public_dialogue_id : 1, // Default ke ID 1 jika aspirasi umum
-                'user_name' => $request->name,
+                'public_dialogue_id' => $request->type === 'Konsultasi Publik' ? $request->public_dialogue_id : \App\Models\PublicDialogue::first()?->id,
+                'full_name' => $request->name,
                 'address' => $request->address,
-                'content' => $request->suggestion,
+                'suggestion' => $request->suggestion,
                 'status' => 'pending',
-                'is_anonymous' => false
             ]);
 
             return response()->json([

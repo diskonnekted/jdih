@@ -9,9 +9,9 @@ class IkmReportController extends Controller
 {
     public function download()
     {
-        $data = CommunitySatisfaction::all();
+        $first = CommunitySatisfaction::first();
         
-        if ($data->isEmpty()) {
+        if (!$first) {
             return back()->with('error', 'Tidak ada data IKM untuk diunduh.');
         }
 
@@ -31,11 +31,11 @@ class IkmReportController extends Controller
             'Saran', 'Tanggal'
         ];
 
-        $callback = function() use($data, $columns) {
+        $callback = function() use ($columns) {
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);
 
-            foreach ($data as $row) {
+            CommunitySatisfaction::cursor()->each(function ($row) use ($file) {
                 fputcsv($file, [
                     $row->id,
                     $row->gender,
@@ -46,7 +46,7 @@ class IkmReportController extends Controller
                     $row->suggestion,
                     $row->created_at
                 ]);
-            }
+            });
 
             fclose($file);
         };
@@ -56,23 +56,30 @@ class IkmReportController extends Controller
 
     public function print()
     {
-        $data = CommunitySatisfaction::all();
-        $count = $data->count();
+        $stats = CommunitySatisfaction::selectRaw(
+            'COUNT(*) as count,
+             AVG(u1) as avg_u1, AVG(u2) as avg_u2, AVG(u3) as avg_u3, AVG(u4) as avg_u4,
+             AVG(u5) as avg_u5, AVG(u6) as avg_u6, AVG(u7) as avg_u7, AVG(u8) as avg_u8, AVG(u9) as avg_u9'
+        )->first();
         
+        $count = $stats->count ?? 0;
         $averages = [
-            'u1' => $data->avg('u1'),
-            'u2' => $data->avg('u2'),
-            'u3' => $data->avg('u3'),
-            'u4' => $data->avg('u4'),
-            'u5' => $data->avg('u5'),
-            'u6' => $data->avg('u6'),
-            'u7' => $data->avg('u7'),
-            'u8' => $data->avg('u8'),
-            'u9' => $data->avg('u9'),
+            'u1' => $stats->avg_u1 ?? 0,
+            'u2' => $stats->avg_u2 ?? 0,
+            'u3' => $stats->avg_u3 ?? 0,
+            'u4' => $stats->avg_u4 ?? 0,
+            'u5' => $stats->avg_u5 ?? 0,
+            'u6' => $stats->avg_u6 ?? 0,
+            'u7' => $stats->avg_u7 ?? 0,
+            'u8' => $stats->avg_u8 ?? 0,
+            'u9' => $stats->avg_u9 ?? 0,
         ];
 
         $totalAvg = array_sum($averages) / 9;
         $ikmValue = $totalAvg * 25; // Skala 100
+
+        // Load data sample untuk detail report (max 1000 untuk memory efficiency)
+        $data = CommunitySatisfaction::take(1000)->get();
 
         return view('reports.ikm', compact('data', 'averages', 'count', 'ikmValue'));
     }

@@ -15,12 +15,30 @@ use Inertia\Inertia;
 // HOME
 // ---------------------------------------------------------------
 Route::get('/qrcode', function (\Illuminate\Http\Request $request) {
-    $url = $request->get('url');
-    if (!$url) {
-        return response('No URL provided', 400);
+    $url = $request->get('url', '/');
+    
+    // Validasi: hanya allow URL eksternal yang aman atau path relatif
+    if (!str_starts_with($url, 'http://') && !str_starts_with($url, 'https://') && !str_starts_with($url, '/')) {
+        $url = '/';
     }
-
-    // Jika URL yang diterima adalah path relatif, tambahkan domain aplikasi
+    
+    // Jika external URL, validate host dari internal network
+    if (str_starts_with($url, 'http://') || str_starts_with($url, 'https://')) {
+        $host = parse_url($url, PHP_URL_HOST);
+        if ($host) {
+            $internalHosts = ['localhost', '127.0.0.1', '::1', '0.0.0.0'];
+            if (in_array($host, $internalHosts)) {
+                $url = '/';
+            }
+            
+            // Optional: pastikan hanya domain yang valid
+            if (!filter_var($url, FILTER_VALIDATE_URL)) {
+                $url = '/';
+            }
+        }
+    }
+    
+    // Jika URL path relatif, tambahkan domain aplikasi
     if (str_starts_with($url, '/')) {
         $url = url($url);
     }
@@ -44,8 +62,14 @@ Route::get('/qrcode', function (\Illuminate\Http\Request $request) {
         ]);
     } catch (\Throwable $e) {
         \Illuminate\Support\Facades\Log::error('QR Code Error: ' . $e->getMessage());
-        \Illuminate\Support\Facades\Log::error($e->getTraceAsString());
-        return response('Error: ' . $e->getMessage(), 500);
+        
+        // Return fallback SVG placeholder
+        $fallbackSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="150" height="150" viewBox="0 0 150 150"><rect width="150" height="150" fill="#f1f5f9"/><text x="75" y="70" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b">QR Error</text><text x="75" y="90" text-anchor="middle" font-family="Arial" font-size="10" fill="#94a3b8">'.htmlspecialchars($e->getMessage()).'</text></svg>';
+        
+        return response($fallbackSvg, 200, [
+            'Content-Type' => 'image/svg+xml',
+            'X-Error' => 'true'
+        ]);
     }
 })->name('qrcode');
 
@@ -86,7 +110,9 @@ Route::get('/', function () {
             'title' => $b->title,
             'subtitle' => $b->subtitle,
             'description' => $b->description,
-            'image' => '/storage/' . $b->image_path,
+            'image' => $b->image_path 
+                ? (Str::startsWith($b->image_path, 'images/') ? '/' . $b->image_path : '/storage/' . $b->image_path)
+                : '/images/hero.webp',
             'url' => $b->url,
             'show_stats' => $b->show_stats
         ]);
@@ -110,17 +136,32 @@ Route::get('/', function () {
             ->orderBy('document_number', 'desc')
             ->limit(5)
             ->get()
-            ->map(fn($doc) => [
-                'id'      => $doc->id,
-                'type'    => $doc->category->name ?? 'PERATURAN',
-                'code'    => $doc->category->code ?? 'DOC',
-                'number'  => $doc->document_number,
-                'year'    => $doc->year,
-                'title'   => $doc->title,
-                'date'    => $doc->published_at ? $doc->published_at->format('Y-m-d') : null,
-                'subject' => $doc->subject ? (is_array($doc->subject) ? $doc->subject[0] : (json_decode($doc->subject)[0] ?? 'Umum')) : 'Umum',
-                'slug'    => Str::slug($doc->category->name ?? 'peraturan'),
-            ]);
+            ->map(function ($doc) {
+                $categoryName = $doc->category ? $doc->category->name : 'PERATURAN';
+                $categoryCode = $doc->category ? $doc->category->code : 'DOC';
+                
+                $subject = 'Umum';
+                if ($doc->subject) {
+                    if (is_array($doc->subject)) {
+                        $subject = $doc->subject[0] ?? 'Umum';
+                    } else {
+                        $decoded = json_decode($doc->subject, true);
+                        $subject = (is_array($decoded) && isset($decoded[0])) ? $decoded[0] : 'Umum';
+                    }
+                }
+                
+                return [
+                    'id'      => $doc->id,
+                    'type'    => $categoryName,
+                    'code'    => $categoryCode,
+                    'number'  => $doc->document_number,
+                    'year'    => $doc->year,
+                    'title'   => $doc->title,
+                    'date'    => $doc->published_at ? $doc->published_at->format('Y-m-d') : null,
+                    'subject' => $subject,
+                    'slug'    => Str::slug($categoryName),
+                ];
+            });
     });
 
     $counts = \Illuminate\Support\Facades\Cache::remember('home.counts', 600, function () {
@@ -128,7 +169,9 @@ Route::get('/', function () {
             ->groupBy('category_id')
             ->with('category')
             ->get()
-            ->mapWithKeys(fn($item) => [$item->category->name ?? 'unknown' => $item->total])
+            ->mapWithKeys(fn($item) => [
+                ($item->category ? $item->category->name : 'Tanpa Kategori') => $item->total
+            ])
             ->toArray();
         $c['Putusan'] = \App\Models\LegalDecision::count();
         return $c;
@@ -485,11 +528,19 @@ Route::get('/api/produk-hukum-desa',   [ProdukHukumDesaController::class, 'proxy
 // Dialog Publik & Aspirasi
 Route::get('/dialog-publik', [\App\Http\Controllers\PublicDialogueController::class, 'index'])->name('dialog-publik.index');
 Route::get('/dialog-publik/{slug}', [\App\Http\Controllers\PublicDialogueController::class, 'show'])->name('dialog-publik.show');
-Route::post('/dialog-publik/{id}/respond', [\App\Http\Controllers\PublicDialogueController::class, 'storeResponse'])->name('dialog-publik.respond');
+Route::post('/dialog-publik/{id}/respond', [\App\Http\Controllers\PublicDialogueController::class, 'storeResponse'])
+    ->middleware('throttle:10,1') // 10 requests per minute
+    ->name('dialog-publik.respond');
 
-Route::post('/ai/ask', [AiAssistantController::class, 'ask'])->name('ai.ask');
-Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
-Route::post('/community-satisfaction', [\App\Http\Controllers\CommunitySatisfactionController::class, 'store'])->name('ikm.store');
+Route::post('/ai/ask', [AiAssistantController::class, 'ask'])
+    ->middleware('throttle:20,1') // 20 requests per minute (AI lebih mahal)
+    ->name('ai.ask');
+Route::post('/comments', [CommentController::class, 'store'])
+    ->middleware('throttle:30,1') // 30 requests per minute
+    ->name('comments.store');
+Route::post('/community-satisfaction', [\App\Http\Controllers\CommunitySatisfactionController::class, 'store'])
+    ->middleware('throttle:5,1') // 5 requests per minute (survey)
+    ->name('ikm.store');
 
 // ---------------------------------------------------------------
 // INFORMASI
@@ -740,6 +791,7 @@ Route::prefix('mobile')->group(function () {
     Route::get('/dokumen/{id}', function (int $id) {
         $doc = \App\Models\LegalDocument::with('category')->findOrFail($id);
         $doc->increment('view_count');
+        $doc->refresh();
         return Inertia::render('Mobile/DetailDokumen', ['document'=>[
             'id'                      => $doc->id,
             'title'                   => $doc->title,
@@ -861,6 +913,7 @@ Route::get("/{category:slug}/{id}", function(string $slug, int $id) {
     ])->findOrFail($id);
     
     $doc->increment('view_count');
+    $doc->refresh();
     
     $popular = \App\Models\LegalDocument::with('category')
         ->orderBy('view_count', 'desc')
