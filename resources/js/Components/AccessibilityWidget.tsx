@@ -250,7 +250,7 @@ export default function AccessibilityWidget() {
     /* TTS HOVER: Baca teks saat hover                                   */
     /* ---------------------------------------------------------------- */
     const [ttsActiveRef, setTtsActiveRef] = useState(false);
-    let hoverTimer: ReturnType<typeof setTimeout> | null = null;
+    let hoverTimer: ReturnType<typeof setTimeout> | undefined;
 
     useEffect(() => {
         setTtsActiveRef(ttsActive);
@@ -309,7 +309,7 @@ export default function AccessibilityWidget() {
             overlay.removeEventListener('mouseout', handleMouseOut);
             window.speechSynthesis.cancel();
             clearTimeout(hoverTimer);
-            hoverTimer = null;
+            hoverTimer = undefined;
         };
     }, [ttsActiveRef]);
 
