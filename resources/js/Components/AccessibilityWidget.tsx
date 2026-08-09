@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
     Accessibility, Volume2, VolumeX,
     Type, Contrast, Moon, Sun, MoveHorizontal,
@@ -250,7 +250,7 @@ export default function AccessibilityWidget() {
     /* TTS HOVER: Baca teks saat hover                                   */
     /* ---------------------------------------------------------------- */
     const [ttsActiveRef, setTtsActiveRef] = useState(false);
-    const hoverRef = useRef<ReturnType<typeof setTimeout>>(null);
+    let hoverTimer: ReturnType<typeof setTimeout> | null = null;
 
     useEffect(() => {
         setTtsActiveRef(ttsActive);
@@ -290,15 +290,15 @@ export default function AccessibilityWidget() {
             if (!overlay.contains(target)) return;
             if (shouldSkip(target)) return;
 
-            clearTimeout(hoverRef.current);
-            hoverRef.current = setTimeout(() => speakHandler(target), 400);
+            clearTimeout(hoverTimer);
+            hoverTimer = setTimeout(() => speakHandler(target), 400);
         };
 
         const handleMouseOut = (e: MouseEvent) => {
             const related = e.relatedTarget as Node;
             if (overlay.contains(related)) return;
             window.speechSynthesis.cancel();
-            clearTimeout(hoverRef.current);
+            clearTimeout(hoverTimer);
         };
 
         overlay.addEventListener('mouseover', handleMouseOver);
@@ -308,7 +308,8 @@ export default function AccessibilityWidget() {
             overlay.removeEventListener('mouseover', handleMouseOver);
             overlay.removeEventListener('mouseout', handleMouseOut);
             window.speechSynthesis.cancel();
-            clearTimeout(hoverRef.current);
+            clearTimeout(hoverTimer);
+            hoverTimer = null;
         };
     }, [ttsActiveRef]);
 
@@ -325,7 +326,7 @@ export default function AccessibilityWidget() {
     const update = useCallback(<K extends keyof A11ySettings>(key: K, value: A11ySettings[K]) => {
         setSettings(prev => {
             const next = { ...prev, [key]: value };
-            if (key === 'ttsEnabled') setTtsActive(value);
+            if (key === 'ttsEnabled') setTtsActive(value as boolean);
             return next;
         });
     }, []);
