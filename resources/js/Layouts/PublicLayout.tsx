@@ -429,8 +429,10 @@ export default function PublicLayout({ children, user }: PublicLayoutProps) {
         <div className={`min-h-screen flex flex-col transition-colors duration-300 bg-[#1e293b]`}>
             <Navbar user={user} variant={variant} />
             <div className="fixed top-0 w-full h-[95px] bg-[#0f172a] z-40" />
-            <div className="pt-[92px] pb-8 flex-1 relative z-10">
+            <div id="a11y-overlay" className="pt-[92px] pb-8 flex-1 relative z-10">
                 <div className="bg-white">
+                    <div id="main-content" tabIndex={-1} className="sr-only focus:not-sr-only focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-offset-2">
+                    </div>
                     {children}
                 </div>
             </div>
