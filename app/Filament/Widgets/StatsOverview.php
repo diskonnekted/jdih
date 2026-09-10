@@ -18,7 +18,7 @@ class StatsOverview extends StatsOverviewWidget
         $totalCategories = \App\Models\Category::count();
         $totalBanners = \App\Models\Banner::where('is_active', true)->count();
         $totalMembers = \App\Models\JdihMember::count();
-        $totalDownloads = \App\Models\DownloadItem::count();
+        $totalDownloads = \App\Models\KatalogDownload::count();
 
         return [
             Stat::make('Total Produk Hukum', number_format($totalDocs))
