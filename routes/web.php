@@ -656,7 +656,62 @@ Route::get('/berita',          function() {
 Route::get('/artikel/detail/{slug}', function($slug) {
     return redirect()->route('berita.detail', ['slug' => $slug]);
 });
-Route::get('/berita/{slug}', function($slug) {
+// Renderer Detail Berita Mobile (dipakai route /mobile/berita/{slug} dan route desktop saat UA mobile)
+$renderMobileBeritaDetail = function ($slug) {
+    $prefixImage = function ($path) {
+        if (!$path) return null;
+        if (\Illuminate\Support\Str::startsWith($path, 'http')) return $path;
+        return \Illuminate\Support\Str::startsWith($path, 'images/') ? '/' . $path : '/storage/' . $path;
+    };
+
+    $post = \App\Models\News::where('status', 'published')
+        ->where(function ($q) use ($slug) {
+            $q->where('slug', $slug);
+            if (is_numeric($slug)) {
+                $q->orWhere('id', $slug);
+            }
+        })
+        ->firstOrFail();
+
+    $related = \App\Models\News::where('status', 'published')
+        ->where('id', '!=', $post->id)
+        ->latest('published_at')
+        ->take(4)
+        ->get()
+        ->map(fn($n) => [
+            'id'        => $n->id,
+            'slug'      => $n->slug,
+            'title'     => $n->title,
+            'date'      => $n->published_at ? $n->published_at->translatedFormat('d F Y') : '-',
+            'thumbnail' => $prefixImage($n->image),
+            'category'  => $n->category ?? 'Berita',
+        ]);
+
+    return Inertia::render('Mobile/DetailBerita', [
+        'post' => [
+            'id'       => $post->id,
+            'slug'     => $post->slug,
+            'title'    => $post->title,
+            'content'  => $post->content,
+            'category' => $post->category ?? 'Berita',
+            'date'     => $post->published_at ? $post->published_at->translatedFormat('d F Y') : '-',
+            'image'    => $prefixImage($post->image),
+        ],
+        'related' => $related,
+    ]);
+};
+
+Route::get('/berita/{slug}', function($slug) use ($renderMobileBeritaDetail) {
+    // Deteksi Mobile
+    $userAgent = request()->header('User-Agent', '');
+    $isMobile = preg_match('/Mobile|Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i', $userAgent);
+    if (request()->query('mode') === 'mobile') $isMobile = true;
+    if (request()->query('mode') === 'desktop') $isMobile = false;
+
+    if ($isMobile) {
+        return $renderMobileBeritaDetail($slug);
+    }
+
     $post = \App\Models\News::where('slug', $slug)->firstOrFail();
     $related = \App\Models\News::where('id', '!=', $post->id)
         ->where('status', 'published')
@@ -737,7 +792,7 @@ Route::get("/putusan/{id}", function(int $id) {
 // ---------------------------------------------------------------
 // MOBILE APP ROUTES
 // ---------------------------------------------------------------
-Route::prefix('mobile')->group(function () {
+Route::prefix('mobile')->group(function () use ($renderMobileBeritaDetail) {
 
     // Landing Mobile
     Route::get('/', function () {
@@ -851,6 +906,9 @@ Route::prefix('mobile')->group(function () {
             ->through(fn($a)=>['id'=>$a->id,'slug'=>$a->slug,'title'=>$a->title,'date'=>$a->published_at?$a->published_at->format('d M Y'):null,'category'=>$a->category??'Berita','thumbnail'=>$a->image?(Str::startsWith($a->image,'images/')?'/'.$a->image:'/storage/'.$a->image):null,'excerpt'=>Str::limit(strip_tags($a->content??''),100)]);
         return Inertia::render('Mobile/Berita', ['news'=>$news,'filters'=>['q'=>$request->q]]);
     })->name('mobile.berita');
+
+    // Detail Berita
+    Route::get('/berita/{slug}', $renderMobileBeritaDetail)->name('mobile.berita.detail');
 
     // Info JDIH
     Route::get('/info', fn() => Inertia::render('Mobile/InfoJdih'))->name('mobile.info');

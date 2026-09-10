@@ -336,7 +336,7 @@ export default function MobileHome({
                         {latestNews.map((news, i) => (
                             <Link 
                                 key={i} 
-                                href={`/berita/${news.slug || news.id}`}
+                                href={`/mobile/berita/${news.slug || news.id}`}
                                 className="flex gap-4 p-4 bg-white border border-slate-100 rounded-3xl shadow-sm active:scale-[0.98] transition-all"
                             >
                                 <div className="h-20 w-20 rounded-2xl bg-slate-100 overflow-hidden shrink-0">

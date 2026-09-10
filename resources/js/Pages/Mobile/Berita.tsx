@@ -60,7 +60,7 @@ export default function Berita({ news, filters }: Props) {
                     <>
                         {/* Featured Article */}
                         {featured && (
-                            <a href={`/berita/${featured.slug}`} className="block rounded-[2rem] overflow-hidden bg-white border border-slate-100 shadow-sm active:scale-[0.98] transition-all">
+                            <a href={`/mobile/berita/${featured.slug}`} className="block rounded-[2rem] overflow-hidden bg-white border border-slate-100 shadow-sm active:scale-[0.98] transition-all">
                                 <div className="relative aspect-video bg-slate-100">
                                     {featured.thumbnail ? (
                                         <img src={featured.thumbnail} alt={featured.title} className="w-full h-full object-cover" />
@@ -89,7 +89,7 @@ export default function Berita({ news, filters }: Props) {
                             <div className="space-y-3">
                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Berita Lainnya</p>
                                 {rest.map(item => (
-                                    <a key={item.id} href={`/berita/${item.slug}`}
+                                    <a key={item.id} href={`/mobile/berita/${item.slug}`}
                                         className="flex gap-4 p-3.5 bg-white border border-slate-100 rounded-3xl shadow-sm active:scale-[0.98] transition-all">
                                         <div className="h-16 w-16 rounded-2xl bg-slate-100 overflow-hidden shrink-0">
                                             {item.thumbnail ? (
