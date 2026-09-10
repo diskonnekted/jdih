@@ -48,7 +48,14 @@ class ProdukHukumDesaController extends Controller
         }
 
         // SSRF Prevention #1: Only allow URLs registered in the database (whitelist approach)
-        $village = \App\Models\Village::where('url', $villageUrl)->where('is_active', true)->first();
+        // Normalisasi trailing slash: "https://desa.id" dan "https://desa.id/" dianggap sama
+        $village = \App\Models\Village::where('is_active', true)
+            ->where(function ($q) use ($villageUrl) {
+                $q->where('url', $villageUrl)
+                  ->orWhere('url', rtrim($villageUrl, '/') . '/')
+                  ->orWhere('url', rtrim($villageUrl, '/'));
+            })
+            ->first();
 
         if (!$village) {
             return response()->json(['error' => 'URL desa tidak terdaftar atau tidak valid.'], 403);
@@ -63,6 +70,7 @@ class ProdukHukumDesaController extends Controller
         }
 
         // SSRF Prevention #3: Whitelist allowed endpoints to prevent path traversal
+        // Sub-path dari endpoint yang diizinkan juga boleh (mis. produk-hukum/kategori)
         $normalizedEndpoint = trim($endpoint, '/');
         $allowedEndpoints = [
             'internal_api/produk-hukum',
@@ -70,7 +78,15 @@ class ProdukHukumDesaController extends Controller
             'internal_api/transparansi-publik',
         ];
 
-        if (!in_array($normalizedEndpoint, $allowedEndpoints)) {
+        $isAllowedEndpoint = false;
+        foreach ($allowedEndpoints as $allowed) {
+            if ($normalizedEndpoint === $allowed || strpos($normalizedEndpoint, $allowed . '/') === 0) {
+                $isAllowedEndpoint = true;
+                break;
+            }
+        }
+
+        if (!$isAllowedEndpoint) {
             return response()->json(['error' => 'Endpoint tidak diizinkan.'], 403);
         }
 
