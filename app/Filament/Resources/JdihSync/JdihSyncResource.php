@@ -22,6 +22,10 @@ class JdihSyncResource extends Resource
 {
     protected static ?string $model = JdihSyncLog::class;
 
+    // Slug eksplisit: tanpa ini Filament menggabungkan nama folder (jdih-sync)
+    // dengan slug kelas (jdih-syncs) menjadi URL dobel /admin/jdih-sync/jdih-syncs
+    protected static ?string $slug = 'jdih-sync';
+
     protected static ?string $modelLabel = 'Sinkronisasi JDIH';
     protected static ?string $pluralModelLabel = 'Sinkronisasi JDIH';
     protected static ?string $navigationLabel = 'Sinkronisasi JDIH';
