@@ -93,7 +93,16 @@ export default function ProdukHukumDesa({ villagesMapping }: Props) {
                     endpoint: '/internal_api/produk-hukum/kategori'
                 }
             });
-            setCategories(catRes.data?.data || []);
+            setCategories(
+                (catRes.data?.data || [])
+                    .map((c: any) => ({
+                        id: String(c.id ?? ''),
+                        // API OpenSID memakai format JSON:API (attributes.nama),
+                        // tapi dukung juga bentuk datar {nama} sebagai fallback
+                        nama: c.attributes?.nama ?? c.nama ?? '',
+                    }))
+                    .filter((c: Category) => c.nama !== '')
+            );
             fetchProducts();
         } catch (err) {
             console.error('Error fetching initial data:', err);
