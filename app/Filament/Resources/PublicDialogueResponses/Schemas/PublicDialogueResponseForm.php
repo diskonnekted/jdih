@@ -25,11 +25,9 @@ class PublicDialogueResponseForm
                     ->disabled()
                     ->required(),
                 
-                TextInput::make('email')
-                    ->label('Email')
-                    ->email()
-                    ->disabled()
-                    ->required(),
+                TextInput::make('address')
+                    ->label('Alamat')
+                    ->disabled(),
                 
                 Textarea::make('suggestion')
                     ->label('Saran / Aspirasi')

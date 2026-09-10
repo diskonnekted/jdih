@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PublicDialogue;
 use App\Models\PublicDialogueResponse;
+use App\Models\Aspiration;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -15,8 +16,13 @@ class PublicDialogueController extends Controller
             ->latest()
             ->get();
 
+        $aspirations = Aspiration::where('status', '!=', 'rejected')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         return Inertia::render('Layanan/DialogPublik/Index', [
-            'dialogues' => $dialogues
+            'dialogues' => $dialogues,
+            'aspirations' => $aspirations,
         ]);
     }
 

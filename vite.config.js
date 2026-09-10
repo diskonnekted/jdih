@@ -10,6 +10,13 @@ export default defineConfig({
         }),
         react(),
     ],
+    server: {
+        host: '127.0.0.1',
+        port: 5173,
+        hmr: {
+            host: '127.0.0.1',
+        },
+    },
     build: {
         // ⚡ Pisahkan vendor besar ke chunk terpisah
         // Manfaat: browser cache vendor chunk lebih lama,

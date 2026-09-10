@@ -25,6 +25,7 @@ const NAV_ITEMS = [
             { label: 'Anggota KAB Banjarnegara', href: '/anggota-jdih' },
             { label: 'Kedudukan dan Alamat', href: '/kedudukan-dan-alamat' },
             { label: 'SOP', href: '/sop' },
+            { label: 'Sarana & Prasarana', href: '/sarana-prasarana' },
         ]
     },
     {

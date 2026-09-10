@@ -15,3 +15,17 @@ Schedule::command('backup:database --label=harian')
     ->withoutOverlapping()
     ->runInBackground();
 
+// Sinkronisasi otomatis ke JDIHN Pusat setiap 6 jam (00:00, 06:00, 12:00, 18:00 WIB)
+Schedule::command('jdih:sync --type=full')
+    ->cron('0 */6 * * *') // Setiap 6 jam UTC
+    ->timezone('Asia/Jakarta')
+    ->withoutOverlapping()
+    ->runInBackground();
+
+// Sinkronisasi dokumen otomatis setiap hari pukul 03:00 WIB (20:00 UTC)
+Schedule::command('jdih:sync --type=document')
+    ->dailyAt('20:00') // 03:00 WIB = 20:00 UTC
+    ->timezone('UTC')
+    ->withoutOverlapping()
+    ->runInBackground();
+

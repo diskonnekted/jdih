@@ -26,14 +26,19 @@ class BackupDatabase extends Command
         if (!is_dir($backupDir)) mkdir($backupDir, 0755, true);
         $fullPath = $backupDir . DIRECTORY_SEPARATOR . $filename;
 
-        // Build mysqldump command
+        // Build mysqldump command - use full path for Windows XAMPP
         $host     = escapeshellarg($dbConfig['host']);
         $port     = escapeshellarg($dbConfig['port'] ?? '3306');
         $user     = escapeshellarg($dbConfig['username']);
         $password = $dbConfig['password'];
         $database = escapeshellarg($dbConfig['database']);
 
-        $cmd = "mysqldump --host={$host} --port={$port} --user={$user}"
+        // Try full path first (Windows XAMPP), fallback to just 'mysqldump' (Linux)
+        $mysqldumpBin = file_exists('D:/xampp/mysql/bin/mysqldump.exe')
+            ? 'D:/xampp/mysql/bin/mysqldump.exe'
+            : 'mysqldump';
+
+        $cmd = "{$mysqldumpBin} --host={$host} --port={$port} --user={$user}"
              . ($password ? " --password=" . escapeshellarg($password) : '')
              . " --single-transaction --routines --triggers --add-drop-table"
              . " {$database} > " . escapeshellarg($fullPath);

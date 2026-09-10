@@ -79,9 +79,15 @@ Route::get('/qrcode', function (\Illuminate\Http\Request $request) {
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin/ikm/download', [\App\Http\Controllers\IkmReportController::class, 'download'])->name('admin.ikm.download');
     Route::get('/admin/ikm/print', [\App\Http\Controllers\IkmReportController::class, 'print'])->name('admin.ikm.print');
+    Route::get('/admin/laporan-tahunan', function() {
+        return Inertia::render('Admin/LaporanTahunan');
+    })->name('admin.laporan-tahunan');
+    Route::post('/admin/laporan-tahunan', [\App\Http\Controllers\AnnualReportController::class, 'store'])->name('admin.laporan-tahunan.store');
+    Route::get('/admin/laporan-tahunan/download', [\App\Http\Controllers\AnnualReportController::class, 'download'])->name('admin.laporan-tahunan.download');
 });
 
 Route::post('/public-consultation', [\App\Http\Controllers\PublicConsultationController::class, 'store'])->name('public-consultation.store');
+Route::post('/aspirations', [\App\Http\Controllers\AspirationController::class, 'store'])->name('aspirations.store');
 
 Route::get('/', function () {
     // ⚡ Cache semua query berat — TTL 5 menit untuk konten dinamis, 10 menit untuk statistik
@@ -452,6 +458,15 @@ Route::get('/sop', function() {
     return Inertia::render('Profil/Sop', [
         'item' => \App\Models\ProfileItem::where('slug', 'sop')->first()
     ]);
+});
+Route::get('/sarana-prasarana', function() {
+    $infrastructures = [
+        'ruangan' => \App\Models\Infrastructure::byCategory('ruangan')->active()->get()->map(fn($i) => $i->toArray())->toArray(),
+        'perangkat_keras' => \App\Models\Infrastructure::byCategory('perangkat_keras')->active()->get()->map(fn($i) => $i->toArray())->toArray(),
+        'perangkat_lunak' => \App\Models\Infrastructure::byCategory('perangkat_lunak')->active()->get()->map(fn($i) => $i->toArray())->toArray(),
+        'jaringan' => \App\Models\Infrastructure::byCategory('jaringan')->active()->get()->map(fn($i) => $i->toArray())->toArray(),
+    ];
+    return Inertia::render('Profil/SaranaPrasarana', ['infrastructures' => $infrastructures]);
 });
 
 // ---------------------------------------------------------------
@@ -934,4 +949,25 @@ Route::get("/{category:slug}/{id}", function(string $slug, int $id) {
         'popular'  => $popular
     ]);
 })->whereNumber('id');
+
+// ---------------------------------------------------------------
+// JDIHN INTEGRATION API
+// ---------------------------------------------------------------
+Route::prefix('api/jdihn')->group(function () {
+    // Sync endpoints
+    Route::post('/sync/documents', [App\Http\Controllers\Api\JdihSyncController::class, 'syncDocuments'])
+        ->name('api.jdihn.sync.documents');
+    Route::post('/sync/members', [App\Http\Controllers\Api\JdihSyncController::class, 'syncMembers'])
+        ->name('api.jdihn.sync.members');
+    
+    // Settings
+    Route::get('/settings', [App\Http\Controllers\Api\JdihSyncController::class, 'getSettings'])
+        ->name('api.jdihn.settings');
+    Route::post('/settings', [App\Http\Controllers\Api\JdihSyncController::class, 'updateSettings'])
+        ->name('api.jdihn.settings.update');
+    
+    // Logs
+    Route::get('/sync-logs', [App\Http\Controllers\Api\JdihSyncController::class, 'getSyncLogs'])
+        ->name('api.jdihn.sync-logs');
+});
 

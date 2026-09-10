@@ -60,6 +60,17 @@ const VIDEOS = [
     { id: 3, title: 'Penyelenggaraan Koperasi Merah Putih', href: 'https://www.tiktok.com/@jdih_banjarnegara', duration: '3:10', image: '/images/covers/cover_koperasi.webp' },
 ];
 
+const QUOTES = [
+    { author: 'Plato, Filsuf Yunani', text: 'Kebenaran, keadilan, dan kebebasan itu adalah pangkal dari suatu kebahagiaan.' },
+    { author: 'Ulpianus, Yuris Rom Kuno', text: 'Justitia est constans et perpetua voluntas ius suum cuique tribuendi.' },
+    { author: 'Soekarno, Presiden Pertama RI', text: 'Bangunlah karakternya, maka bangunbanglah bangsa ini.' },
+    { author: 'Hans Kelsen, Teorawan Hukum', text: 'Hukum adalah norma yang mengatur hubungan antar manusia dalam masyarakat.' },
+    { author: 'Socrates, Filsuf Athena', text: 'Hukum yang baik harus didasarkan pada keadilan dan kebijaksanaan.' },
+    { author: 'Rustam Hanintjadra', text: 'Hukum tidak hanya merupakan sistem norma, tetapi juga instrumen perubahan sosial.' },
+    { author: 'Soedjanjono Dirdjosisworo', text: 'Hukum adalah kumpulan aturan-aturan hidup yang mengatur tata tertib dalam suatu masyarakat.' },
+    { author: 'Prof. Dr. Notonagoro', text: 'Hukum adalah kumpulan norma yang bersumber dari Pancasila dan UUD 1945.' },
+];
+
 /* ------------------------------------------------------------------ */
 /* HELPERS                                                             */
 /* ------------------------------------------------------------------ */
@@ -118,7 +129,17 @@ function ConsultationForm({ publicDialogues = [] }: { publicDialogues?: any[] })
 
         setLoading(true);
         try {
-            await axios.post('/public-consultation', formData);
+            if (formData.type === 'Aspirasi Masyarakat') {
+                // Kirim ke endpoint aspirasi terpisah
+                await axios.post('/aspirations', {
+                    name: formData.name,
+                    address: formData.address,
+                    suggestion: formData.suggestion,
+                });
+            } else {
+                // Konsultasi Publik - tetap ke endpoint semula
+                await axios.post('/public-consultation', formData);
+            }
             setSuccess(true);
             setFormData({ name: '', address: '', suggestion: '', type: 'Aspirasi Masyarakat', public_dialogue_id: '' });
         } catch (error) {
@@ -233,6 +254,7 @@ function ConsultationForm({ publicDialogues = [] }: { publicDialogues?: any[] })
 function Hero({ banners = [], stats = [], publicDialogues = [] }: { banners?: any[], stats?: any[], publicDialogues?: any[] }) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isHovered, setIsHovered] = useState(false);
+    const [quoteIndex, setQuoteIndex] = useState(0);
 
     // Fallback if no banners
     const displayBanners = banners.length > 0 ? banners : [{
@@ -253,6 +275,15 @@ function Hero({ banners = [], stats = [], publicDialogues = [] }: { banners?: an
 
         return () => clearInterval(timer);
     }, [displayBanners.length, isHovered]);
+
+    // Rotate quotes every 8 seconds
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setQuoteIndex((prev) => (prev + 1) % QUOTES.length);
+        }, 8000);
+
+        return () => clearInterval(timer);
+    }, []);
 
     function handleSearch(values: SearchValues) {
         const JENIS_SLUG: Record<string, string> = {
@@ -292,8 +323,13 @@ function Hero({ banners = [], stats = [], publicDialogues = [] }: { banners?: an
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 1 }}
-                        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                        style={{ backgroundImage: `url('${displayBanners[currentIndex].image}')` }}
+                        className="absolute inset-0"
+                        style={{
+                            backgroundImage: `url('${displayBanners[currentIndex].image}')`,
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                            backgroundRepeat: 'no-repeat',
+                        }}
                     >
                         {/* overlay */}
                         <div className="absolute inset-0 bg-[#1e293b]/85" />
@@ -380,6 +416,33 @@ function Hero({ banners = [], stats = [], publicDialogues = [] }: { banners?: an
                         ))}
                     </div>
                 )}
+            </div>
+
+            {/* ── Rotating Quotes Section ── */}
+            <div className="bg-gradient-to-r from-[#0d9488] via-teal-700 to-[#0d9488] py-12 px-6">
+                <div className="max-w-4xl mx-auto">
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={quoteIndex}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            transition={{ duration: 0.6 }}
+                            className="text-center"
+                        >
+                            <div className="flex items-center justify-center gap-3 mb-4">
+                                <Quote className="h-6 w-6 text-white/60" />
+                                <span className="text-white/70 text-xs font-bold uppercase tracking-widest">Quote Hari Ini</span>
+                            </div>
+                            <blockquote className="text-white text-lg md:text-xl font-medium italic leading-relaxed mb-4">
+                                "{QUOTES[quoteIndex].text}"
+                            </blockquote>
+                            <cite className="text-white/80 text-sm font-semibold not-italic">
+                                — {QUOTES[quoteIndex].author}
+                            </cite>
+                        </motion.div>
+                    </AnimatePresence>
+                </div>
             </div>
 
             {/* ── Stats strip (mobile only) ── */}

@@ -6,7 +6,9 @@ export default function IKMSurveyModal() {
     const [isOpen, setIsOpen] = useState(false);
     const [step, setStep] = useState(0); // 0: Invitation, 1: Demographics, 2: Ratings, 3: Success
     const [isSubmitting, setIsSubmitting] = useState(false);
-    
+    const STORAGE_KEY = 'ikm_survey_shown';
+    const STORAGE_EXPIRY = 7 * 24 * 60 * 60 * 1000; // 7 hari
+
     const [formData, setFormData] = useState({
         gender: '',
         age_group: '',
@@ -17,6 +19,17 @@ export default function IKMSurveyModal() {
     });
 
     useEffect(() => {
+        const now = Date.now();
+        const shownData = localStorage.getItem(STORAGE_KEY);
+        
+        if (shownData) {
+            const { timestamp } = JSON.parse(shownData);
+            // Tampilkan lagi jika sudah lebih dari 7 hari sejak terakhir ditampilkan
+            if (now - timestamp < STORAGE_EXPIRY) {
+                return; // Survey sudah pernah ditampilkan dalam 7 hari terakhir, jangan tampilkan lagi
+            }
+        }
+        
         const timer = setTimeout(() => {
             setIsOpen(true);
         }, 3000); // Show after 3 seconds
@@ -25,6 +38,14 @@ export default function IKMSurveyModal() {
 
     const closeSurvey = () => {
         setIsOpen(false);
+        // Simpan ke localStorage agar tidak muncul lagi dalam 7 hari
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ timestamp: Date.now() }));
+    };
+
+    const handleStartSurvey = () => {
+        // Simpan ke localStorage saat user mulai mengisi survei
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ timestamp: Date.now() }));
+        setStep(1);
     };
 
     const handleRating = (key: string, value: number) => {
@@ -85,7 +106,7 @@ export default function IKMSurveyModal() {
                         </p>
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                             <button 
-                                onClick={() => setStep(1)}
+                                onClick={handleStartSurvey}
                                 className="w-full sm:w-auto px-10 py-4 bg-[#0d9488] text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-black transition-all shadow-xl shadow-teal-900/10"
                             >
                                 Bersedia Mengisi

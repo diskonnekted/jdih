@@ -128,8 +128,10 @@ export default function ProdukHukumDesa({ villagesMapping }: Props) {
     };
 
     const fmtDate = (d: string) => {
-        if (!d) return '-';
-        return new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+        if (!d) return 'Belum tersedia';
+        const date = new Date(d);
+        if (isNaN(date.getTime())) return 'Belum tersedia';
+        return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
     };
 
     return (
@@ -345,7 +347,7 @@ export default function ProdukHukumDesa({ villagesMapping }: Props) {
                                                         </div>
                                                         <div className="flex items-center gap-2 mt-1">
                                                             <Calendar className="h-3 w-3 text-slate-300" />
-                                                            <span className="text-[10px] text-slate-400 font-medium">Diunggah pada {fmtDate(product.attributes.tgl_upload || product.attributes.attr?.tgl_ditetapkan || '')}</span>
+                                                            <span className="text-[10px] text-slate-400 font-medium">Disinkronkan pada {fmtDate(product.attributes.tgl_upload || product.attributes.attr?.tgl_ditetapkan || '')}</span>
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-4">

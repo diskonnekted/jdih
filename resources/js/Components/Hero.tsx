@@ -8,7 +8,7 @@ export default function Hero() {
             {/* Background Image with Overlay */}
             <div 
                 className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000 hover:scale-105"
-                style={{ backgroundImage: "url('/images/hero-bg.png')" }}
+                style={{ backgroundImage: "url('/images/hero1.webp')" }}
             >
                 <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 to-slate-900/60" />
             </div>
