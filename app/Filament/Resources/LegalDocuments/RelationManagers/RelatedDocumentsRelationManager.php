@@ -20,6 +20,11 @@ class RelatedDocumentsRelationManager extends RelationManager
 {
     protected static string $relationship = 'relatedDocuments';
 
+    // Kebalikan dari relasi self-referencing di atas — tanpa ini Filament
+    // menebak nama konvensional "legalDocuments" yang tidak ada di model,
+    // sehingga AttachAction gagal (Call to undefined method ... legalDocuments())
+    protected static ?string $inverseRelationship = 'referencedByDocuments';
+
     protected static ?string $title = 'Dokumen Terkait (Mencabut/Mengubah)';
 
     public function form(Schema $schema): Schema
