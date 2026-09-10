@@ -87,14 +87,6 @@ class AdminPanelProvider extends PanelProvider
                             font-size: 2rem !important;
                             font-weight: 900 !important;
                         }
-                        /* Captcha Label Styling */
-                        [data-field-name="captcha"] label span {
-                            background: #0d9488 !important;
-                            color: white !important;
-                            padding: 0.5rem 1rem !important;
-                            border-radius: 0.5rem !important;
-                            font-weight: 800 !important;
-                        }
                     </style>
                 '),
             )
