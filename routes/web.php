@@ -86,8 +86,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/laporan-tahunan/download', [\App\Http\Controllers\AnnualReportController::class, 'download'])->name('admin.laporan-tahunan.download');
 });
 
-Route::post('/public-consultation', [\App\Http\Controllers\PublicConsultationController::class, 'store'])->name('public-consultation.store');
-Route::post('/aspirations', [\App\Http\Controllers\AspirationController::class, 'store'])->name('aspirations.store');
+Route::post('/public-consultation', [\App\Http\Controllers\PublicConsultationController::class, 'store'])
+    ->middleware('throttle:10,1')
+    ->name('public-consultation.store');
+Route::post('/aspirations', [\App\Http\Controllers\AspirationController::class, 'store'])
+    ->middleware('throttle:10,1')
+    ->name('aspirations.store');
 
 Route::get('/', function () {
     // ⚡ Cache semua query berat — TTL 5 menit untuk konten dinamis, 10 menit untuk statistik
@@ -534,11 +538,14 @@ Route::get('/kerja-sama-daerah', function(\Illuminate\Http\Request $request) {
 // ---------------------------------------------------------------
 Route::get('/bantuan-hukum', fn() => Inertia::render('Layanan/BantuanHukum'))->name('layanan.bankum');
 Route::get('/konsultasi-hukum', fn() => Inertia::render('Layanan/KonsultasiHukum'))->name('layanan.konsultasi');
-Route::post('/konsultasi-hukum', [LegalConsultationController::class, 'store'])->name('layanan.konsultasi.store');
+Route::post('/konsultasi-hukum', [LegalConsultationController::class, 'store'])
+    ->middleware('throttle:10,1')
+    ->name('layanan.konsultasi.store');
 Route::get('/bankum', fn() => redirect('/bantuan-hukum'));
 
 Route::get('/produk-hukum-desa',       [ProdukHukumDesaController::class, 'index']);
-Route::get('/api/produk-hukum-desa',   [ProdukHukumDesaController::class, 'proxy']);
+Route::get('/api/produk-hukum-desa',   [ProdukHukumDesaController::class, 'proxy'])
+    ->middleware('throttle:30,1');
 
 // Dialog Publik & Aspirasi
 Route::get('/dialog-publik', [\App\Http\Controllers\PublicDialogueController::class, 'index'])->name('dialog-publik.index');

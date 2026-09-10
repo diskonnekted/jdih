@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Crypt;
 
 class JdihApiSetting extends Model
 {
@@ -18,17 +19,34 @@ class JdihApiSetting extends Model
     ];
 
     /**
+     * Keys that contain sensitive data and should be encrypted at rest.
+     */
+    protected static array $sensitiveKeys = [
+        'jdihnh_api_token',
+    ];
+
+    /**
      * Get setting value by key.
      */
     public static function get(string $key, $default = null)
     {
         $setting = self::where('key', $key)->first();
-        
+
         if (!$setting) {
             return $default;
         }
 
         $value = $setting->value;
+
+        // Decrypt sensitive values
+        if (in_array($key, static::$sensitiveKeys) && $value) {
+            try {
+                $value = Crypt::decryptString($value);
+            } catch (\Exception $e) {
+                // Value might be stored as plaintext before encryption was enabled
+                // Return as-is for backward compatibility
+            }
+        }
 
         if ($setting->type === 'boolean') {
             return filter_var($value, FILTER_VALIDATE_BOOLEAN);
@@ -46,7 +64,12 @@ class JdihApiSetting extends Model
      */
     public static function set(string $key, $value, string $type = 'string'): void
     {
-        $setting = self::updateOrCreate(
+        // Encrypt sensitive values before storing
+        if (in_array($key, static::$sensitiveKeys) && is_string($value)) {
+            $value = Crypt::encryptString($value);
+        }
+
+        self::updateOrCreate(
             ['key' => $key],
             [
                 'value' => is_array($value) ? json_encode($value) : $value,

@@ -223,10 +223,33 @@ class RagService
      */
     protected function extractTextFromPdf(string $filePath): string
     {
+        // Path Traversal Prevention: Validate and resolve the real path
+        // Only allow paths within the storage/app/public directory
+        $allowedBase = realpath(storage_path('app/public'));
+        if ($allowedBase === false) {
+            return '';
+        }
+
+        // Resolve the actual path after all symlinks and .. resolution
+        $realPath = realpath($filePath);
+        if ($realPath === false || !str_starts_with($realPath, $allowedBase)) {
+            Log::warning('RAG: Blocked potential path traversal attempt', [
+                'requested' => $filePath,
+                'real_path' => $realPath,
+                'allowed_base' => $allowedBase,
+            ]);
+            return '';
+        }
+
+        // Verify the file exists and is a PDF
+        if (!is_file($realPath) || strtolower(pathinfo($realPath, PATHINFO_EXTENSION)) !== 'pdf') {
+            return '';
+        }
+
         // Check if pdftotext is available (poppler-utils)
         if (exec('pdftotext -v 2>&1', $output, $returnCode) && $returnCode === 0) {
             $tempFile = tempnam(sys_get_temp_dir(), 'pdf_');
-            exec("pdftotext \"" . escapeshellarg($filePath) . "\" \"" . escapeshellarg($tempFile) . "\" 2>&1");
+            exec("pdftotext \"" . escapeshellarg($realPath) . "\" \"" . escapeshellarg($tempFile) . "\" 2>&1");
             $text = file_get_contents($tempFile);
             unlink($tempFile);
             return trim($text ?? '');

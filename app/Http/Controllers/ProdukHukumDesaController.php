@@ -36,58 +36,74 @@ class ProdukHukumDesaController extends Controller
 
     /**
      * Proxy request to fetch data from village OpenSID API.
+     * SSRF Prevention: Only allows registered villages, blocks private IPs, whitelists endpoints.
      */
     public function proxy(Request $request)
     {
         $villageUrl = $request->query('url');
         $endpoint = $request->query('endpoint', '/internal_api/produk-hukum');
-        
+
         if (!$villageUrl) {
             return response()->json(['error' => 'Village URL is required'], 400);
         }
 
-        // Validate village URL against database to prevent SSRF
-        $isValidVillage = \App\Models\Village::where('url', $villageUrl)->where('is_active', true)->exists();
+        // SSRF Prevention #1: Only allow URLs registered in the database (whitelist approach)
+        $village = \App\Models\Village::where('url', $villageUrl)->where('is_active', true)->first();
 
-        if (!$isValidVillage) {
-            // For extra flexibility during experiment, we check if it is a valid .desa.id
-            if (!str_ends_with($villageUrl, '.desa.id')) {
-                return response()->json(['error' => 'URL desa tidak terdaftar atau tidak valid.'], 403);
-            }
+        if (!$village) {
+            return response()->json(['error' => 'URL desa tidak terdaftar atau tidak valid.'], 403);
+        }
+
+        // SSRF Prevention #2: Block private/internal IP addresses after DNS resolution
+        $parsedUrl = parse_url($villageUrl);
+        $host = $parsedUrl['host'] ?? '';
+
+        if ($this->isPrivateOrInternalIp($host)) {
+            return response()->json(['error' => 'Akses ke IP privat/internal tidak diizinkan.'], 403);
+        }
+
+        // SSRF Prevention #3: Whitelist allowed endpoints to prevent path traversal
+        $normalizedEndpoint = trim($endpoint, '/');
+        $allowedEndpoints = [
+            'internal_api/produk-hukum',
+            'internal_api/informasi-umum',
+            'internal_api/transparansi-publik',
+        ];
+
+        if (!in_array($normalizedEndpoint, $allowedEndpoints)) {
+            return response()->json(['error' => 'Endpoint tidak diizinkan.'], 403);
         }
 
         try {
             $query = $request->except(['url', 'endpoint']);
-            $response = Http::withOptions(['verify' => false]) // Some village certs might be invalid
-                ->get($villageUrl . $endpoint, $query);
+            // Add timeout and limit connection to avoid slow loris attacks
+            $response = Http::timeout(10)
+                ->withOptions(['verify' => false])
+                ->get($villageUrl . '/' . $normalizedEndpoint, $query);
 
             $data = $response->json();
 
-            // Normalize endpoint for comparison (remove leading/trailing slashes)
-            $normalizedEndpoint = trim($endpoint, '/');
-            
             // Apply filtering and prioritization for document list endpoint
             if ($normalizedEndpoint === 'internal_api/produk-hukum' && isset($data['data'])) {
                 $filteredData = collect($data['data'])->filter(function ($item) {
                     $title = strtoupper($item['attributes']['nama'] ?? '');
                     $category = strtoupper($item['attributes']['kategori'] ?? '');
 
-                    // 1. Privacy Filter: Hide documents with "SK" in title or category
-                    // We check for "SK " or "SK-" or " SK" or exactly "SK"
-                    $isSK = (strpos($title, 'SK ') !== false) || 
-                            (strpos($title, 'SK-') !== false) || 
-                            (strpos($title, ' SK') !== false) || 
+                    // Privacy Filter: Hide SK (Surat Keputusan) documents
+                    $isSK = (strpos($title, 'SK ') !== false) ||
+                            (strpos($title, 'SK-') !== false) ||
+                            (strpos($title, ' SK') !== false) ||
                             ($title === 'SK') ||
                             (strpos($category, 'SK') !== false);
-                    
+
                     return !$isSK;
                 })->values();
 
-                // 2. Prioritization: Move "Perkades" to the top
+                // Prioritization: Move "Perkades" to the top
                 $sortedData = $filteredData->sort(function ($a, $b) {
                     $titleA = strtolower($a['attributes']['nama'] ?? '');
                     $titleB = strtolower($b['attributes']['nama'] ?? '');
-                    
+
                     $keywords = ['perkades', 'peraturan kepala desa', 'peraturan kades'];
                     $hasKeywordA = false;
                     $hasKeywordB = false;
@@ -99,8 +115,7 @@ class ProdukHukumDesaController extends Controller
 
                     if ($hasKeywordA && !$hasKeywordB) return -1;
                     if (!$hasKeywordA && $hasKeywordB) return 1;
-                    
-                    // Maintain original order for others
+
                     return 0;
                 })->values()->all();
 
@@ -109,7 +124,65 @@ class ProdukHukumDesaController extends Controller
 
             return response()->json($data, $response->status());
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json(['error' => 'Gagal mengambil data dari server desa.'], 502);
         }
+    }
+
+    /**
+     * Check if a hostname resolves to a private or internal IP address.
+     */
+    protected function isPrivateOrInternalIp(string $host): bool
+    {
+        // Block localhost variations
+        $localhostVariants = ['localhost', 'localhost.localdomain'];
+        if (in_array(strtolower($host), $localhostVariants)) {
+            return true;
+        }
+
+        // Resolve hostname to IP
+        $ip = gethostbyname($host);
+        if ($ip === $host) {
+            // DNS resolution failed
+            return true;
+        }
+
+        // Block all private/reserved IPv4 ranges
+        $privateRanges = [
+            '10.0.0.0/8',
+            '100.64.0.0/10',
+            '127.0.0.0/8',
+            '169.254.0.0/16',
+            '172.16.0.0/12',
+            '192.0.0.0/24',
+            '192.0.2.0/24',
+            '192.88.99.0/24',
+            '192.168.0.0/16',
+            '198.18.0.0/15',
+            '198.51.100.0/24',
+            '203.0.113.0/24',
+            '224.0.0.0/4',
+            '240.0.0.0/4',
+        ];
+
+        foreach ($privateRanges as $range) {
+            if ($this->ipInRange($ip, $range)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if an IPv4 address is within a CIDR range.
+     */
+    protected function ipInRange(string $ip, string $range): bool
+    {
+        [$subnet, $bits] = explode('/', $range);
+        $ipLong = ip2long($ip);
+        $subnetLong = ip2long($subnet);
+        $mask = -1 << (32 - (int)$bits);
+
+        return ($ipLong & $mask) === ($subnetLong & $mask);
     }
 }
