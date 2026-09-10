@@ -101,12 +101,12 @@ class JdihSyncResource extends Resource
                     ->label('Dipicu Oleh'),
             ])
             ->defaultSort('created_at', 'desc')
-            ->actions([
-                \Filament\Tables\Actions\ViewAction::make(),
+            ->recordActions([
+                \Filament\Actions\ViewAction::make(),
             ])
-            ->bulkActions([
-                \Filament\Tables\Actions\BulkActionGroup::make([
-                    \Filament\Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                \Filament\Actions\BulkActionGroup::make([
+                    \Filament\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }
