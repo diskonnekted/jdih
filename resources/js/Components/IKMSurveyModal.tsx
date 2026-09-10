@@ -7,7 +7,8 @@ export default function IKMSurveyModal() {
     const [step, setStep] = useState(0); // 0: Invitation, 1: Demographics, 2: Ratings, 3: Success
     const [isSubmitting, setIsSubmitting] = useState(false);
     const STORAGE_KEY = 'ikm_survey_shown';
-    const STORAGE_EXPIRY = 7 * 24 * 60 * 60 * 1000; // 7 hari
+    const STORAGE_EXPIRY = 30 * 24 * 60 * 60 * 1000; // 30 hari
+    const MAX_SHOW_COUNT = 3; // Maksimal muncul 3x total
 
     const [formData, setFormData] = useState({
         gender: '',
@@ -18,33 +19,73 @@ export default function IKMSurveyModal() {
         suggestion: ''
     });
 
+    // Halaman yang diizinkan untuk menampilkan popup
+    const allowedPages = [
+        '/',
+        '/berita',
+        '/produk-hukum',
+        '/dialog-publik',
+        '/profil',
+        '/galeri'
+    ];
+
     useEffect(() => {
+        // Hanya tampilkan di halaman tertentu
+        const currentPath = window.location.pathname;
+        const isAllowed = allowedPages.some(page => 
+            currentPath === page || currentPath.startsWith(page + '/')
+        );
+        
+        if (!isAllowed) return;
+
         const now = Date.now();
         const shownData = localStorage.getItem(STORAGE_KEY);
-        
+
         if (shownData) {
-            const { timestamp } = JSON.parse(shownData);
-            // Tampilkan lagi jika sudah lebih dari 7 hari sejak terakhir ditampilkan
-            if (now - timestamp < STORAGE_EXPIRY) {
-                return; // Survey sudah pernah ditampilkan dalam 7 hari terakhir, jangan tampilkan lagi
+            try {
+                const data = JSON.parse(shownData);
+                // Cek jika masih dalam 30 hari
+                if (now - data.timestamp < STORAGE_EXPIRY) {
+                    return; // Jangan tampilkan lagi
+                }
+                // Cek jika sudah muncul lebih dari MAX_SHOW_COUNT kali
+                if ((data.count || 0) >= MAX_SHOW_COUNT) {
+                    return; // Jangan tampilkan lagi
+                }
+            } catch (e) {
+                // Jika ada error parsing, reset data
+                localStorage.removeItem(STORAGE_KEY);
             }
         }
-        
+
         const timer = setTimeout(() => {
             setIsOpen(true);
-        }, 3000); // Show after 3 seconds
+            // Update count setiap kali muncul
+            const existingData = shownData ? JSON.parse(shownData) : { timestamp: 0, count: 0 };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({ 
+                timestamp: Date.now(), 
+                count: (existingData.count || 0) + 1 
+            }));
+        }, 5000); // Show after 5 seconds
+
         return () => clearTimeout(timer);
     }, []);
 
     const closeSurvey = () => {
         setIsOpen(false);
-        // Simpan ke localStorage agar tidak muncul lagi dalam 7 hari
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({ timestamp: Date.now() }));
+        // Update count saat user menutup
+        try {
+            const existingData = localStorage.getItem(STORAGE_KEY) ? JSON.parse(localStorage.getItem(STORAGE_KEY)) : { count: 0 };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({ 
+                timestamp: Date.now(), 
+                count: (existingData.count || 0) + 1 
+            }));
+        } catch (e) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({ timestamp: Date.now(), count: 1 }));
+        }
     };
 
     const handleStartSurvey = () => {
-        // Simpan ke localStorage saat user mulai mengisi survei
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({ timestamp: Date.now() }));
         setStep(1);
     };
 
@@ -57,6 +98,15 @@ export default function IKMSurveyModal() {
         try {
             await axios.post('/community-satisfaction', formData);
             setStep(3);
+            // Tandai sudah selesai
+            try {
+                const existingData = localStorage.getItem(STORAGE_KEY) ? JSON.parse(localStorage.getItem(STORAGE_KEY)) : { count: 0 };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify({ 
+                    timestamp: Date.now(), 
+                    count: MAX_SHOW_COUNT // Set ke max agar tidak muncul lagi
+                }));
+            } catch (e) {}
+            
             setTimeout(() => {
                 closeSurvey();
             }, 5000);
@@ -84,9 +134,9 @@ export default function IKMSurveyModal() {
     return (
         <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
             <div className="bg-white w-full max-w-2xl rounded-[40px] shadow-2xl overflow-hidden relative animate-in zoom-in-95 duration-300">
-                
+
                 {/* Close Button */}
-                <button 
+                <button
                     onClick={closeSurvey}
                     aria-label="Tutup Survei"
                     className="absolute top-6 right-6 p-2 bg-slate-100 hover:bg-slate-200 rounded-full text-slate-500 transition-colors z-10"
@@ -105,13 +155,13 @@ export default function IKMSurveyModal() {
                             Bantu kami meningkatkan kualitas layanan JDIH Kabupaten Banjarnegara dengan mengisi kuesioner singkat IKM.
                         </p>
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                            <button 
+                            <button
                                 onClick={handleStartSurvey}
                                 className="w-full sm:w-auto px-10 py-4 bg-[#0d9488] text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-black transition-all shadow-xl shadow-teal-900/10"
                             >
                                 Bersedia Mengisi
                             </button>
-                            <button 
+                            <button
                                 onClick={closeSurvey}
                                 className="w-full sm:w-auto px-10 py-4 bg-slate-100 text-slate-500 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-slate-200 transition-all"
                             >
@@ -137,8 +187,8 @@ export default function IKMSurveyModal() {
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Jenis Kelamin</label>
-                                    <select 
-                                        value={formData.gender} 
+                                    <select
+                                        value={formData.gender}
                                         onChange={(e) => setFormData({...formData, gender: e.target.value})}
                                         className="w-full bg-slate-50 border-none rounded-xl p-3 text-sm focus:ring-2 focus:ring-teal-500"
                                     >
@@ -149,8 +199,8 @@ export default function IKMSurveyModal() {
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Kelompok Usia</label>
-                                    <select 
-                                        value={formData.age_group} 
+                                    <select
+                                        value={formData.age_group}
                                         onChange={(e) => setFormData({...formData, age_group: e.target.value})}
                                         className="w-full bg-slate-50 border-none rounded-xl p-3 text-sm focus:ring-2 focus:ring-teal-500"
                                     >
@@ -165,8 +215,8 @@ export default function IKMSurveyModal() {
                             </div>
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Pendidikan Terakhir</label>
-                                <select 
-                                    value={formData.education} 
+                                <select
+                                    value={formData.education}
                                     onChange={(e) => setFormData({...formData, education: e.target.value})}
                                     className="w-full bg-slate-50 border-none rounded-xl p-3 text-sm focus:ring-2 focus:ring-teal-500"
                                 >
@@ -181,8 +231,8 @@ export default function IKMSurveyModal() {
                             </div>
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Pekerjaan Utama</label>
-                                <input 
-                                    type="text" 
+                                <input
+                                    type="text"
                                     value={formData.occupation}
                                     onChange={(e) => setFormData({...formData, occupation: e.target.value})}
                                     placeholder="Contoh: PNS, Swasta, Mahasiswa, dsb"
@@ -191,7 +241,7 @@ export default function IKMSurveyModal() {
                             </div>
                         </div>
                         <div className="p-8 border-t border-slate-100 flex justify-end">
-                            <button 
+                            <button
                                 disabled={!formData.gender || !formData.age_group || !formData.education || !formData.occupation}
                                 onClick={() => setStep(2)}
                                 className="flex items-center gap-2 px-8 py-3 bg-[#0d9488] text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-black transition-all disabled:opacity-50"
@@ -224,8 +274,8 @@ export default function IKMSurveyModal() {
                                                 key={val}
                                                 onClick={() => handleRating(el.key, val)}
                                                 className={`flex-1 py-3 rounded-xl border-2 transition-all font-black text-xs ${
-                                                    formData[el.key as keyof typeof formData] === val 
-                                                    ? 'bg-teal-500 border-teal-500 text-white shadow-lg shadow-teal-500/20' 
+                                                    formData[el.key as keyof typeof formData] === val
+                                                    ? 'bg-teal-500 border-teal-500 text-white shadow-lg shadow-teal-500/20'
                                                     : 'border-slate-100 bg-slate-50 text-slate-400 hover:border-slate-200'
                                                 }`}
                                             >
@@ -240,7 +290,7 @@ export default function IKMSurveyModal() {
                             ))}
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Saran & Masukan (Opsional)</label>
-                                <textarea 
+                                <textarea
                                     rows={3}
                                     value={formData.suggestion}
                                     onChange={(e) => setFormData({...formData, suggestion: e.target.value})}
@@ -250,13 +300,13 @@ export default function IKMSurveyModal() {
                             </div>
                         </div>
                         <div className="p-8 border-t border-slate-100 flex justify-between">
-                            <button 
+                            <button
                                 onClick={() => setStep(1)}
                                 className="flex items-center gap-2 px-6 py-3 text-slate-400 font-black text-xs uppercase tracking-widest hover:text-slate-600"
                             >
                                 <ChevronLeft className="h-4 w-4" /> Kembali
                             </button>
-                            <button 
+                            <button
                                 onClick={handleSubmit}
                                 disabled={isSubmitting}
                                 className="px-10 py-3 bg-[#0d9488] text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-black transition-all shadow-xl shadow-teal-900/10"
@@ -277,7 +327,7 @@ export default function IKMSurveyModal() {
                         <p className="text-slate-500 text-lg leading-relaxed mb-8 max-w-sm mx-auto">
                             Kontribusi Anda sangat berharga bagi peningkatan pelayanan publik di Kabupaten Banjarnegara.
                         </p>
-                        <button 
+                        <button
                             onClick={closeSurvey}
                             className="flex items-center gap-2 px-10 py-4 bg-slate-900 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-black transition-all"
                         >
