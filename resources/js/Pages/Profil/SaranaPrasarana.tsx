@@ -1,18 +1,15 @@
 import React from 'react';
 import { Head } from '@inertiajs/react';
-import { 
-    Building2, 
-    Monitor, 
-    Database, 
-    Wifi, 
-    Server, 
-    Printer, 
-    Cpu, 
-    HardDrive, 
-    FolderOpen,
-    ShieldCheck,
+import PublicLayout from '@/Layouts/PublicLayout';
+import PageHeader from '@/Components/PageHeader';
+import {
+    Building2,
+    Monitor,
+    Database,
+    Wifi,
     CheckCircle2,
-    AlertCircle
+    AlertCircle,
+    Package,
 } from 'lucide-react';
 
 interface InfrastructureItem {
@@ -49,6 +46,8 @@ const categoryLabels: Record<string, string> = {
     jaringan: 'Jaringan & Infrastruktur IT',
 };
 
+const categoryOrder = ['ruangan', 'perangkat_keras', 'perangkat_lunak', 'jaringan'];
+
 export default function SaranaPrasarana({ infrastructures }: Props) {
     const getConditionBadge = (condition: string) => {
         const styles: Record<string, string> = {
@@ -60,53 +59,52 @@ export default function SaranaPrasarana({ infrastructures }: Props) {
             <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${styles[condition] || 'bg-gray-100 text-gray-700'}`}>
                 {condition === 'baik' && <CheckCircle2 className="h-3 w-3" />}
                 {(condition === 'rusak_ringan' || condition === 'rusak_berat') && <AlertCircle className="h-3 w-3" />}
-                {condition.replace('_', ' ').charAt(0).toUpperCase() + condition.replace('_', ' ').slice(1)}
+                {condition.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
             </span>
         );
     };
 
-    const renderCategory = (category: string, items: InfrastructureItem[]) => {
-        const Icon = categoryIcons[category] || Building2;
-        
+    const allItems = Object.values(infrastructures ?? {}).flat();
+    const totalUnits = allItems.reduce((s, i) => s + i.quantity, 0);
+    const totalBaik = allItems.filter((i) => i.condition === 'baik').length;
+
+    const renderCategory = (category: string) => {
+        const items = infrastructures?.[category as keyof Props['infrastructures']] ?? [];
         if (items.length === 0) return null;
 
-        return (
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-                <div className="p-6 border-b border-slate-100 bg-gradient-to-r from-teal-50 to-white">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-teal-100 rounded-xl">
-                            <Icon className="h-6 w-6 text-teal-600" />
-                        </div>
-                        <div>
-                            <h3 className="text-lg font-bold text-slate-900">{categoryLabels[category]}</h3>
-                            <p className="text-sm text-slate-500">{items.length} item terdaftar</p>
-                        </div>
-                    </div>
-                </div>
+        const Icon = categoryIcons[category] || Package;
 
+        return (
+            <div key={category} className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                <div className="bg-[#0d9488] px-6 py-4 flex items-center gap-3">
+                    <Icon className="h-6 w-6 text-white" />
+                    <h2 className="text-lg font-bold text-white tracking-wide">
+                        {categoryLabels[category] ?? category}
+                    </h2>
+                    <span className="ml-auto text-teal-100 text-sm font-medium">
+                        {items.length} item
+                    </span>
+                </div>
                 <div className="divide-y divide-slate-100">
                     {items.map((item) => (
-                        <div key={item.id} className="p-6 hover:bg-slate-50 transition-colors">
-                            <div className="flex items-start justify-between gap-4">
-                                <div className="flex-1">
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <h4 className="font-bold text-slate-900">{item.name}</h4>
-                                        {getConditionBadge(item.condition)}
-                                    </div>
-                                    {item.description && (
-                                        <p className="text-sm text-slate-600 mb-2">{item.description}</p>
-                                    )}
-                                    {item.specification && (
-                                        <div className="flex items-center gap-2 text-sm text-slate-500">
-                                            <ShieldCheck className="h-4 w-4" />
-                                            <span>Spesifikasi: {item.specification}</span>
-                                        </div>
-                                    )}
+                        <div key={item.id} className="px-6 py-4 flex items-start justify-between gap-4 hover:bg-slate-50 transition-colors">
+                            <div className="flex-1 min-w-0">
+                                <div className="flex flex-wrap items-center gap-2 mb-1">
+                                    <h3 className="font-bold text-[#1e293b]">{item.name}</h3>
+                                    {getConditionBadge(item.condition)}
                                 </div>
-                                <div className="text-right">
-                                    <div className="text-2xl font-black text-teal-600">{item.quantity}</div>
-                                    <div className="text-xs text-slate-400 uppercase tracking-wide">Unit</div>
-                                </div>
+                                {item.description && (
+                                    <p className="text-sm text-slate-600 leading-relaxed">{item.description}</p>
+                                )}
+                                {item.specification && (
+                                    <p className="text-xs text-slate-500 mt-1">
+                                        <span className="font-semibold text-slate-600">Spesifikasi:</span> {item.specification}
+                                    </p>
+                                )}
+                            </div>
+                            <div className="text-right shrink-0">
+                                <div className="text-xl font-black text-[#0d9488]">{item.quantity}</div>
+                                <div className="text-[10px] text-slate-400 uppercase tracking-wide">Unit</div>
                             </div>
                         </div>
                     ))}
@@ -115,62 +113,43 @@ export default function SaranaPrasarana({ infrastructures }: Props) {
         );
     };
 
-    const totalItems = Object.values(infrastructures).reduce((sum, items) => sum + items.length, 0);
-    const totalUnits = Object.values(infrastructures).reduce((sum, items) => sum + items.reduce((s, i) => s + i.quantity, 0), 0);
-
     return (
-        <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
-            <Head title="Sarana & Prasarana - JDIH Kabupaten Banjarnegara" />
+        <PublicLayout>
+            <Head title="Sarana & Prasarana – JDIH Banjarnegara" />
+            <PageHeader
+                title="Sarana & Prasarana"
+                subtitle="Infrastruktur fisik dan digital pendukung pengelolaan dokumen hukum di JDIH Kabupaten Banjarnegara"
+                breadcrumbs={[{ label: 'Profil Kami' }, { label: 'Sarana & Prasarana' }]}
+            />
 
-            {/* Header */}
-            <div className="bg-gradient-to-r from-teal-600 to-teal-700 text-white">
-                <div className="max-w-7xl mx-auto px-4 py-12">
-                    <div className="flex items-center gap-4 mb-4">
-                        <div className="p-3 bg-white/10 rounded-2xl backdrop-blur-sm">
-                            <Server className="h-8 w-8" />
+            <section className="py-12 px-6">
+                <div className="max-w-4xl mx-auto space-y-8">
+                    {/* Ringkasan */}
+                    <div className="grid grid-cols-3 gap-4">
+                        <div className="bg-white border border-slate-200 rounded-xl p-4 text-center shadow-sm">
+                            <div className="text-2xl font-black text-[#1e293b]">{allItems.length}</div>
+                            <div className="text-[11px] text-slate-500 uppercase tracking-wide mt-1">Total Item</div>
                         </div>
-                        <h1 className="text-3xl font-black tracking-tight">Sarana & Prasarana</h1>
-                    </div>
-                    <p className="text-teal-100 text-lg max-w-2xl">
-                        Infrastruktur fisik dan digital yang mendukung pengelolaan dokumen hukum di JDIH Kabupaten Banjarnegara
-                    </p>
-                </div>
-            </div>
-
-            {/* Stats */}
-            <div className="max-w-7xl mx-auto px-4 -mt-6">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 text-center">
-                        <div className="text-3xl font-black text-slate-900">{totalItems}</div>
-                        <div className="text-xs text-slate-500 uppercase tracking-wide mt-1">Total Item</div>
-                    </div>
-                    <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 text-center">
-                        <div className="text-3xl font-black text-teal-600">{totalUnits}</div>
-                        <div className="text-xs text-slate-500 uppercase tracking-wide mt-1">Total Unit</div>
-                    </div>
-                    <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 text-center">
-                        <div className="text-3xl font-black text-emerald-600">
-                            {Object.values(infrastructures).flat().filter(i => i.condition === 'baik').length}
+                        <div className="bg-white border border-slate-200 rounded-xl p-4 text-center shadow-sm">
+                            <div className="text-2xl font-black text-[#0d9488]">{totalUnits}</div>
+                            <div className="text-[11px] text-slate-500 uppercase tracking-wide mt-1">Total Unit</div>
                         </div>
-                        <div className="text-xs text-slate-500 uppercase tracking-wide mt-1">Kondisi Baik</div>
+                        <div className="bg-white border border-slate-200 rounded-xl p-4 text-center shadow-sm">
+                            <div className="text-2xl font-black text-emerald-600">{totalBaik}</div>
+                            <div className="text-[11px] text-slate-500 uppercase tracking-wide mt-1">Kondisi Baik</div>
+                        </div>
                     </div>
-                    <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 text-center">
-                        <div className="text-3xl font-black text-slate-900">4</div>
-                        <div className="text-xs text-slate-500 uppercase tracking-wide mt-1">Kategori</div>
-                    </div>
+
+                    {/* Kategori */}
+                    {categoryOrder.map(renderCategory)}
+
+                    {allItems.length === 0 && (
+                        <div className="bg-white border border-slate-200 rounded-xl p-10 text-center text-slate-500 shadow-sm">
+                            Data sarana & prasarana belum tersedia.
+                        </div>
+                    )}
                 </div>
-            </div>
-
-            {/* Categories */}
-            <div className="max-w-7xl mx-auto px-4 py-12 space-y-6">
-                {renderCategory('ruangan', infrastructures.ruangan)}
-                {renderCategory('perangkat_keras', infrastructures.perangkat_keras)}
-                {renderCategory('perangkat_lunak', infrastructures.perangkat_lunak)}
-                {renderCategory('jaringan', infrastructures.jaringan)}
-            </div>
-
-            {/* Footer spacing */}
-            <div className="h-12" />
-        </div>
+            </section>
+        </PublicLayout>
     );
 }
