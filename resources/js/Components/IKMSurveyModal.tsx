@@ -75,7 +75,7 @@ export default function IKMSurveyModal() {
         setIsOpen(false);
         // Update count saat user menutup
         try {
-            const existingData = localStorage.getItem(STORAGE_KEY) ? JSON.parse(localStorage.getItem(STORAGE_KEY)) : { count: 0 };
+            const raw = localStorage.getItem(STORAGE_KEY); const existingData = raw ? JSON.parse(raw) : { count: 0 };
             localStorage.setItem(STORAGE_KEY, JSON.stringify({ 
                 timestamp: Date.now(), 
                 count: (existingData.count || 0) + 1 
@@ -100,7 +100,7 @@ export default function IKMSurveyModal() {
             setStep(3);
             // Tandai sudah selesai
             try {
-                const existingData = localStorage.getItem(STORAGE_KEY) ? JSON.parse(localStorage.getItem(STORAGE_KEY)) : { count: 0 };
+                const raw = localStorage.getItem(STORAGE_KEY); const existingData = raw ? JSON.parse(raw) : { count: 0 };
                 localStorage.setItem(STORAGE_KEY, JSON.stringify({ 
                     timestamp: Date.now(), 
                     count: MAX_SHOW_COUNT // Set ke max agar tidak muncul lagi
