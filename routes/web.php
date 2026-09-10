@@ -25,16 +25,9 @@ Route::get('/qrcode', function (\Illuminate\Http\Request $request) {
     // Jika external URL, validate host dari internal network
     if (str_starts_with($url, 'http://') || str_starts_with($url, 'https://')) {
         $host = parse_url($url, PHP_URL_HOST);
-        if ($host) {
-            $internalHosts = ['localhost', '127.0.0.1', '::1', '0.0.0.0'];
-            if (in_array($host, $internalHosts)) {
-                $url = '/';
-            }
-            
-            // Optional: pastikan hanya domain yang valid
-            if (!filter_var($url, FILTER_VALIDATE_URL)) {
-                $url = '/';
-            }
+        $appHost = parse_url(config('app.url'), PHP_URL_HOST);
+        if (!$host || !$appHost || strcasecmp($host, $appHost) !== 0 || !filter_var($url, FILTER_VALIDATE_URL)) {
+            $url = '/';
         }
     }
     
@@ -64,14 +57,14 @@ Route::get('/qrcode', function (\Illuminate\Http\Request $request) {
         \Illuminate\Support\Facades\Log::error('QR Code Error: ' . $e->getMessage());
         
         // Return fallback SVG placeholder
-        $fallbackSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="150" height="150" viewBox="0 0 150 150"><rect width="150" height="150" fill="#f1f5f9"/><text x="75" y="70" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b">QR Error</text><text x="75" y="90" text-anchor="middle" font-family="Arial" font-size="10" fill="#94a3b8">'.htmlspecialchars($e->getMessage()).'</text></svg>';
+        $fallbackSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="150" height="150" viewBox="0 0 150 150"><rect width="150" height="150" fill="#f1f5f9"/><text x="75" y="80" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b">QR Error</text></svg>';
         
         return response($fallbackSvg, 200, [
             'Content-Type' => 'image/svg+xml',
             'X-Error' => 'true'
         ]);
     }
-})->name('qrcode');
+})->name('qrcode')->middleware('throttle:30,1');
 
 // ---------------------------------------------------------------
 // IKM REPORTS (ADMIN)
@@ -960,7 +953,7 @@ Route::get("/{category:slug}/{id}", function(string $slug, int $id) {
 // ---------------------------------------------------------------
 // JDIHN INTEGRATION API
 // ---------------------------------------------------------------
-Route::prefix('api/jdihn')->group(function () {
+Route::prefix('api/jdihn')->middleware(['auth', 'throttle:60,1'])->group(function () {
     // Sync endpoints
     Route::post('/sync/documents', [App\Http\Controllers\Api\JdihSyncController::class, 'syncDocuments'])
         ->name('api.jdihn.sync.documents');
